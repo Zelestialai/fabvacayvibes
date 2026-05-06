@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --purple: #1E0F45;
+  --purple-mid: #2D1B69;
+  --purple-light: #4A1A6B;
+  --orange: #F4A23A;
+  --orange-warm: #F7C05A;
+  --orange-deep: #E8621A;
+  --cream: #FDF6EC;
+  --text-muted: rgba(253,246,236,0.55);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--purple);
+  color: var(--cream);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeUp 0.9s ease forwards; }
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
