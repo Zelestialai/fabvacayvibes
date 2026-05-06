@@ -64,9 +64,7 @@ export default function PropertyCard({ property, large = false }: { property: Pr
         </p>
 
         <a
-          href={property.ownerrezUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`/properties/${property.slug}`}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             fontSize: 11, letterSpacing: 2, textTransform: 'uppercase',
