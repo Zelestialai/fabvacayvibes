@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     const charges: Array<{type?: string; Type?: string; name?: string; Name?: string; amount?: number; Amount?: number}> =
       q.charges || q.Charges || []
 
-    const gt = (c: typeof charges[0]) => (c.type || c.Type || '').toLowerCase()
+    const gt = (c: typeof charges[0]) => { const t = c.type || c.Type; if (typeof t === "string") return t.toLowerCase(); if (t === 1) return "rent"; if (t === 2) return "surcharge"; if (t === 3) return "tax"; return String(t || "").toLowerCase() }
     const ga = (c: typeof charges[0]) => c.amount || c.Amount || 0
     const gn = (c: typeof charges[0]) => c.name || c.Name || ''
 
