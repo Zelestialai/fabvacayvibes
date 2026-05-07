@@ -94,7 +94,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       propertyId, propertySlug: slug, arrival, departure, nights, adults, children, pets,
       pricing: {
-        rent: rent ? ga(rent) : 0,
+        rentTotal: rent ? ga(rent) : 0,
+        rentPerNight: rent ? Math.round((ga(rent) / nights) * 100) / 100 : 0,
         rentLabel: 'Nightly Rate',
         fees: fees.map(f => ({ name: gn(f), amount: ga(f) })),
         taxes: taxes.map(t => ({ name: gn(t), amount: ga(t) })),

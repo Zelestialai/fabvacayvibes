@@ -12,7 +12,8 @@ type Step = 'dates' | 'quote' | 'guest' | 'redirect'
 interface Quote {
   nights: number
   pricing: {
-    rent: number
+    rentTotal: number
+    rentPerNight: number
     rentLabel: string
     fees: { name: string; amount: number }[]
     taxes: { name: string; amount: number }[]
@@ -224,8 +225,11 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
           {/* Pricing breakdown */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'var(--cream)' }}>
-              <span>{quote.pricing.rentLabel}</span>
-              <span>{fmt(quote.pricing.rent)}</span>
+              <div>
+                <span>{quote.pricing.rentLabel}</span>
+                <span style={{fontSize:11,color:'var(--text-muted)',marginLeft:8}}>{fmt(quote.pricing.rentPerNight)} × {quote.nights} nights</span>
+              </div>
+              <span>{fmt(quote.pricing.rentTotal)}</span>
             </div>
             {quote.pricing.fees.map(f => (
               <div key={f.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: 'var(--text-muted)' }}>
