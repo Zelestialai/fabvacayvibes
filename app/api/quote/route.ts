@@ -13,7 +13,7 @@ function getCredentials() {
   return Buffer.from(`${email}:${token}`).toString('base64')
 }
 
-const BASE = 'https://api.ownerrez.com'
+const BASE = 'https://app.ownerrez.com/api'
 const getHeaders = (creds: string) => ({
   'Authorization': `Basic ${creds}`,
   'Content-Type': 'application/json',
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     }
     console.log('POST v1.1/quotes TEST payload:', payload)
 
-    const quoteRes = await fetch(`${BASE}/v1.1/quotes`, {
+    const quoteRes = await fetch(`${BASE}/quotes`, {
       method: 'TEST',
       headers: getHeaders(creds),
       body: JSON.stringify(payload),
@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
       RedirectAfterBookingUrl: `${origin}/booking-confirmed`,
     }
 
-    const quoteRes = await fetch(`${BASE}/v1.1/quotes`, {
+    const quoteRes = await fetch(`${BASE}/quotes`, {
       method: 'POST',
       headers: getHeaders(creds),
       body: JSON.stringify(quotePayload),
