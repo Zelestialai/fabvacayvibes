@@ -95,10 +95,10 @@ export async function GET(request: NextRequest) {
       propertyId, propertySlug: slug, arrival, departure, nights, adults, children, pets,
       pricing: {
         rent: rent ? ga(rent) : 0,
-        rentLabel: rent ? gn(rent) : 'Nightly Rate',
+        rentLabel: 'Nightly Rate',
         fees: fees.map(f => ({ name: gn(f), amount: ga(f) })),
         taxes: taxes.map(t => ({ name: gn(t), amount: ga(t) })),
-        total, currency: 'USD', _rawCharges: charges.slice(0,5),
+        total, currency: 'USD',
       },
     }, { headers: { 'Cache-Control': 'no-store' } })
 
