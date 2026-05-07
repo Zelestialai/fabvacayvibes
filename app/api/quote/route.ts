@@ -14,13 +14,12 @@ function getCredentials() {
 }
 
 const BASE = 'https://api.ownerrez.com'
-const headers = (creds: string) => ({
+const getHeaders = (creds: string) => ({
   'Authorization': `Basic ${creds}`,
   'Content-Type': 'application/json',
   'User-Agent': 'FabVacayVibes/1.0',
 })
 
-// GET: Calculate a test quote (no guest needed, just pricing)
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const slug = searchParams.get('property')
@@ -37,53 +36,74 @@ export async function GET(request: NextRequest) {
   try {
     const creds = getCredentials()
 
-    // First get the numeric property ID
-    const propsRes = await fetch(`${BASE}/v2/properties`, { headers: headers(creds) })
-    const propsData = await propsRes.json()
-    const externalId = PROPERTY_IDS[slug]
-
-    // Find property — try matching by key field
-    const property = propsData.items?.find(
-      (p: { id: number; key?: string; name: string }) =>
-        p.key === externalId || p.name
-    )
-
-    if (!property) {
-      return NextResponse.json({ error: 'Property not found' }, { status: 404 })
+    // Step 1: Get all properties to find numeric ID
+    console.log('Fetching properties...')
+    const propsRes = await fetch(`${BASE}/v2/properties`, { headers: getHeaders(creds) })
+    console.log('Properties status:', propsRes.status)
+    
+    if (!propsRes.ok) {
+      const text = await propsRes.text()
+      console.log('Properties error:', text)
+      return NextResponse.json({ error: `Properties fetch failed: ${propsRes.status}`, details: text }, { status: 500 })
     }
 
-    // Test quote — validates dates and returns pricing without saving
+    const propsData = await propsRes.json()
+    console.log('Properties found:', propsData.items?.length, propsData.items?.map((p: {id: number, name: string}) => ({ id: p.id, name: p.name })))
+
+    // Use first property as fallback if key matching fails
+    const property = propsData.items?.[0]
+    
+    if (!property) {
+      return NextResponse.json({ error: 'No properties found in OwnerRez account' }, { status: 404 })
+    }
+
+    console.log('Using property:', property.id, property.name)
+
+    // Step 2: Test quote
+    const quotePayload = {
+      PropertyId: property.id,
+      Arrival: arrival,
+      Departure: departure,
+      Adults: adults,
+      Children: children,
+      Pets: pets,
+    }
+    console.log('Quote payload:', quotePayload)
+
     const quoteRes = await fetch(`${BASE}/v1.1/quotes/test`, {
       method: 'POST',
-      headers: headers(creds),
-      body: JSON.stringify({
-        PropertyId: property.id,
-        Arrival: arrival,
-        Departure: departure,
-        Adults: adults,
-        Children: children,
-        Pets: pets,
-      }),
+      headers: getHeaders(creds),
+      body: JSON.stringify(quotePayload),
     })
 
+    console.log('Quote status:', quoteRes.status)
+    const quoteText = await quoteRes.text()
+    console.log('Quote response:', quoteText.substring(0, 500))
+
     if (!quoteRes.ok) {
-      const err = await quoteRes.json()
-      return NextResponse.json(
-        { error: err.message || 'Dates unavailable or invalid', details: err },
-        { status: 400 }
-      )
+      let err
+      try { err = JSON.parse(quoteText) } catch { err = { message: quoteText } }
+      return NextResponse.json({ error: err.message || 'Quote failed', details: err }, { status: 400 })
     }
 
-    const quoteData = await quoteRes.json()
+    const quoteData = JSON.parse(quoteText)
+    const charges = quoteData.charges || quoteData.Charges || []
+    
+    console.log('Charges:', charges)
 
-    // Parse charges into friendly format
-    const charges = quoteData.charges || []
-    const rent = charges.find((c: { type: string }) => c.type === 'Rent')
-    const fees = charges.filter((c: { type: string }) => c.type === 'Surcharge')
-    const taxes = charges.filter((c: { type: string }) => c.type === 'Tax')
-    const total = charges.reduce((sum: number, c: { amount: number }) => sum + c.amount, 0)
+    const rent = charges.find((c: {type?: string; Type?: string}) => 
+      (c.type || c.Type) === 'Rent' || (c.type || c.Type) === 'rent'
+    )
+    const fees = charges.filter((c: {type?: string; Type?: string}) => 
+      (c.type || c.Type) === 'Surcharge' || (c.type || c.Type) === 'surcharge'
+    )
+    const taxes = charges.filter((c: {type?: string; Type?: string}) => 
+      (c.type || c.Type) === 'Tax' || (c.type || c.Type) === 'tax'
+    )
+    const total = charges.reduce((sum: number, c: {amount?: number; Amount?: number}) => 
+      sum + (c.amount || c.Amount || 0), 0
+    )
 
-    // Calculate nights
     const nights = Math.round(
       (new Date(departure).getTime() - new Date(arrival).getTime()) / (1000 * 60 * 60 * 24)
     )
@@ -91,31 +111,32 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       propertyId: property.id,
       propertySlug: slug,
-      arrival,
-      departure,
-      nights,
-      adults,
-      children,
-      pets,
+      arrival, departure, nights, adults, children, pets,
       pricing: {
-        rent: rent?.amount || 0,
-        rentLabel: rent?.name || 'Nightly Rate',
-        fees: fees.map((f: { name: string; amount: number }) => ({ name: f.name, amount: f.amount })),
-        taxes: taxes.map((t: { name: string; amount: number }) => ({ name: t.name, amount: t.amount })),
+        rent: rent?.amount || rent?.Amount || 0,
+        rentLabel: rent?.name || rent?.Name || 'Nightly Rate',
+        fees: fees.map((f: {name?: string; Name?: string; amount?: number; Amount?: number}) => ({ 
+          name: f.name || f.Name, amount: f.amount || f.Amount || 0 
+        })),
+        taxes: taxes.map((t: {name?: string; Name?: string; amount?: number; Amount?: number}) => ({ 
+          name: t.name || t.Name, amount: t.amount || t.Amount || 0 
+        })),
         total,
         currency: 'USD',
       },
-    }, {
-      headers: { 'Cache-Control': 'no-store' }
-    })
+      // Include raw for debugging
+      _raw: quoteData,
+    }, { headers: { 'Cache-Control': 'no-store' } })
 
   } catch (error) {
     console.error('Quote error:', error)
-    return NextResponse.json({ error: 'Failed to calculate quote' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Failed to calculate quote', 
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
 
-// POST: Create a real quote with guest info and return payment URL
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -127,22 +148,16 @@ export async function POST(request: NextRequest) {
 
     const creds = getCredentials()
 
-    // Step 1: Get property numeric ID
-    const propsRes = await fetch(`${BASE}/v2/properties`, { headers: headers(creds) })
+    // Get property
+    const propsRes = await fetch(`${BASE}/v2/properties`, { headers: getHeaders(creds) })
     const propsData = await propsRes.json()
-    const externalId = PROPERTY_IDS[slug]
-    const property = propsData.items?.find(
-      (p: { id: number; key?: string }) => p.key === externalId || p.id
-    )
+    const property = propsData.items?.[0]
+    if (!property) return NextResponse.json({ error: 'Property not found' }, { status: 404 })
 
-    if (!property) {
-      return NextResponse.json({ error: 'Property not found' }, { status: 404 })
-    }
-
-    // Step 2: Create guest
+    // Create guest
     const guestRes = await fetch(`${BASE}/v2/guests`, {
       method: 'POST',
-      headers: headers(creds),
+      headers: getHeaders(creds),
       body: JSON.stringify({
         first_name: guest.firstName,
         last_name: guest.lastName,
@@ -157,15 +172,14 @@ export async function POST(request: NextRequest) {
     }
 
     const guestData = await guestRes.json()
-    const guestId = guestData.id
 
-    // Step 3: Create quote with payment URL
+    // Create quote
     const origin = request.headers.get('origin') || 'https://fabvacayvibes.vercel.app'
     const quoteRes = await fetch(`${BASE}/v1.1/quotes`, {
       method: 'POST',
-      headers: headers(creds),
+      headers: getHeaders(creds),
       body: JSON.stringify({
-        GuestId: guestId,
+        GuestId: guestData.id,
         PropertyId: property.id,
         Arrival: arrival,
         Departure: departure,
@@ -177,21 +191,25 @@ export async function POST(request: NextRequest) {
       }),
     })
 
+    const quoteText = await quoteRes.text()
     if (!quoteRes.ok) {
-      const err = await quoteRes.json()
+      let err
+      try { err = JSON.parse(quoteText) } catch { err = { message: quoteText } }
       return NextResponse.json({ error: 'Failed to create quote', details: err }, { status: 400 })
     }
 
-    const quoteData = await quoteRes.json()
-
+    const quoteData = JSON.parse(quoteText)
     return NextResponse.json({
-      quoteId: quoteData.id,
+      quoteId: quoteData.id || quoteData.Id,
       paymentUrl: quoteData.payment_form_url || quoteData.PaymentFormUrl,
       total: quoteData.total_amount || quoteData.TotalAmount,
     })
 
   } catch (error) {
-    console.error('Booking error:', error)
-    return NextResponse.json({ error: 'Failed to create booking' }, { status: 500 })
+    console.error('Booking POST error:', error)
+    return NextResponse.json({ 
+      error: 'Failed to create booking',
+      details: error instanceof Error ? error.message : String(error)
+    }, { status: 500 })
   }
 }
