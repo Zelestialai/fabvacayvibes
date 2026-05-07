@@ -35,13 +35,13 @@ export async function GET(request: NextRequest) {
 
   try {
     // Step 1: Get all properties to find numeric ID
-    const propsRes = await fetch('https://app.ownerrez.com/api/v2/properties', { headers })
+    const propsRes = await fetch('https://api.ownerrez.com/v2/properties', { headers })
     if (!propsRes.ok) throw new Error(`Properties fetch failed: ${propsRes.status}`)
     const propsData = await propsRes.json()
 
     // Step 2: Get bookings for all properties and filter by date range
     const bookingsRes = await fetch(
-      `https://app.ownerrez.com/api/v2/bookings?since_utc=${formatDate(today)}&include_blocks=true`,
+      `https://api.ownerrez.com/v2/bookings?since_utc=${formatDate(today)}&include_blocks=true`,
       { headers }
     )
     if (!bookingsRes.ok) throw new Error(`Bookings fetch failed: ${bookingsRes.status}`)
