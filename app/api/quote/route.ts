@@ -6,6 +6,13 @@ const PROPERTY_EXTERNAL_IDS: Record<string, string> = {
   'sierra-crest-haven': 'orp5b74fbax',
 }
 
+// Hardcoded numeric IDs from OwnerRez API (verified 2026-05)
+const PROPERTY_NUMERIC_IDS: Record<string, number> = {
+  'casa-grande':        398247,
+  'owl-and-hare':       452868,
+  'sierra-crest-haven': 479162,
+}
+
 // v2 API for properties/bookings/guests
 const V2 = 'https://api.ownerrez.com/v2'
 // Legacy API for quotes (not yet in v2)
@@ -24,17 +31,9 @@ const getHeaders = (creds: string) => ({
   'User-Agent': 'FabVacayVibes/1.0',
 })
 
-async function getPropertyId(creds: string, slug: string): Promise<number | null> {
-  const res = await fetch(`${V2}/properties`, { headers: getHeaders(creds) })
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Properties fetch failed: ${res.status} — ${text.substring(0, 200)}`)
-  }
-  const data = await res.json()
-  console.log('Properties:', JSON.stringify(data.items?.map((p: {id: number, name: string}) => ({ id: p.id, name: p.name }))))
-  const slugOrder = ['casa-grande', 'owl-and-hare', 'sierra-crest-haven']
-  const idx = slugOrder.indexOf(slug)
-  return data.items?.[idx]?.id || data.items?.[0]?.id || null
+async function getPropertyId(_creds: string, slug: string): Promise<number | null> {
+  // Use hardcoded verified IDs — no API call needed
+  return PROPERTY_NUMERIC_IDS[slug] || null
 }
 
 // GET: Test quote — pricing preview
