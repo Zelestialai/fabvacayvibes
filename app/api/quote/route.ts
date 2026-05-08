@@ -82,10 +82,12 @@ export async function GET(request: NextRequest) {
 
     const gt = (c: typeof charges[0]) => { const t = c.type || c.Type; if (typeof t === "string") return t.toLowerCase(); if (t === 1) return "rent"; if (t === 2) return "surcharge"; if (t === 3) return "tax"; return String(t || "").toLowerCase() }
     const ga = (c: typeof charges[0]) => c.amount || c.Amount || 0
-    const gn = (c: typeof charges[0]) => c.name || c.Name || ''
+    const gn = (c: typeof charges[0]) => { const raw = c as Record<string,unknown>; return String(raw.Description || raw.description || c.name || c.Name || '') }
 
     const rent = charges.find(c => gt(c) === 'rent')
-    const fees = charges.filter(c => gt(c) === 'surcharge')
+    const INTERNAL_SURCHARGE_IDS = [102592547] // Management fee — internal, hide from guests
+    const allFees = charges.filter(c => gt(c) === 'surcharge')
+    const fees = allFees.filter(c => { const raw = c as Record<string,unknown>; return !INTERNAL_SURCHARGE_IDS.includes(Number(raw.SurchargeId || 0)) })
     const taxes = charges.filter(c => gt(c) === 'tax')
     const total = charges.reduce((s, c) => s + ga(c), 0)
     const nights = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
@@ -98,7 +100,7 @@ export async function GET(request: NextRequest) {
         rentLabel: 'Nightly Rate',
         fees: fees.map(f => ({ name: gn(f), amount: ga(f) })),
         taxes: taxes.map(t => ({ name: gn(t), amount: ga(t) })),
-        total, currency: 'USD', _raw: charges,
+        total, currency: 'USD',
       },
     }, { headers: { 'Cache-Control': 'no-store' } })
 
