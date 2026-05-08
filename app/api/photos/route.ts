@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const PROPERTY_NUMERIC_IDS: Record<string, number> = {
-  'casa-grande':        398247,
-  'owl-and-hare':       452868,
-  'sierra-crest-haven': 479162,
+const PROPERTY_EXTERNAL_IDS: Record<string, string> = {
+  'casa-grande':        'orp5b613a7x',
+  'owl-and-hare':       'orp5b6e904x',
+  'sierra-crest-haven': 'orp5b74fbax',
 }
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const slug = searchParams.get('property')
 
-  if (!slug || !PROPERTY_NUMERIC_IDS[slug]) {
+  if (!slug || !PROPERTY_EXTERNAL_IDS[slug]) {
     return NextResponse.json({ error: 'Invalid property' }, { status: 400 })
   }
 
@@ -18,34 +18,36 @@ export async function GET(request: NextRequest) {
   const token = process.env.OWNERREZ_TOKEN
   if (!email || !token) return NextResponse.json({ error: 'No credentials' }, { status: 500 })
 
+  const externalId = PROPERTY_EXTERNAL_IDS[slug]
   const creds = Buffer.from(`${email}:${token}`).toString('base64')
-  const headers = {
-    'Authorization': `Basic ${creds}`,
-    'Content-Type': 'application/json',
-    'User-Agent': 'FabVacayVibes/1.0',
-  }
 
-  const propertyId = PROPERTY_NUMERIC_IDS[slug]
-
-  // Try v2 listings endpoint first (includes photos)
-  const endpoints = [
-    `https://api.ownerrez.com/v2/listings?property_id=${propertyId}`,
-    `https://api.ownerrez.com/v2/properties/${propertyId}`,
-  ]
-
-  for (const url of endpoints) {
-    const res = await fetch(url, { headers })
-    const text = await res.text()
-    if (res.ok) {
-      const data = JSON.parse(text)
-      return NextResponse.json({ 
-        propertySlug: slug, 
-        endpoint: url,
-        raw: data 
-      })
+  // Try OwnerRez XML feed which contains full photo list
+  const res = await fetch(
+    `https://app.ownerrez.com/feeds/property?externalId=${externalId}&include=photos`,
+    {
+      headers: {
+        'Authorization': `Basic ${creds}`,
+        'User-Agent': 'FabVacayVibes/1.0',
+      }
     }
-    console.log(`${url} -> ${res.status}: ${text.substring(0, 100)}`)
+  )
+
+  const text = await res.text()
+  console.log('Feed status:', res.status, text.substring(0, 300))
+
+  if (!res.ok) {
+    return NextResponse.json({ error: `Feed failed: ${res.status}`, details: text.substring(0, 300) }, { status: 500 })
   }
 
-  return NextResponse.json({ error: 'Could not fetch photos from any endpoint' }, { status: 404 })
+  // Extract image URLs from XML
+  const imageMatches = text.matchAll(/<image[^>]*>([^<]+)<\/image>|<url[^>]*>([^<]+orez\.io[^<]+)<\/url>|https:\/\/uc\.orez\.io\/i\/[a-f0-9-]+-\w+/gi)
+  const urls: string[] = []
+  for (const match of imageMatches) {
+    const url = match[1] || match[2] || match[0]
+    if (url && url.includes('orez.io') && !urls.includes(url)) {
+      urls.push(url.trim())
+    }
+  }
+
+  return NextResponse.json({ propertySlug: slug, photoUrls: urls, rawXml: text.substring(0, 2000) })
 }
