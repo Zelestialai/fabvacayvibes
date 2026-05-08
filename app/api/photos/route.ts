@@ -26,29 +26,26 @@ export async function GET(request: NextRequest) {
   }
 
   const propertyId = PROPERTY_NUMERIC_IDS[slug]
-  const res = await fetch(`https://api.ownerrez.com/v2/properties/${propertyId}/photos`, { headers })
-  
-  if (!res.ok) {
+
+  // Try v2 listings endpoint first (includes photos)
+  const endpoints = [
+    `https://api.ownerrez.com/v2/listings?property_id=${propertyId}`,
+    `https://api.ownerrez.com/v2/properties/${propertyId}`,
+  ]
+
+  for (const url of endpoints) {
+    const res = await fetch(url, { headers })
     const text = await res.text()
-    return NextResponse.json({ error: `Photos fetch failed: ${res.status}`, details: text.substring(0, 300) }, { status: 500 })
+    if (res.ok) {
+      const data = JSON.parse(text)
+      return NextResponse.json({ 
+        propertySlug: slug, 
+        endpoint: url,
+        raw: data 
+      })
+    }
+    console.log(`${url} -> ${res.status}: ${text.substring(0, 100)}`)
   }
 
-  const data = await res.json()
-  // Return photos with just what we need
-  return NextResponse.json({
-    propertySlug: slug,
-    photos: data.items?.map((p: {
-      id: number
-      url: string
-      caption?: string
-      position?: number
-      is_primary?: boolean
-    }) => ({
-      id: p.id,
-      url: p.url,
-      caption: p.caption || '',
-      position: p.position || 0,
-      isPrimary: p.is_primary || false,
-    })) || []
-  })
+  return NextResponse.json({ error: 'Could not fetch photos from any endpoint' }, { status: 404 })
 }
