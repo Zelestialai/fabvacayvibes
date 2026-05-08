@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
         rentLabel: 'Nightly Rate',
         fees: fees.map(f => ({ name: gn(f), amount: ga(f) })),
         taxes: taxes.map(t => ({ name: gn(t), amount: ga(t) })),
-        total, currency: 'USD',
+        total, currency: 'USD', _raw: charges,
       },
     }, { headers: { 'Cache-Control': 'no-store' } })
 
