@@ -3,6 +3,7 @@ import { properties } from '../../lib/properties'
 import Nav from '../../components/Nav'
 import BookingFlow from '../../components/BookingFlow'
 import AvailabilityCalendar from '../../components/AvailabilityCalendar'
+import PhotoGallery from '../../components/PhotoGallery'
 
 export async function generateStaticParams() {
   return properties.map(p => ({ slug: p.slug }))
@@ -49,7 +50,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
 
       {/* HERO */}
       <section style={{ position: 'relative', height: '70vh', overflow: 'hidden', minHeight: 500 }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${property.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${property.photos?.[0] ? encodeURIComponent(property.photos[0]).replace(/%2F/g, '/') : property.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(30,15,69,0.95) 0%, rgba(30,15,69,0.2) 60%, transparent 100%)' }} />
         <div style={{ position: 'absolute', bottom: 60, left: 0, right: 0, padding: '0 64px', maxWidth: 900 }}>
           <span style={{ display: 'inline-block', fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', border: '1px solid rgba(244,162,58,0.4)', padding: '5px 12px', borderRadius: 1, marginBottom: 16 }}>
@@ -103,6 +104,9 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
                 <span key={a} style={{ fontSize: 12, letterSpacing: 1, color: 'var(--cream)', border: '1px solid rgba(244,162,58,0.2)', padding: '8px 16px', borderRadius: 2, background: 'rgba(253,246,236,0.03)' }}>{a}</span>
               ))}
             </div>
+
+            {/* Photo Gallery */}
+            <PhotoGallery photos={property.photos} propertyName={property.name} />
 
             {/* Availability Calendar (visual reference) */}
             <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} />
