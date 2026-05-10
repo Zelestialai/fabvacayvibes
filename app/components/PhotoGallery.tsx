@@ -42,7 +42,13 @@ export default function PhotoGallery({ photos, propertyName }: PhotoGalleryProps
   if (!photos || photos.length === 0) return null
 
   // Encode photo URL to handle spaces
-  const encodePhoto = (url: string) => url.split('/').map((s, i) => i === 0 ? s : encodeURIComponent(s)).join('/')
+  const encodePhoto = (url: string) => {
+    // Encode each path segment except leading slash
+    return url.split('/').map((s, i) => {
+      if (i === 0) return s // empty string before leading slash
+      return encodeURIComponent(s)
+    }).join('/')
+  }
 
   return (
     <div style={{ marginBottom: 48 }}>
