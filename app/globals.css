@@ -80,7 +80,7 @@ select { background-color: rgba(253,246,236,0.05); color: var(--cream); }
 }
 
 /* ── Additional overflow fixes ── */
-.hero-search { flex-wrap: wrap; }
+/* hero-search removed */
 .site-footer { padding: 60px 48px 40px; }
 
 @media (max-width: 768px) {
