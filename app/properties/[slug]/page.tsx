@@ -109,7 +109,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
             <PhotoGallery photos={property.photos} propertyName={property.name} />
 
             {/* Availability Calendar (visual reference) */}
-            <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} />
+            <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} bookingUrl={property.ownerrezUrl} />
           </div>
 
           {/* RIGHT: Booking Flow */}

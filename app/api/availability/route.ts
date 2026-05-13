@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Verified numeric IDs from OwnerRez API
 const PROPERTY_NUMERIC_IDS: Record<string, number> = {
   'casa-grande':        398247,
   'owl-and-hare':       452868,
@@ -30,30 +29,86 @@ export async function GET(request: NextRequest) {
   const today = new Date()
   const propertyId = PROPERTY_NUMERIC_IDS[slug]
 
-  try {
-    const bookingsRes = await fetch(
-      `https://api.ownerrez.com/v2/bookings?since_utc=${formatDate(today)}&property_id=${propertyId}`,
-      { headers }
-    )
+  // Fetch 18 months of bookings using arrival_date_min/max
+  // (NOT since_utc which filters by modification date, missing old bookings)
+  const futureEnd = new Date(today)
+  futureEnd.setMonth(futureEnd.getMonth() + 18)
 
-    if (!bookingsRes.ok) throw new Error(`Bookings fetch failed: ${bookingsRes.status}`)
-    const bookingsData = await bookingsRes.json()
-    const bookings = bookingsData.items || []
+  try {
+    let allBookings: Record<string, unknown>[] = []
+    let page = 1
+    let hasMore = true
+
+    // Paginate through all bookings for this property
+    while (hasMore) {
+      const url = new URL('https://api.ownerrez.com/v2/bookings')
+      url.searchParams.set('property_id', String(propertyId))
+      url.searchParams.set('arrival_date_min', formatDate(today))
+      url.searchParams.set('arrival_date_max', formatDate(futureEnd))
+      url.searchParams.set('page_size', '100')
+      url.searchParams.set('page_num', String(page))
+
+      const res = await fetch(url.toString(), { headers })
+
+      if (!res.ok) {
+        const errText = await res.text()
+        console.error('OwnerRez bookings error:', res.status, errText)
+        // Try fallback without date filters if param not supported
+        break
+      }
+
+      const data = await res.json()
+      const items = data.items || []
+      allBookings = allBookings.concat(items)
+
+      // Check if there are more pages
+      hasMore = items.length === 100
+      page++
+    }
+
+    // If no bookings returned (maybe arrival_date_min not supported), try without date filter
+    if (allBookings.length === 0 && page === 2) {
+      const fallbackRes = await fetch(
+        `https://api.ownerrez.com/v2/bookings?property_id=${propertyId}&page_size=200`,
+        { headers }
+      )
+      if (fallbackRes.ok) {
+        const fallbackData = await fallbackRes.json()
+        allBookings = fallbackData.items || []
+      }
+    }
 
     const bookedDates: string[] = []
-    for (const booking of bookings) {
-      if (booking.status === 'Cancelled') continue
-      const arrival = new Date(booking.arrival)
-      const departure = new Date(booking.departure)
+    for (const booking of allBookings) {
+      // Skip cancelled bookings (OwnerRez uses various status strings)
+      const status = String(booking.status || '').toLowerCase()
+      if (status === 'cancelled' || status === 'canceled' || status === 'denied') continue
+
+      const arrival = new Date(booking.arrival as string)
+      const departure = new Date(booking.departure as string)
+
+      // Only include future bookings
+      if (departure <= today) continue
+
       const cur = new Date(arrival)
       while (cur < departure) {
-        bookedDates.push(formatDate(cur))
+        const dateStr = formatDate(cur)
+        if (!bookedDates.includes(dateStr)) {
+          bookedDates.push(dateStr)
+        }
         cur.setDate(cur.getDate() + 1)
       }
     }
 
+    bookedDates.sort()
+
     return NextResponse.json(
-      { propertySlug: slug, bookedDates, fetchedAt: new Date().toISOString() },
+      {
+        propertySlug: slug,
+        bookedDates,
+        totalBookings: allBookings.length,
+        fetchedAt: new Date().toISOString(),
+      },
       { headers: { 'Cache-Control': 's-maxage=300, stale-while-revalidate=600' } }
     )
   } catch (error) {

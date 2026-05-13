@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react'
 interface CalendarProps {
   propertySlug: string
   propertyName: string
+  bookingUrl: string
 }
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
-export default function AvailabilityCalendar({ propertySlug, propertyName }: CalendarProps) {
+export default function AvailabilityCalendar({ propertySlug, propertyName, bookingUrl }: CalendarProps) {
   const [bookedDates, setBookedDates] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -203,7 +204,7 @@ export default function AvailabilityCalendar({ propertySlug, propertyName }: Cal
       {/* Book CTA */}
       {!loading && !error && (
         <a
-          href={`https://www.fabvacayvibes.com/book`}
+          href={bookingUrl}
           target="_blank"
           style={{
             display: 'block', textAlign: 'center', marginTop: 24,
