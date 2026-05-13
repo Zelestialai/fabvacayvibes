@@ -63,7 +63,7 @@ export default function Home() {
         </div>
 
         <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 720, marginTop: 48, opacity: 0, animation: 'fadeUp 1s ease 1s forwards' }}>
-          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(253,246,236,0.06)', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 4, overflow: 'hidden', backdropFilter: 'blur(12px)' }}>
+          <div className="hero-search" style={{ display: 'flex', alignItems: 'center', background: 'rgba(253,246,236,0.06)', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 4, overflow: 'hidden', backdropFilter: 'blur(12px)' }}>
             <input type="text" placeholder="Beach · Mountain · Desert" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
             <div style={{ width: 1, height: 40, background: 'rgba(244,162,58,0.2)' }} />
             <input type="text" placeholder="Check-in → Check-out" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
@@ -175,7 +175,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: '#100820', padding: '60px 48px 40px', borderTop: '1px solid rgba(244,162,58,0.1)' }}>
+      <footer className="site-footer" style={{ background: '#100820', borderTop: '1px solid rgba(244,162,58,0.1)' }}>
         <div className="footer-inner">
           <div>
             <a href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, fontWeight: 600, letterSpacing: 2, color: 'var(--orange-warm)', textDecoration: 'none', display: 'block', marginBottom: 12 }}>FAB <span style={{ color: 'white', fontWeight: 300 }}>VACAY VIBES</span></a>
