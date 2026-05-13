@@ -26,93 +26,82 @@ export async function GET(request: NextRequest) {
   }
 
   const formatDate = (d: Date) => d.toISOString().split('T')[0]
-  const today = new Date()
   const propertyId = PROPERTY_NUMERIC_IDS[slug]
 
-  // Fetch 18 months of bookings using arrival_date_min/max
-  // (NOT since_utc which filters by modification date, missing old bookings)
-  const futureEnd = new Date(today)
-  futureEnd.setMonth(futureEnd.getMonth() + 18)
+  // Go back 2 years to catch all future bookings regardless of when they were made
+  const since = new Date()
+  since.setFullYear(since.getFullYear() - 2)
 
   try {
+    // Paginate using offset/limit (property_id filter is ignored by API — filter client-side)
     let allBookings: Record<string, unknown>[] = []
-    let page = 1
+    let offset = 0
+    const limit = 100
     let hasMore = true
 
-    // Paginate through all bookings for this property
     while (hasMore) {
-      const url = new URL('https://api.ownerrez.com/v2/bookings')
-      url.searchParams.set('property_id', String(propertyId))
-      url.searchParams.set('arrival_date_min', formatDate(today))
-      url.searchParams.set('arrival_date_max', formatDate(futureEnd))
-      url.searchParams.set('page_size', '100')
-      url.searchParams.set('page_num', String(page))
-
-      const res = await fetch(url.toString(), { headers })
+      const url = `https://api.ownerrez.com/v2/bookings?since_utc=${formatDate(since)}&limit=${limit}&offset=${offset}`
+      const res = await fetch(url, { headers })
 
       if (!res.ok) {
         const errText = await res.text()
-        console.error('OwnerRez bookings error:', res.status, errText)
-        // Try fallback without date filters if param not supported
-        break
+        throw new Error(`OwnerRez API error: ${res.status} ${errText}`)
       }
 
       const data = await res.json()
-      const items = data.items || []
-      allBookings = allBookings.concat(items)
+      const items: Record<string, unknown>[] = data.items || []
 
-      // Check if there are more pages
-      hasMore = items.length === 100
-      page++
+      // Filter to only this property client-side (API ignores property_id param)
+      const propertyItems = items.filter(b => b.property_id === propertyId)
+      allBookings = allBookings.concat(propertyItems)
+
+      // Check if more pages exist
+      hasMore = items.length === limit
+      offset += limit
+
+      // Safety cap at 500 total records
+      if (offset >= 500) break
     }
 
-    // If no bookings returned (maybe arrival_date_min not supported), try without date filter
-    if (allBookings.length === 0 && page === 2) {
-      const fallbackRes = await fetch(
-        `https://api.ownerrez.com/v2/bookings?property_id=${propertyId}&page_size=200`,
-        { headers }
-      )
-      if (fallbackRes.ok) {
-        const fallbackData = await fallbackRes.json()
-        allBookings = fallbackData.items || []
-      }
-    }
-
+    const today = formatDate(new Date())
     const bookedDates: string[] = []
+
     for (const booking of allBookings) {
-      // Skip cancelled bookings (OwnerRez uses various status strings)
       const status = String(booking.status || '').toLowerCase()
-      if (status === 'cancelled' || status === 'canceled' || status === 'denied') continue
 
-      const arrival = new Date(booking.arrival as string)
-      const departure = new Date(booking.departure as string)
+      // Skip cancelled bookings
+      if (status === 'cancelled' || status === 'canceled') continue
 
-      // Only include future bookings
+      // Include both real bookings and blocks (is_block: true)
+      const arrival = booking.arrival as string   // already "YYYY-MM-DD"
+      const departure = booking.departure as string
+
+      if (!arrival || !departure) continue
+
+      // Skip bookings entirely in the past
       if (departure <= today) continue
 
-      const cur = new Date(arrival)
-      while (cur < departure) {
+      // Expand arrival→departure into individual dates
+      const cur = new Date(arrival + 'T12:00:00Z') // noon UTC avoids DST edge cases
+      const end = new Date(departure + 'T12:00:00Z')
+
+      while (cur < end) {
         const dateStr = formatDate(cur)
         if (!bookedDates.includes(dateStr)) {
           bookedDates.push(dateStr)
         }
-        cur.setDate(cur.getDate() + 1)
+        cur.setUTCDate(cur.getUTCDate() + 1)
       }
     }
 
     bookedDates.sort()
 
     return NextResponse.json(
-      {
-        propertySlug: slug,
-        bookedDates,
-        totalBookings: allBookings.length,
-        fetchedAt: new Date().toISOString(),
-      },
+      { propertySlug: slug, bookedDates, totalBookings: allBookings.length, fetchedAt: new Date().toISOString() },
       { headers: { 'Cache-Control': 's-maxage=300, stale-while-revalidate=600' } }
     )
   } catch (error) {
     console.error('Availability error:', error)
-    return NextResponse.json({ error: 'Failed to fetch availability' }, { status: 500 })
+    return NextResponse.json({ error: String(error) }, { status: 500 })
   }
 }

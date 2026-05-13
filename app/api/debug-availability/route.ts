@@ -18,33 +18,30 @@ export async function GET(request: NextRequest) {
   const creds = Buffer.from(`${email}:${token}`).toString('base64')
   const headers = { 'Authorization': `Basic ${creds}`, 'Content-Type': 'application/json', 'User-Agent': 'FabVacayVibes/1.0' }
 
-  const results: Record<string, unknown> = {}
+  const since = new Date()
+  since.setFullYear(since.getFullYear() - 2)
+  const sinceStr = since.toISOString().split('T')[0]
 
-  // Test 1: with arrival_date_min
-  const url1 = `https://api.ownerrez.com/v2/bookings?property_id=${propertyId}&arrival_date_min=2026-05-01&page_size=10`
-  const r1 = await fetch(url1, { headers })
-  results.test1_arrival_date_min = { status: r1.status, url: url1, body: await r1.json().catch(() => 'parse error') }
+  const res = await fetch(`https://api.ownerrez.com/v2/bookings?since_utc=${sinceStr}&limit=200&offset=0`, { headers })
+  const data = await res.json()
+  const all = data.items || []
+  const forProperty = all.filter((b: Record<string,unknown>) => b.property_id === propertyId)
 
-  // Test 2: plain no filter
-  const url2 = `https://api.ownerrez.com/v2/bookings?property_id=${propertyId}&page_size=10`
-  const r2 = await fetch(url2, { headers })
-  results.test2_no_filter = { status: r2.status, body: await r2.json().catch(() => 'parse error') }
+  const today = new Date().toISOString().split('T')[0]
+  const futureActive = forProperty.filter((b: Record<string,unknown>) => {
+    const status = String(b.status || '').toLowerCase()
+    return status !== 'cancelled' && status !== 'canceled' && (b.departure as string) > today
+  })
 
-  // Test 3: since_utc far back
-  const url3 = `https://api.ownerrez.com/v2/bookings?property_id=${propertyId}&since_utc=2026-01-01&page_size=10`
-  const r3 = await fetch(url3, { headers })
-  results.test3_since_utc_jan = { status: r3.status, body: await r3.json().catch(() => 'parse error') }
-
-  // Test 4: first booking details
-  const url4 = `https://api.ownerrez.com/v2/bookings?property_id=${propertyId}&page_size=3`
-  const r4 = await fetch(url4, { headers })
-  const d4 = await r4.json().catch(() => ({}))
-  results.test4_sample_booking = {
-    status: r4.status,
-    total_count: d4.total_count,
-    fields: d4.items?.[0] ? Object.keys(d4.items[0]) : [],
-    sample: d4.items?.[0] || null,
-  }
-
-  return NextResponse.json(results, { headers: { 'Cache-Control': 'no-store' } })
+  return NextResponse.json({
+    slug,
+    propertyId,
+    sinceDate: sinceStr,
+    totalAllProperties: all.length,
+    totalThisProperty: forProperty.length,
+    futureActiveBookings: futureActive.map((b: Record<string,unknown>) => ({
+      id: b.id, arrival: b.arrival, departure: b.departure,
+      status: b.status, is_block: b.is_block, listing_site: b.listing_site
+    })),
+  }, { headers: { 'Cache-Control': 'no-store' } })
 }
