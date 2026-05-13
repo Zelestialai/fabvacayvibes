@@ -58,7 +58,7 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', opacity: 0, animation: 'fadeUp 0.9s ease 0.8s forwards' }}>
             <a href="#properties" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Explore Properties</a>
-            <a href="https://fabvacayvibes.com/book" target="_blank" style={{ border: '1px solid rgba(244,162,58,0.5)', color: 'var(--orange)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', background: 'transparent' }}>Book Direct &amp; Save</a>
+            <a href="#properties" style={{ border: '1px solid rgba(244,162,58,0.5)', color: 'var(--orange)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', background: 'transparent' }}>Book Direct &amp; Save</a>
           </div>
         </div>
 
@@ -167,7 +167,7 @@ export default function Home() {
           <RevealOnScroll delay={200}>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-muted)', maxWidth: 400, margin: '0 auto 40px' }}>Book direct for the best rates and personal service. We&apos;d love to host you.</p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="https://fabvacayvibes.com/book" target="_blank" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Check Availability</a>
+              <a href="#properties" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Check Availability</a>
               <a href="tel:7273869642" style={{ border: '1px solid rgba(244,162,58,0.5)', color: 'var(--orange)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', background: 'transparent' }}>(727) 386-9642</a>
             </div>
           </RevealOnScroll>
@@ -182,8 +182,8 @@ export default function Home() {
             <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: 260 }}>Luxury vacation rentals across America&apos;s most stunning landscapes.</p>
           </div>
           {[
-            { title: 'Properties', links: properties.map(p => ({ label: p.name, href: p.ownerrezUrl })) },
-            { title: 'Quick Links', links: [{ label: 'Availability', href: 'https://www.fabvacayvibes.com/availability' }, { label: 'Reviews', href: 'https://www.fabvacayvibes.com/reviews' }, { label: 'Book Direct', href: 'https://fabvacayvibes.com/book' }] },
+            { title: 'Properties', links: properties.map(p => ({ label: p.name, href: `/properties/${p.slug}` })) },
+            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'Contact', href: '#contact' }] },
             { title: 'Contact', links: [{ label: '(727) 386-9642', href: 'tel:7273869642' }, { label: 'FabVacayVibes@gmail.com', href: 'mailto:FabVacayVibes@gmail.com' }] },
           ].map(col => (
             <div key={col.title}>
