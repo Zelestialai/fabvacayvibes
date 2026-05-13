@@ -22,6 +22,12 @@ body {
   overflow-x: hidden;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+input, select, textarea { box-sizing: border-box; width: 100%; }
+
+select option { background-color: #1E0F45; color: #FDF6EC; }
+select { background-color: rgba(253,246,236,0.05); color: var(--cream); }
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -30,14 +36,39 @@ body {
 .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-*, *::before, *::after { box-sizing: border-box; }
-input, select, textarea { box-sizing: border-box; width: 100%; }
+/* ── Responsive layout classes ── */
+.section-pad   { padding: 100px 48px; }
+.section-pad-sm { padding: 80px 64px; }
+.hero-text-pad { padding: 0 64px; bottom: 60px; }
+.prop-grid     { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: auto auto; gap: 2px; }
+.prop-grid > div:first-child { grid-row: span 2; }
+.why-grid      { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1100px; margin: 0 auto; }
+.why-features  { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.property-layout { display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: start; }
+.other-props-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 2px; }
+.footer-inner  { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; margin-bottom: 48px; }
 
-select option {
-  background-color: #1E0F45;
-  color: #FDF6EC;
+@media (max-width: 768px) {
+  .section-pad   { padding: 60px 20px; }
+  .section-pad-sm { padding: 40px 20px; }
+  .hero-text-pad { padding: 0 20px; bottom: 24px; }
+
+  .prop-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .prop-grid > div:first-child { grid-row: auto; }
+
+  .why-grid  { grid-template-columns: 1fr; gap: 40px; }
+  .why-features { grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .property-layout { grid-template-columns: 1fr; gap: 32px; }
+  #booking { position: static !important; }
+
+  .footer-inner { flex-direction: column; gap: 28px; }
+  footer { padding: 40px 20px 24px !important; }
+
+  .other-props-grid { grid-template-columns: 1fr; }
 }
-select {
-  background-color: rgba(253,246,236,0.05);
-  color: var(--cream);
+
+@media (max-width: 480px) {
+  .why-features { grid-template-columns: 1fr; }
+  .two-col-grid { grid-template-columns: 1fr !important; }
 }
