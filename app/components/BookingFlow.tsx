@@ -119,7 +119,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
   }
 
   return (
-    <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: 28, position: 'sticky', top: 100 }}>
+    <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: 28 }}>
 
       {/* Step indicator */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
