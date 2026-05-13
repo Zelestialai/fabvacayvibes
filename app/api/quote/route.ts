@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: getHeaders(creds),
       body: JSON.stringify({
-        GuestId: guestData.id,
+        GuestId: guestData.Id || guestData.id,
         PropertyId: propertyId,
         Arrival: arrival, Departure: departure,
         Adults: adults || 2, Children: children || 0, Pets: pets || 0,
@@ -153,7 +153,9 @@ export async function POST(request: NextRequest) {
       }),
     })
     const quoteText = await quoteRes.text()
-    console.log('Quote POST:', quoteRes.status, quoteText.substring(0, 300))
+    console.log('Quote POST status:', quoteRes.status)
+    console.log('Quote POST full response:', quoteText.substring(0, 1000))
+    console.log('GuestId used:', guestData.Id || guestData.id)
     if (!quoteRes.ok) {
       let err; try { err = JSON.parse(quoteText) } catch { err = { message: quoteText.substring(0, 300) } }
       return NextResponse.json({ error: 'Failed to create quote', details: err }, { status: 400 })

@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const LEGACY = 'https://app.ownerrez.com/api'
+
 export async function GET(request: NextRequest) {
   const email = process.env.OWNERREZ_EMAIL
   const token = process.env.OWNERREZ_TOKEN
@@ -10,23 +12,47 @@ export async function GET(request: NextRequest) {
 
   const results: Record<string, unknown> = {}
 
-  // Test 1: Create a guest
-  const guestPayload = { FirstName: 'Test', LastName: 'User', Email: 'test@fabvacayvibes.com', Phone: '5555555555' }
-  const guestRes = await fetch('https://app.ownerrez.com/api/guests', {
+  // Step 1: Create guest
+  const guestRes = await fetch(`${LEGACY}/guests`, {
     method: 'POST', headers,
-    body: JSON.stringify(guestPayload),
+    body: JSON.stringify({ FirstName: 'Debug', LastName: 'Test', Email: 'debug@fabvacayvibes.com', Phone: '5555555555' }),
   })
   const guestText = await guestRes.text()
-  results.guest_create = { status: guestRes.status, body: guestText.substring(0, 500) }
+  const guestData = JSON.parse(guestText)
+  results.guest = { status: guestRes.status, body: guestData }
 
-  // Test 2: Try searching for existing guest
-  const searchRes = await fetch('https://api.ownerrez.com/v2/guests?email=test@fabvacayvibes.com', { headers })
-  const searchText = await searchRes.text()
-  results.guest_search = { status: searchRes.status, body: searchText.substring(0, 500) }
+  if (!guestRes.ok) return NextResponse.json(results)
 
-  // Test 3: Check what v2 endpoints are available
-  const meRes = await fetch('https://api.ownerrez.com/v2/me', { headers })
-  results.me = { status: meRes.status, body: await meRes.text().then(t => t.substring(0, 200)) }
+  const guestId = guestData.Id || guestData.id
+  results.guestId = guestId
+
+  // Step 2: Create quote for Owl & Hare (next available dates)
+  const quoteRes = await fetch(`${LEGACY}/quotes`, {
+    method: 'POST', headers,
+    body: JSON.stringify({
+      GuestId: guestId,
+      PropertyId: 452868,
+      Arrival: '2026-07-01',
+      Departure: '2026-07-03',
+      Adults: 2, Children: 0, Pets: 0,
+      SendQuoteEmail: false,
+      RedirectAfterBookingUrl: 'https://fabvacayvibes.vercel.app/booking-confirmed',
+    }),
+  })
+  const quoteText = await quoteRes.text()
+  results.quote = { status: quoteRes.status, body: quoteText.substring(0, 2000) }
+
+  // Try to parse and show payment URL
+  try {
+    const q = JSON.parse(quoteText)
+    results.parsedQuote = {
+      id: q.Id || q.id,
+      allKeys: Object.keys(q),
+      PaymentForm: q.PaymentForm,
+      PaymentFormUrl: q.PaymentFormUrl,
+      payment_form_url: q.payment_form_url,
+    }
+  } catch {}
 
   return NextResponse.json(results, { headers: { 'Cache-Control': 'no-store' } })
 }
