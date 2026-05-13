@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
     const guestRes = await fetch(`${V2}/guests`, {
       method: 'POST',
       headers: getHeaders(creds),
-      body: JSON.stringify({ first_name: guest.firstName, last_name: guest.lastName, email: guest.email, phone: guest.phone || '' }),
+      body: JSON.stringify({ first_name: guest.firstName, last_name: guest.lastName, email_address: guest.email, phone_number: guest.phone || '' }),
     })
     const guestText = await guestRes.text()
     console.log('Guest:', guestRes.status, guestText.substring(0, 200))
