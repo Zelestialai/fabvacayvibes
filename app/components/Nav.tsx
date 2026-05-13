@@ -45,8 +45,8 @@ export default function Nav() {
         backdropFilter: scrolled || menuOpen ? 'blur(12px)' : 'none',
         transition: 'background 0.4s, backdrop-filter 0.4s',
       }}>
-        <Link href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 600, letterSpacing: 2, color: 'var(--orange-warm)', textDecoration: 'none', zIndex: 101 }}>
-          FAB <span style={{ color: 'white', fontWeight: 300 }}>VACAY VIBES</span>
+        <Link href="/" style={{ textDecoration: 'none', zIndex: 101, display: 'flex', alignItems: 'center' }}>
+          <img src="/logo.svg" alt="Fab Vacay Vibes" height={44} style={{ height: 44, width: 'auto' }} />
         </Link>
 
         {/* Desktop links */}

@@ -178,7 +178,9 @@ export default function Home() {
       <footer className="site-footer" style={{ background: '#100820', borderTop: '1px solid rgba(244,162,58,0.1)' }}>
         <div className="footer-inner">
           <div>
-            <a href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, fontWeight: 600, letterSpacing: 2, color: 'var(--orange-warm)', textDecoration: 'none', display: 'block', marginBottom: 12 }}>FAB <span style={{ color: 'white', fontWeight: 300 }}>VACAY VIBES</span></a>
+            <a href="/" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
+              <img src="/logo.svg" alt="Fab Vacay Vibes" style={{ height: 48, width: 'auto' }} />
+            </a>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: 260 }}>Luxury vacation rentals across America&apos;s most stunning landscapes.</p>
           </div>
           {[
