@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
   const results: Record<string, unknown> = {}
 
   // Test 1: Create a guest
-  const guestPayload = { first_name: 'Test', last_name: 'User', email_address: 'test@fabvacayvibes.com', phone_number: '5555555555' }
-  const guestRes = await fetch('https://api.ownerrez.com/v2/guests', {
+  const guestPayload = { FirstName: 'Test', LastName: 'User', Email: 'test@fabvacayvibes.com', Phone: '5555555555' }
+  const guestRes = await fetch('https://app.ownerrez.com/api/guests', {
     method: 'POST', headers,
     body: JSON.stringify(guestPayload),
   })
