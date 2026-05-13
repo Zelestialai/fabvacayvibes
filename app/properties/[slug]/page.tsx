@@ -113,7 +113,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
           </div>
 
           {/* RIGHT: Booking Flow */}
-          <div>
+          <div id="booking">
             <BookingFlow
               propertySlug={property.slug}
               propertyName={property.name}

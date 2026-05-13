@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface BookingFlowProps {
   propertySlug: string
@@ -57,6 +57,20 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
   const [guest, setGuest] = useState({ firstName: '', lastName: '', email: '', phone: '' })
 
   const today = new Date().toISOString().split('T')[0]
+
+  // Listen for dates selected in the availability calendar
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { checkIn, checkOut } = (e as CustomEvent).detail
+      setArrival(checkIn)
+      setDeparture(checkOut)
+      setStep('dates')
+      setQuote(null)
+      setError('')
+    }
+    window.addEventListener('calendar-dates-selected', handler)
+    return () => window.removeEventListener('calendar-dates-selected', handler)
+  }, [])
 
   const isDateBooked = (dateStr: string) => bookedDates.has(dateStr)
 

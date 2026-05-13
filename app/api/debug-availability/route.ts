@@ -22,26 +22,40 @@ export async function GET(request: NextRequest) {
   since.setFullYear(since.getFullYear() - 2)
   const sinceStr = since.toISOString().split('T')[0]
 
-  const res = await fetch(`https://api.ownerrez.com/v2/bookings?since_utc=${sinceStr}&limit=200&offset=0`, { headers })
-  const data = await res.json()
-  const all = data.items || []
-  const forProperty = all.filter((b: Record<string,unknown>) => b.property_id === propertyId)
+  // Paginate all pages
+  let allItems: Record<string, unknown>[] = []
+  let offset = 0
+  const limit = 100
+  let pages = 0
+  let hasMore = true
 
+  while (hasMore) {
+    const res = await fetch(`https://api.ownerrez.com/v2/bookings?since_utc=${sinceStr}&limit=${limit}&offset=${offset}`, { headers, cache: 'no-store' })
+    const data = await res.json()
+    const items = data.items || []
+    allItems = allItems.concat(items)
+    hasMore = items.length === limit
+    offset += limit
+    pages++
+    if (offset >= 2000) break
+  }
+
+  const forProperty = allItems.filter(b => b.property_id === propertyId)
   const today = new Date().toISOString().split('T')[0]
-  const futureActive = forProperty.filter((b: Record<string,unknown>) => {
+  const futureActive = forProperty.filter(b => {
     const status = String(b.status || '').toLowerCase()
     return status !== 'cancelled' && status !== 'canceled' && (b.departure as string) > today
   })
 
   return NextResponse.json({
-    slug,
-    propertyId,
-    sinceDate: sinceStr,
-    totalAllProperties: all.length,
+    slug, propertyId, sinceDate: sinceStr,
+    pages_fetched: pages,
+    totalAllProperties: allItems.length,
     totalThisProperty: forProperty.length,
-    futureActiveBookings: futureActive.map((b: Record<string,unknown>) => ({
+    futureActiveCount: futureActive.length,
+    futureActiveBookings: futureActive.map(b => ({
       id: b.id, arrival: b.arrival, departure: b.departure,
-      status: b.status, is_block: b.is_block, listing_site: b.listing_site
+      status: b.status, is_block: b.is_block, listing_site: b.listing_site,
     })),
   }, { headers: { 'Cache-Control': 'no-store' } })
 }

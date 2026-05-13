@@ -101,15 +101,17 @@ export default function AvailabilityCalendar({ propertySlug, propertyName, booki
     ? Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000)
     : 0
 
-  const buildBookingUrl = () => {
-    if (checkIn && checkOut) {
-      // Try to append dates to ownerrez url
-      const url = new URL(bookingUrl)
-      url.searchParams.set('arrival', checkIn)
-      url.searchParams.set('departure', checkOut)
-      return url.toString()
+  const scrollToBooking = () => {
+    const el = document.getElementById('booking')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      // Dispatch event so BookingFlow can pick up the selected dates
+      if (checkIn && checkOut) {
+        window.dispatchEvent(new CustomEvent('calendar-dates-selected', {
+          detail: { checkIn, checkOut }
+        }))
+      }
     }
-    return bookingUrl
   }
 
   const prevMonth = () => setCurrentMonth(prev =>
@@ -273,22 +275,22 @@ export default function AvailabilityCalendar({ propertySlug, propertyName, booki
 
       {/* Book CTA */}
       {!loading && !error && (
-        <a
-          href={buildBookingUrl()}
-          target="_blank"
+        <button
+          onClick={checkIn && checkOut ? scrollToBooking : undefined}
           style={{
-            display: 'block', textAlign: 'center', marginTop: 24,
+            display: 'block', width: '100%', textAlign: 'center', marginTop: 24,
             background: checkIn && checkOut ? 'var(--orange)' : 'rgba(244,162,58,0.3)',
             color: checkIn && checkOut ? 'var(--purple)' : 'var(--cream)',
             padding: '14px 24px', fontSize: 12, letterSpacing: '2.5px',
             textTransform: 'uppercase', fontWeight: 500,
-            borderRadius: 2, textDecoration: 'none',
+            borderRadius: 2, border: 'none',
+            cursor: checkIn && checkOut ? 'pointer' : 'default',
             transition: 'background 0.2s',
-            pointerEvents: checkIn && checkOut ? 'auto' : 'none',
+            fontFamily: 'inherit',
           }}
         >
           {checkIn && checkOut ? `Book ${nights} Night${nights !== 1 ? 's' : ''} →` : 'Select Dates to Book'}
-        </a>
+        </button>
       )}
     </div>
   )
