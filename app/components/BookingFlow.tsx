@@ -25,6 +25,7 @@ const fmt = (n: number) => `$${n.toLocaleString('en-US', { minimumFractionDigits
 
 const inputStyle = {
   width: '100%',
+  boxSizing: 'border-box' as const,
   padding: '12px 16px',
   background: 'rgba(253,246,236,0.05)',
   border: '1px solid rgba(244,162,58,0.25)',
@@ -33,6 +34,7 @@ const inputStyle = {
   fontFamily: 'DM Sans, sans-serif',
   fontSize: 14,
   outline: 'none',
+  display: 'block',
 }
 
 const labelStyle = {
@@ -152,7 +154,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
             Check Availability
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
             <div>
               <label style={labelStyle}>Check-in</label>
               <input
@@ -175,7 +177,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)', gap: 8 }}>
             <div>
               <label style={labelStyle}>Adults</label>
               <select value={adults} onChange={e => setAdults(+e.target.value)} style={inputStyle}>
@@ -265,7 +267,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
 
           {error && <p style={{ fontSize: 13, color: '#ff6b6b', background: 'rgba(255,107,107,0.1)', padding: '10px 14px', borderRadius: 2 }}>{error}</p>}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 10 }}>
             <button onClick={() => setStep('dates')} style={{ background: 'transparent', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '14px', fontSize: 12, letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2 }}>
               ← Back
             </button>
@@ -290,7 +292,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
             Total: <span style={{ color: 'var(--orange-warm)', fontFamily: "'Cormorant Garamond',serif", fontSize: 18 }}>{fmt(quote?.pricing.total || 0)}</span>
           </p>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
             <div>
               <label style={labelStyle}>First Name *</label>
               <input type="text" value={guest.firstName} onChange={e => setGuest(g => ({ ...g, firstName: e.target.value }))} style={inputStyle} placeholder="Jane" />
@@ -313,7 +315,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
 
           {error && <p style={{ fontSize: 13, color: '#ff6b6b', background: 'rgba(255,107,107,0.1)', padding: '10px 14px', borderRadius: 2 }}>{error}</p>}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 10 }}>
             <button onClick={() => setStep('quote')} style={{ background: 'transparent', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '14px', fontSize: 12, letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2 }}>
               ← Back
             </button>

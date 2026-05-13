@@ -8,6 +8,8 @@ interface InquiryFormProps {
 
 const inputStyle = {
   width: '100%',
+  boxSizing: 'border-box' as const,
+  display: 'block',
   padding: '12px 16px',
   background: 'rgba(253,246,236,0.05)',
   border: '1px solid rgba(244,162,58,0.25)',
@@ -16,7 +18,6 @@ const inputStyle = {
   fontFamily: 'DM Sans, sans-serif',
   fontSize: 14,
   outline: 'none',
-  boxSizing: 'border-box' as const,
 }
 
 const labelStyle = {
@@ -117,7 +118,7 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               {/* Name row */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
                 <div>
                   <label style={labelStyle}>First Name *</label>
                   <input value={form.firstName} onChange={set('firstName')} style={inputStyle} placeholder="Jane" />
@@ -139,7 +140,7 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
               </div>
 
               {/* Dates */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
                 <div>
                   <label style={labelStyle}>Check-in</label>
                   <input type="date" value={form.arrival} onChange={set('arrival')} style={{ ...inputStyle, colorScheme: 'dark' }} />

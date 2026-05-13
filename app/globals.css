@@ -29,3 +29,6 @@ body {
 .animate-fade-up { animation: fadeUp 0.9s ease forwards; }
 .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+*, *::before, *::after { box-sizing: border-box; }
+input, select, textarea { box-sizing: border-box; width: 100%; }
