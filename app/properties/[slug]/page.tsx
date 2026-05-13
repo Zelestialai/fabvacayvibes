@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Script from 'next/script'
 import { properties } from '../../lib/properties'
 import Nav from '../../components/Nav'
 import BookingFlow from '../../components/BookingFlow'
@@ -14,9 +15,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const property = properties.find(p => p.slug === slug)
   if (!property) return {}
+
+  const BASE = 'https://fabvacayvibes.com'
+  const url = `${BASE}/properties/${property.slug}`
+  const title = `${property.name} — Luxury ${property.type} Rental | Fab Vacay Vibes`
+  const description = `${property.shortDesc} ${property.bedrooms} bedrooms, ${property.bathrooms} bathrooms, sleeps ${property.sleepsMin}-${property.sleepsMax}. Book direct from $${property.pricePerNight.toLocaleString()}/night.`
+
   return {
-    title: `${property.name} — Fab Vacay Vibes`,
-    description: property.shortDesc,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description,
+      siteName: 'Fab Vacay Vibes',
+      images: [{ url: property.imageUrl, width: 1200, height: 800, alt: property.name }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [property.imageUrl],
+    },
   }
 }
 
@@ -48,6 +70,39 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <Nav />
+
+      <Script
+        id={}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'VacationRental',
+          name: property.name,
+          description: property.description,
+          url: `https://fabvacayvibes.com/properties/${property.slug}`,
+          image: property.photos?.slice(0, 5).map(p => `https://fabvacayvibes.com${p}`) || [property.imageUrl],
+          telephone: '+17273869642',
+          priceRange: `$${property.pricePerNight.toLocaleString()} per night`,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: property.location,
+            addressRegion: property.state,
+            addressCountry: 'US',
+          },
+          amenityFeature: property.amenities.map(a => ({
+            '@type': 'LocationFeatureSpecification',
+            name: a,
+            value: true,
+          })),
+          numberOfRooms: property.bedrooms,
+          occupancy: {
+            '@type': 'QuantitativeValue',
+            minValue: property.sleepsMin,
+            maxValue: property.sleepsMax,
+          },
+          starRating: { '@type': 'Rating', ratingValue: '5' },
+        }) }}
+      />
 
       {/* HERO */}
       <section style={{ position: 'relative', height: '70vh', overflow: 'hidden', minHeight: 500 }}>
