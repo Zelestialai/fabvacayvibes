@@ -3,7 +3,8 @@ import { Property } from '../lib/properties'
 
 export default function PropertyCard({ property, large = false }: { property: Property; large?: boolean }) {
   return (
-    <div
+    <Link
+      href={`/properties/${property.slug}`}
       style={{
         position: 'relative',
         overflow: 'hidden',
@@ -11,6 +12,8 @@ export default function PropertyCard({ property, large = false }: { property: Pr
         background: 'var(--purple-mid)',
         aspectRatio: large ? 'auto' : '3/4',
         minHeight: large ? 600 : undefined,
+        display: 'block',
+        textDecoration: 'none',
       }}
       className="group"
     >
@@ -63,20 +66,14 @@ export default function PropertyCard({ property, large = false }: { property: Pr
           ${property.pricePerNight.toLocaleString()} <span style={{ fontFamily: 'DM Sans,sans-serif', fontSize: 11, color: 'var(--text-muted)' }}>/ night</span>
         </p>
 
-        <a
-          href={`/properties/${property.slug}`}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            fontSize: 11, letterSpacing: 2, textTransform: 'uppercase',
-            color: 'var(--orange)', textDecoration: 'none',
-            opacity: 0, transform: 'translateY(8px)',
-            transition: 'opacity 0.3s, transform 0.3s',
-          }}
-          className="group-hover:opacity-100 group-hover:translate-y-0"
-        >
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 8,
+          fontSize: 11, letterSpacing: 2, textTransform: 'uppercase',
+          color: 'var(--orange)',
+        }}>
           View Property →
-        </a>
+        </div>
       </div>
-    </div>
+    </Link>
   )
 }
