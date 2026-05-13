@@ -62,16 +62,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 720, marginTop: 48, opacity: 0, animation: 'fadeUp 1s ease 1s forwards' }}>
-          <div className="hero-search" style={{ display: 'flex', alignItems: 'center', background: 'rgba(253,246,236,0.06)', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 4, overflow: 'hidden', backdropFilter: 'blur(12px)' }}>
-            <input type="text" placeholder="Beach · Mountain · Desert" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
-            <div style={{ width: 1, height: 40, background: 'rgba(244,162,58,0.2)' }} />
-            <input type="text" placeholder="Check-in → Check-out" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
-            <div style={{ width: 1, height: 40, background: 'rgba(244,162,58,0.2)' }} />
-            <input type="text" placeholder="Guests" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
-            <button style={{ background: 'var(--orange)', border: 'none', padding: '18px 28px', color: 'var(--purple)', fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>Search</button>
-          </div>
-        </div>
+
       </section>
 
       {/* ICON BAR */}
