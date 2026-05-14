@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Verified numeric IDs from OwnerRez API
 const PROPERTY_NUMERIC_IDS: Record<string, number> = {
   'casa-grande':        398247,
   'owl-and-hare':       452868,
@@ -27,37 +26,82 @@ export async function GET(request: NextRequest) {
   }
 
   const formatDate = (d: Date) => d.toISOString().split('T')[0]
-  const today = new Date()
   const propertyId = PROPERTY_NUMERIC_IDS[slug]
 
+  // Go back 2 years so we catch all future bookings regardless of when booked
+  const since = new Date()
+  since.setFullYear(since.getFullYear() - 2)
+
   try {
-    const bookingsRes = await fetch(
-      `https://api.ownerrez.com/v2/bookings?since_utc=${formatDate(today)}&property_id=${propertyId}`,
-      { headers }
-    )
+    let allPropertyBookings: Record<string, unknown>[] = []
+    let offset = 0
+    const limit = 100
+    let hasMore = true
 
-    if (!bookingsRes.ok) throw new Error(`Bookings fetch failed: ${bookingsRes.status}`)
-    const bookingsData = await bookingsRes.json()
-    const bookings = bookingsData.items || []
+    // Paginate until we have all records (API returns all properties, we filter client-side)
+    while (hasMore) {
+      const url = `https://api.ownerrez.com/v2/bookings?since_utc=${formatDate(since)}&limit=${limit}&offset=${offset}`
+      const res = await fetch(url, { headers, cache: 'no-store' })
 
-    const bookedDates: string[] = []
-    for (const booking of bookings) {
-      if (booking.status === 'Cancelled') continue
-      const arrival = new Date(booking.arrival)
-      const departure = new Date(booking.departure)
-      const cur = new Date(arrival)
-      while (cur < departure) {
-        bookedDates.push(formatDate(cur))
-        cur.setDate(cur.getDate() + 1)
+      if (!res.ok) {
+        const errText = await res.text()
+        throw new Error(`OwnerRez API error: ${res.status} ${errText}`)
+      }
+
+      const data = await res.json()
+      const items: Record<string, unknown>[] = data.items || []
+
+      // Filter to only this property
+      const propertyItems = items.filter(b => b.property_id === propertyId)
+      allPropertyBookings = allPropertyBookings.concat(propertyItems)
+
+      // If we got a full page, there may be more
+      hasMore = items.length === limit
+      offset += limit
+
+      // Safety cap
+      if (offset >= 2000) break
+    }
+
+    const today = formatDate(new Date())
+    const bookedDatesSet = new Set<string>()
+
+    for (const booking of allPropertyBookings) {
+      const status = String(booking.status || '').toLowerCase()
+
+      // Skip cancelled bookings only
+      if (status === 'cancelled' || status === 'canceled') continue
+
+      const arrival = booking.arrival as string   // "YYYY-MM-DD"
+      const departure = booking.departure as string
+
+      if (!arrival || !departure) continue
+      if (departure <= today) continue
+
+      // Expand each night from arrival up to (not including) departure
+      const cur = new Date(arrival + 'T12:00:00Z')
+      const end = new Date(departure + 'T12:00:00Z')
+
+      while (cur < end) {
+        bookedDatesSet.add(formatDate(cur))
+        cur.setUTCDate(cur.getUTCDate() + 1)
       }
     }
 
+    const bookedDates = Array.from(bookedDatesSet).sort()
+
     return NextResponse.json(
-      { propertySlug: slug, bookedDates, fetchedAt: new Date().toISOString() },
-      { headers: { 'Cache-Control': 's-maxage=300, stale-while-revalidate=600' } }
+      {
+        propertySlug: slug,
+        bookedDates,
+        totalBookings: allPropertyBookings.length,
+        fetchedAt: new Date().toISOString(),
+      },
+      // Short cache — 60s max so fresh data shows quickly
+      { headers: { 'Cache-Control': 's-maxage=60, stale-while-revalidate=120' } }
     )
   } catch (error) {
     console.error('Availability error:', error)
-    return NextResponse.json({ error: 'Failed to fetch availability' }, { status: 500 })
+    return NextResponse.json({ error: String(error) }, { status: 500 })
   }
 }

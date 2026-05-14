@@ -124,11 +124,11 @@ export async function POST(request: NextRequest) {
     const propertyId = await getPropertyId(creds, slug)
     if (!propertyId) return NextResponse.json({ error: 'Property not found' }, { status: 404 })
 
-    // Create guest via v2
-    const guestRes = await fetch(`${V2}/guests`, {
+    // Create guest via legacy API (v1.1) - v2 guests endpoint uses different field names
+    const guestRes = await fetch(`${LEGACY}/guests`, {
       method: 'POST',
       headers: getHeaders(creds),
-      body: JSON.stringify({ first_name: guest.firstName, last_name: guest.lastName, email: guest.email, phone: guest.phone || '' }),
+      body: JSON.stringify({ FirstName: guest.firstName, LastName: guest.lastName, Email: guest.email, Phone: guest.phone || '' }),
     })
     const guestText = await guestRes.text()
     console.log('Guest:', guestRes.status, guestText.substring(0, 200))
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: getHeaders(creds),
       body: JSON.stringify({
-        GuestId: guestData.id,
+        GuestId: guestData.Id || guestData.id,
         PropertyId: propertyId,
         Arrival: arrival, Departure: departure,
         Adults: adults || 2, Children: children || 0, Pets: pets || 0,
@@ -153,13 +153,15 @@ export async function POST(request: NextRequest) {
       }),
     })
     const quoteText = await quoteRes.text()
-    console.log('Quote POST:', quoteRes.status, quoteText.substring(0, 300))
+    console.log('Quote POST status:', quoteRes.status)
+    console.log('Quote POST full response:', quoteText.substring(0, 1000))
+    console.log('GuestId used:', guestData.Id || guestData.id)
     if (!quoteRes.ok) {
       let err; try { err = JSON.parse(quoteText) } catch { err = { message: quoteText.substring(0, 300) } }
       return NextResponse.json({ error: 'Failed to create quote', details: err }, { status: 400 })
     }
     const quoteData = JSON.parse(quoteText)
-    const paymentUrl = quoteData.payment_form_url || quoteData.PaymentFormUrl || quoteData.paymentFormUrl
+    const paymentUrl = quoteData.PaymentForm || quoteData.payment_form_url || quoteData.PaymentFormUrl || quoteData.paymentFormUrl
 
     return NextResponse.json({ quoteId: quoteData.id || quoteData.Id, paymentUrl, total: quoteData.total_amount || quoteData.TotalAmount })
 

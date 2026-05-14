@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
+import Script from 'next/script'
 import { properties } from '../../lib/properties'
 import Nav from '../../components/Nav'
 import BookingFlow from '../../components/BookingFlow'
+import InquiryForm from '../../components/InquiryForm'
 import AvailabilityCalendar from '../../components/AvailabilityCalendar'
 import PhotoGallery from '../../components/PhotoGallery'
 
@@ -13,9 +15,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const property = properties.find(p => p.slug === slug)
   if (!property) return {}
+
+  const BASE = 'https://fabvacayvibes.com'
+  const url = `${BASE}/properties/${property.slug}`
+  const title = `${property.name} — Luxury ${property.type} Rental | Fab Vacay Vibes`
+  const description = `${property.shortDesc} ${property.bedrooms} bedrooms, ${property.bathrooms} bathrooms, sleeps ${property.sleepsMin}-${property.sleepsMax}. Book direct from $${property.pricePerNight.toLocaleString()}/night.`
+
   return {
-    title: `${property.name} — Fab Vacay Vibes`,
-    description: property.shortDesc,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'website',
+      url,
+      title,
+      description,
+      siteName: 'Fab Vacay Vibes',
+      images: [{ url: property.imageUrl, width: 1200, height: 800, alt: property.name }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [property.imageUrl],
+    },
   }
 }
 
@@ -48,11 +71,44 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
     <>
       <Nav />
 
+      <Script
+        id={}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'VacationRental',
+          name: property.name,
+          description: property.description,
+          url: `https://fabvacayvibes.com/properties/${property.slug}`,
+          image: property.photos?.slice(0, 5).map(p => `https://fabvacayvibes.com${p}`) || [property.imageUrl],
+          telephone: '+17273869642',
+          priceRange: `$${property.pricePerNight.toLocaleString()} per night`,
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: property.location,
+            addressRegion: property.state,
+            addressCountry: 'US',
+          },
+          amenityFeature: property.amenities.map(a => ({
+            '@type': 'LocationFeatureSpecification',
+            name: a,
+            value: true,
+          })),
+          numberOfRooms: property.bedrooms,
+          occupancy: {
+            '@type': 'QuantitativeValue',
+            minValue: property.sleepsMin,
+            maxValue: property.sleepsMax,
+          },
+          starRating: { '@type': 'Rating', ratingValue: '5' },
+        }) }}
+      />
+
       {/* HERO */}
       <section style={{ position: 'relative', height: '70vh', overflow: 'hidden', minHeight: 500 }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${property.photos?.[0] ? encodeURIComponent(property.photos[0]).replace(/%2F/g, '/') : property.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(30,15,69,0.95) 0%, rgba(30,15,69,0.2) 60%, transparent 100%)' }} />
-        <div style={{ position: 'absolute', bottom: 60, left: 0, right: 0, padding: '0 64px', maxWidth: 900 }}>
+        <div className="hero-text-pad" style={{ position: 'absolute', left: 0, right: 0, maxWidth: 900 }}>
           <span style={{ display: 'inline-block', fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', border: '1px solid rgba(244,162,58,0.4)', padding: '5px 12px', borderRadius: 1, marginBottom: 16 }}>
             {property.emoji} {property.type} · {property.location}, {property.state}
           </span>
@@ -68,8 +124,8 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
       </section>
 
       {/* MAIN CONTENT */}
-      <section style={{ padding: '80px 64px', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: 64, alignItems: 'start' }}>
+      <section className="section-pad-sm" style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <div className="property-layout">
 
           {/* LEFT */}
           <div>
@@ -109,11 +165,11 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
             <PhotoGallery photos={property.photos} propertyName={property.name} />
 
             {/* Availability Calendar (visual reference) */}
-            <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} />
+            <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} bookingUrl={property.ownerrezUrl} />
           </div>
 
           {/* RIGHT: Booking Flow */}
-          <div>
+          <div id="booking" style={{ position: 'sticky', top: 100, alignSelf: 'start' }}>
             <BookingFlow
               propertySlug={property.slug}
               propertyName={property.name}
@@ -123,12 +179,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
               <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>Questions? Contact us directly</p>
               <a href="tel:7273869642" style={{ fontSize: 16, color: 'var(--orange)', textDecoration: 'none', fontFamily: "'Cormorant Garamond',serif" }}>(727) 386-9642</a>
             </div>
+            <InquiryForm propertySlug={property.slug} propertyName={property.name} />
           </div>
         </div>
       </section>
 
       {/* OTHER PROPERTIES */}
-      <section style={{ padding: '80px 64px', borderTop: '1px solid rgba(244,162,58,0.1)' }}>
+      <section className="section-pad-sm" style={{ borderTop: '1px solid rgba(244,162,58,0.1)' }}>
         <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Explore More</p>
         <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 300, color: 'white', marginBottom: 40 }}>Other properties you may love</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 2 }}>

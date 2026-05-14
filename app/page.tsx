@@ -58,24 +58,15 @@ export default function Home() {
           </p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', opacity: 0, animation: 'fadeUp 0.9s ease 0.8s forwards' }}>
             <a href="#properties" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Explore Properties</a>
-            <a href="https://fabvacayvibes.com/book" target="_blank" style={{ border: '1px solid rgba(244,162,58,0.5)', color: 'var(--orange)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', background: 'transparent' }}>Book Direct &amp; Save</a>
+            <a href="#properties" style={{ border: '1px solid rgba(244,162,58,0.5)', color: 'var(--orange)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', background: 'transparent' }}>Book Direct &amp; Save</a>
           </div>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 2, width: '100%', maxWidth: 720, marginTop: 48, opacity: 0, animation: 'fadeUp 1s ease 1s forwards' }}>
-          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(253,246,236,0.06)', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 4, overflow: 'hidden', backdropFilter: 'blur(12px)' }}>
-            <input type="text" placeholder="Beach · Mountain · Desert" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
-            <div style={{ width: 1, height: 40, background: 'rgba(244,162,58,0.2)' }} />
-            <input type="text" placeholder="Check-in → Check-out" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
-            <div style={{ width: 1, height: 40, background: 'rgba(244,162,58,0.2)' }} />
-            <input type="text" placeholder="Guests" style={{ flex: 1, padding: '18px 24px', background: 'transparent', border: 'none', color: 'var(--cream)', fontFamily: 'DM Sans,sans-serif', fontSize: 14, outline: 'none' }} />
-            <button style={{ background: 'var(--orange)', border: 'none', padding: '18px 28px', color: 'var(--purple)', fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}>Search</button>
-          </div>
-        </div>
+
       </section>
 
       {/* ICON BAR */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 60, padding: '32px 48px', background: 'rgba(244,162,58,0.06)', borderTop: '1px solid rgba(244,162,58,0.12)', borderBottom: '1px solid rgba(244,162,58,0.12)', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 60, padding: 'clamp(20px,4vw,32px) clamp(20px,4vw,48px)', background: 'rgba(244,162,58,0.06)', borderTop: '1px solid rgba(244,162,58,0.12)', borderBottom: '1px solid rgba(244,162,58,0.12)', flexWrap: 'wrap' }}>
         {[['🌊', 'Clearwater Beach, FL'], ['🏜️', 'Joshua Tree, CA'], ['🏔️', 'Oakhurst, CA']].map(([icon, label]) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
             <span style={{ fontSize: 18 }}>{icon}</span><span>{label}</span>
@@ -84,7 +75,7 @@ export default function Home() {
       </div>
 
       {/* PROPERTIES */}
-      <section id="properties" style={{ padding: '100px 48px', background: 'var(--purple)' }}>
+      <section id="properties" className="section-pad" style={{ background: 'var(--purple)' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 56, flexWrap: 'wrap', gap: 24 }}>
           <div>
             <RevealOnScroll><p style={{ fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Our Collection</p></RevealOnScroll>
@@ -93,8 +84,8 @@ export default function Home() {
           <RevealOnScroll delay={200}><p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-muted)', maxWidth: 400, textAlign: 'right' }}>Each property handpicked for its setting, character, and exceptional amenities. Book direct for the best rates.</p></RevealOnScroll>
         </div>
         <RevealOnScroll delay={300}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gridTemplateRows: 'auto auto', gap: 2 }}>
-            <div style={{ gridRow: 'span 2' }}><PropertyCard property={properties[0]} large /></div>
+          <div className="prop-grid">
+            <div><PropertyCard property={properties[0]} large /></div>
             <PropertyCard property={properties[1]} />
             <PropertyCard property={properties[2]} />
           </div>
@@ -102,15 +93,15 @@ export default function Home() {
       </section>
 
       {/* WHY BOOK DIRECT */}
-      <section id="why" style={{ padding: '100px 48px', background: 'linear-gradient(160deg,#160a35 0%,#1E0F45 50%,#250D52 100%)', position: 'relative', overflow: 'hidden' }}>
+      <section id="why" className="section-pad" style={{ background: 'linear-gradient(160deg,#160a35 0%,#1E0F45 50%,#250D52 100%)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -100, right: -100, width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(244,162,58,0.08) 0%, transparent 70%)' }} />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center', maxWidth: 1100, margin: '0 auto' }}>
+        <div className="why-grid">
           <div>
             <RevealOnScroll><p style={{ fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Why Book Direct</p></RevealOnScroll>
             <RevealOnScroll delay={100}><h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,58px)', fontWeight: 300, color: 'white', lineHeight: 1.1, marginBottom: 20 }}>Skip the <em style={{ color: 'var(--orange-warm)', fontStyle: 'italic' }}>fees.</em><br />Keep the luxury.</h2></RevealOnScroll>
             <RevealOnScroll delay={200}><p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-muted)', maxWidth: 480, marginBottom: 40 }}>Booking directly with Fab Vacay Vibes means lower rates, flexible terms, and a personal host who knows every property intimately.</p></RevealOnScroll>
             <RevealOnScroll delay={300}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+              <div className="why-features">
                 {[['💰','Best Rate Guarantee','No Airbnb or VRBO service fees. Book direct and save up to 15%.'],['🤝','Personal Service','Direct line to your host. Fast responses, local tips, and real care.'],['🔒','Flexible Terms','More flexible cancellation policies when you book with us directly.'],['✨','Luxury Assured','Every stay is managed and inspected to the highest standard.']].map(([icon,title,desc]) => (
                   <div key={title as string} style={{ borderTop: '1px solid rgba(244,162,58,0.2)', paddingTop: 24 }}>
                     <div style={{ fontSize: 24, marginBottom: 12 }}>{icon}</div>
@@ -137,7 +128,7 @@ export default function Home() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section id="reviews" style={{ padding: '100px 48px', background: 'var(--purple)', textAlign: 'center' }}>
+      <section id="reviews" className="section-pad" style={{ background: 'var(--purple)', textAlign: 'center' }}>
         <RevealOnScroll><p style={{ fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Guest Reviews</p></RevealOnScroll>
         <RevealOnScroll delay={100}><h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,58px)', fontWeight: 300, color: 'white', lineHeight: 1.1, marginBottom: 56 }}>What our <em style={{ color: 'var(--orange-warm)', fontStyle: 'italic' }}>guests</em> say.</h2></RevealOnScroll>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 24, maxWidth: 1100, margin: '0 auto' }}>
@@ -159,7 +150,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section id="contact" style={{ padding: '100px 48px', textAlign: 'center', background: 'linear-gradient(135deg,#2D1B69 0%,#1E0F45 50%,#3d1a0a 100%)', position: 'relative', overflow: 'hidden' }}>
+      <section id="contact" className="section-pad" style={{ textAlign: 'center', background: 'linear-gradient(135deg,#2D1B69 0%,#1E0F45 50%,#3d1a0a 100%)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 80% at 50% 50%, rgba(244,162,58,0.1) 0%, transparent 70%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <RevealOnScroll><p style={{ fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Ready to Escape?</p></RevealOnScroll>
@@ -167,7 +158,7 @@ export default function Home() {
           <RevealOnScroll delay={200}>
             <p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-muted)', maxWidth: 400, margin: '0 auto 40px' }}>Book direct for the best rates and personal service. We&apos;d love to host you.</p>
             <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="https://fabvacayvibes.com/book" target="_blank" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Check Availability</a>
+              <a href="#properties" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Check Availability</a>
               <a href="tel:7273869642" style={{ border: '1px solid rgba(244,162,58,0.5)', color: 'var(--orange)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', background: 'transparent' }}>(727) 386-9642</a>
             </div>
           </RevealOnScroll>
@@ -175,15 +166,17 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: '#100820', padding: '60px 48px 40px', borderTop: '1px solid rgba(244,162,58,0.1)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 40, marginBottom: 48 }}>
+      <footer className="site-footer" style={{ background: '#100820', borderTop: '1px solid rgba(244,162,58,0.1)' }}>
+        <div className="footer-inner">
           <div>
-            <a href="/" style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, fontWeight: 600, letterSpacing: 2, color: 'var(--orange-warm)', textDecoration: 'none', display: 'block', marginBottom: 12 }}>FAB <span style={{ color: 'white', fontWeight: 300 }}>VACAY VIBES</span></a>
+            <a href="/" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
+              <img src="/logo.svg" alt="Fab Vacay Vibes" style={{ height: 48, width: 'auto' }} />
+            </a>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: 260 }}>Luxury vacation rentals across America&apos;s most stunning landscapes.</p>
           </div>
           {[
-            { title: 'Properties', links: properties.map(p => ({ label: p.name, href: p.ownerrezUrl })) },
-            { title: 'Quick Links', links: [{ label: 'Availability', href: 'https://www.fabvacayvibes.com/availability' }, { label: 'Reviews', href: 'https://www.fabvacayvibes.com/reviews' }, { label: 'Book Direct', href: 'https://fabvacayvibes.com/book' }] },
+            { title: 'Properties', links: properties.map(p => ({ label: p.name, href: `/properties/${p.slug}` })) },
+            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'Contact', href: '#contact' }] },
             { title: 'Contact', links: [{ label: '(727) 386-9642', href: 'tel:7273869642' }, { label: 'FabVacayVibes@gmail.com', href: 'mailto:FabVacayVibes@gmail.com' }] },
           ].map(col => (
             <div key={col.title}>
@@ -205,3 +198,4 @@ export default function Home() {
     </>
   )
 }
+// build-bust: 2026-05-13T07:45:00Z

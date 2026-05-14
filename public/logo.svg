@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 72" width="260" height="72">
+  <!-- Compass/star icon -->
+  <circle cx="28" cy="36" r="20" fill="none" stroke="#F4A23A" stroke-width="1.2"/>
+  <circle cx="28" cy="36" r="14" fill="none" stroke="#F4A23A" stroke-width="0.5" opacity="0.4"/>
+  <!-- 8-point star rays -->
+  <line x1="28" y1="16" x2="28" y2="56" stroke="#F4A23A" stroke-width="1"/>
+  <line x1="8" y1="36" x2="48" y2="36" stroke="#F4A23A" stroke-width="1"/>
+  <line x1="14" y1="22" x2="42" y2="50" stroke="#F4A23A" stroke-width="0.7"/>
+  <line x1="42" y1="22" x2="14" y2="50" stroke="#F4A23A" stroke-width="0.7"/>
+  <!-- Center dot -->
+  <circle cx="28" cy="36" r="3.5" fill="#F7C05A"/>
+  <!-- Diamond accents on cardinal points -->
+  <polygon points="28,17 30,21 28,25 26,21" fill="#F4A23A" opacity="0.7"/>
+  <polygon points="28,47 30,51 28,55 26,51" fill="#F4A23A" opacity="0.7"/>
+  <polygon points="9,36 13,34 17,36 13,38" fill="#F4A23A" opacity="0.7"/>
+  <polygon points="39,36 43,34 47,36 43,38" fill="#F4A23A" opacity="0.7"/>
+
+  <!-- Wordmark -->
+  <text x="60" y="26" font-family="'Georgia', 'Times New Roman', serif" font-size="18" font-weight="700" letter-spacing="3" fill="#F7C05A">FAB</text>
+  <text x="60" y="44" font-family="'Georgia', 'Times New Roman', serif" font-size="13" font-weight="300" letter-spacing="2.5" fill="#FDF6EC">VACAY VIBES</text>
+  <!-- Divider line -->
+  <line x1="60" y1="51" x2="252" y2="51" stroke="#F4A23A" stroke-width="0.5" opacity="0.5"/>
+  <!-- Tagline -->
+  <text x="60" y="63" font-family="'Georgia', 'Times New Roman', serif" font-size="7.5" letter-spacing="3.5" fill="#F4A23A" opacity="0.85">LUXURY VACATION RENTALS</text>
+</svg>
