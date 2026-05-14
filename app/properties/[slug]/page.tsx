@@ -72,7 +72,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
       <Nav />
 
       <Script
-        id={}
+        id={`property-schema-${property.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
