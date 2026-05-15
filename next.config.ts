@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'uc.orez.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com',
+      },
     ],
   },
 }
