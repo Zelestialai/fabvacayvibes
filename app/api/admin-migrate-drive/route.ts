@@ -70,19 +70,43 @@ export async function POST(request: NextRequest) {
   const results = []
   for (const file of batch) {
     try {
-      // Download from Drive
+      // Download from Drive - try API first, then export URL fallback
+      let buffer: ArrayBuffer | null = null
+      
+      // Method 1: Direct API download
       const driveUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${apiKey}`
       const imgRes = await fetch(driveUrl)
-
-      if (!imgRes.ok) {
-        const errText = await imgRes.text()
-        results.push({ name: file.name, ok: false, error: `Drive download ${imgRes.status}: ${errText.substring(0, 100)}` })
-        continue
+      
+      if (imgRes.ok) {
+        const candidate = await imgRes.arrayBuffer()
+        if (candidate.byteLength > 1000) buffer = candidate
       }
 
-      const buffer = await imgRes.arrayBuffer()
-      if (buffer.byteLength < 1000) {
-        results.push({ name: file.name, ok: false, error: `Too small: ${buffer.byteLength} bytes - check Drive sharing` })
+      // Method 2: Export/download URL (handles large file confirmation)
+      if (!buffer) {
+        const exportUrl = `https://drive.google.com/uc?export=download&id=${file.id}&confirm=t`
+        const exportRes = await fetch(exportUrl, { redirect: "follow" })
+        if (exportRes.ok) {
+          const candidate = await exportRes.arrayBuffer()
+          if (candidate.byteLength > 1000) buffer = candidate
+        }
+      }
+
+      // Method 3: Direct download with cookies bypass
+      if (!buffer) {
+        const directUrl = `https://drive.google.com/uc?id=${file.id}&export=download`
+        const directRes = await fetch(directUrl, {
+          headers: { "User-Agent": "Mozilla/5.0" },
+          redirect: "follow"
+        })
+        if (directRes.ok) {
+          const candidate = await directRes.arrayBuffer()
+          if (candidate.byteLength > 1000) buffer = candidate
+        }
+      }
+
+      if (!buffer) {
+        results.push({ name: file.name, ok: false, error: `All download methods failed for ${file.id}` })
         continue
       }
 
