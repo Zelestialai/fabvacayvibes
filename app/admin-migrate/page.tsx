@@ -19,6 +19,7 @@ export default function MigratePage() {
     const data = await res.json()
     setStatus(data.uploaded || {})
     setEnvOk(data.envVars || {})
+    if (data.estimatedSizeMB) addLog(`Storage used: ~${data.estimatedSizeMB}MB / 1024MB`)
   }
 
   async function runBatch(property: string) {
@@ -28,6 +29,23 @@ export default function MigratePage() {
       body: JSON.stringify({ property, batchSize: 10 }),
     })
     return res.json()
+  }
+
+  async function clearAndRemigrate() {
+    if (!confirm('This will DELETE all uploaded images and re-upload compressed versions. Continue?')) return
+    setRunning(true)
+    setLog([])
+    addLog('Clearing existing blobs...')
+    const res = await fetch('/api/admin-migrate-drive', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'x-admin-secret': SECRET },
+      body: JSON.stringify({ property: null }),
+    })
+    const data = await res.json()
+    addLog(`Deleted ${data.deleted} existing blobs`)
+    await fetchStatus()
+    setRunning(false)
+    await migrateAll()
   }
 
   async function migrateAll() {
@@ -98,6 +116,10 @@ export default function MigratePage() {
         <button onClick={migrateAll} disabled={running || envMissing.length > 0}
           style={{ background: running || envMissing.length > 0 ? 'rgba(244,162,58,0.3)' : '#F4A23A', color: '#1E0F45', padding: '14px 32px', fontSize: 13, fontWeight: 600, border: 'none', borderRadius: 4, cursor: running ? 'default' : 'pointer' }}>
           {running ? '⏳ Migrating...' : '🚀 Start Migration'}
+        </button>
+        <button onClick={clearAndRemigrate} disabled={running}
+          style={{ background: 'transparent', color: '#ff6b6b', padding: '14px 24px', fontSize: 13, border: '1px solid rgba(255,107,107,0.3)', borderRadius: 4, cursor: 'pointer' }}>
+          🗑 Clear All &amp; Re-upload Compressed
         </button>
         <button onClick={fetchStatus}
           style={{ background: 'transparent', color: '#F4A23A', padding: '14px 24px', fontSize: 13, border: '1px solid rgba(244,162,58,0.3)', borderRadius: 4, cursor: 'pointer' }}>

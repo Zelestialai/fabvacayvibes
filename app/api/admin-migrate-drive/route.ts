@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { put, list } from '@vercel/blob'
+import sharp from 'sharp'
+import { put, list, del } from '@vercel/blob'
 
 export const maxDuration = 300
 
@@ -89,7 +90,18 @@ export async function POST(request: NextRequest) {
 
       if (!buffer) { results.push({ name: file.blobPath, ok: false, error: 'Download failed' }); continue }
 
-      const blob = await put(`images/${property}/${file.blobPath}`, buffer, {
+      // Compress image to max 1920px, 80% quality to save storage
+      let uploadBuffer: Buffer
+      try {
+        uploadBuffer = await sharp(Buffer.from(buffer))
+          .resize(1920, 1920, { fit: 'inside', withoutEnlargement: true })
+          .jpeg({ quality: 80, progressive: true })
+          .toBuffer()
+      } catch {
+        uploadBuffer = Buffer.from(buffer)
+      }
+
+      const blob = await put(`images/${property}/${file.blobPath}`, uploadBuffer, {
         access: 'public',
         contentType: 'image/jpeg',
         addRandomSuffix: false,
@@ -124,5 +136,29 @@ export async function GET(request: NextRequest) {
     const blobs = await list({ prefix: `images/${prop}/` })
     summary[prop] = blobs.blobs.length
   }
-  return NextResponse.json({ envVars: { GOOGLE_API_KEY: apiKey, BLOB_READ_WRITE_TOKEN: blobToken }, uploaded: summary })
+  // Get approximate storage estimate
+  const allBlobs = await list({ prefix: 'images/' })
+  const totalSizeApprox = allBlobs.blobs.reduce((s, b) => s + (b.size || 0), 0)
+  return NextResponse.json({ envVars: { GOOGLE_API_KEY: apiKey, BLOB_READ_WRITE_TOKEN: blobToken }, uploaded: summary, totalFiles: allBlobs.blobs.length, estimatedSizeMB: Math.round(totalSizeApprox / 1024 / 1024) })
+}
+
+export async function DELETE(request: NextRequest) {
+  if (request.headers.get('x-admin-secret') !== ADMIN_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const { property } = await request.json()
+  const prefix = property ? `images/${property}/` : 'images/'
+  
+  let deleted = 0
+  let cursor: string | undefined
+  do {
+    const { blobs, cursor: next } = await list({ prefix, cursor, limit: 100 })
+    if (blobs.length > 0) {
+      await del(blobs.map(b => b.url))
+      deleted += blobs.length
+    }
+    cursor = next
+  } while (cursor)
+  
+  return NextResponse.json({ deleted, property: property || 'all' })
 }
