@@ -8,7 +8,7 @@ const ADMIN_SECRET = 'fabvacay-migrate-2026'
 const DRIVE_FOLDERS: Record<string, string> = {
   'casa-grande':        '1vLoMo8LNySBI_DizwuBCrGeo9hj6HbjR',
   'owl-and-hare':       '1qjSJGYgQvCCIAn55CHV1mLwsmu965HMw',
-  'sierra-crest-haven': '1Ksl1jlsXK1AR25BsZKJ60xhEiTZMwaDB',
+  'sierra-crest-haven': '1uFcueCUWEAmE6TPb-hxbXvDIrQChXHrw',
 }
 
 interface DriveFile { id: string; name: string; blobPath: string }
