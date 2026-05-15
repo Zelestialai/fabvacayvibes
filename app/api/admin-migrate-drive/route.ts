@@ -11,26 +11,36 @@ const DRIVE_FOLDERS: Record<string, string> = {
   'sierra-crest-haven': '1Ksl1jlsXK1AR25BsZKJ60xhEiTZMwaDB',
 }
 
-async function getDriveFiles(folderId: string, apiKey: string) {
-  const allFiles: { id: string; name: string }[] = []
+interface DriveFile { id: string; name: string; blobPath: string }
+
+async function getDriveFilesRecursive(folderId: string, apiKey: string, pathPrefix: string): Promise<DriveFile[]> {
+  const allFiles: DriveFile[] = []
   let pageToken: string | undefined
 
   do {
     const params = new URLSearchParams({
-      q: `'${folderId}' in parents and mimeType contains 'image/' and trashed=false`,
-      fields: 'nextPageToken,files(id,name)',
+      q: `'${folderId}' in parents and trashed=false`,
+      fields: 'nextPageToken,files(id,name,mimeType)',
       pageSize: '1000',
       key: apiKey,
     })
     if (pageToken) params.set('pageToken', pageToken)
 
     const res = await fetch(`https://www.googleapis.com/drive/v3/files?${params}`)
-    if (!res.ok) {
-      const err = await res.text()
-      throw new Error(`Drive API error ${res.status}: ${err.substring(0, 200)}`)
-    }
+    if (!res.ok) throw new Error(`Drive API ${res.status}: ${await res.text().then(t=>t.substring(0,200))}`)
     const data = await res.json()
-    allFiles.push(...(data.files || []))
+
+    for (const file of (data.files || [])) {
+      if (file.mimeType === 'application/vnd.google-apps.folder') {
+        // Recurse into subfolder
+        const subPath = pathPrefix ? `${pathPrefix}/${file.name}` : file.name
+        const subFiles = await getDriveFilesRecursive(file.id, apiKey, subPath)
+        allFiles.push(...subFiles)
+      } else if (file.mimeType.startsWith('image/')) {
+        const blobPath = pathPrefix ? `${pathPrefix}/${file.name}` : file.name
+        allFiles.push({ id: file.id, name: file.name, blobPath })
+      }
+    }
     pageToken = data.nextPageToken
   } while (pageToken)
 
@@ -43,98 +53,63 @@ export async function POST(request: NextRequest) {
   }
 
   const apiKey = process.env.GOOGLE_API_KEY
-  const blobToken = process.env.BLOB_READ_WRITE_TOKEN
-
-  if (!apiKey) return NextResponse.json({ error: 'GOOGLE_API_KEY not set in Vercel env vars' }, { status: 500 })
-  if (!blobToken) return NextResponse.json({ error: 'BLOB_READ_WRITE_TOKEN not set in Vercel env vars' }, { status: 500 })
+  if (!apiKey) return NextResponse.json({ error: 'GOOGLE_API_KEY not set' }, { status: 500 })
 
   const { property, batchSize = 10 } = await request.json()
   const folderId = DRIVE_FOLDERS[property]
   if (!folderId) return NextResponse.json({ error: 'Unknown property' }, { status: 400 })
 
-  // Get already uploaded blobs
   const existing = await list({ prefix: `images/${property}/` })
-  const existingNames = new Set(existing.blobs.map(b => decodeURIComponent(b.pathname.split('/').slice(2).join('/'))))
+  const existingPaths = new Set(existing.blobs.map(b =>
+    decodeURIComponent(b.pathname.replace(`images/${property}/`, ''))
+  ))
 
-  // Get all Drive files
-  let driveFiles: { id: string; name: string }[]
+  let driveFiles: DriveFile[]
   try {
-    driveFiles = await getDriveFiles(folderId, apiKey)
+    driveFiles = await getDriveFilesRecursive(folderId, apiKey, '')
   } catch (e) {
     return NextResponse.json({ error: `Drive listing failed: ${e}` }, { status: 500 })
   }
 
-  const pending = driveFiles.filter(f => !existingNames.has(f.name))
+  const pending = driveFiles.filter(f => !existingPaths.has(f.blobPath))
   const batch = pending.slice(0, batchSize)
 
   const results = []
   for (const file of batch) {
     try {
-      // Download from Drive - try API first, then export URL fallback
       let buffer: ArrayBuffer | null = null
-      
-      // Method 1: Direct API download
-      const driveUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${apiKey}`
-      const imgRes = await fetch(driveUrl)
-      
-      if (imgRes.ok) {
-        const candidate = await imgRes.arrayBuffer()
-        if (candidate.byteLength > 1000) buffer = candidate
-      }
 
-      // Method 2: Export/download URL (handles large file confirmation)
-      if (!buffer) {
-        const exportUrl = `https://drive.google.com/uc?export=download&id=${file.id}&confirm=t`
-        const exportRes = await fetch(exportUrl, { redirect: "follow" })
-        if (exportRes.ok) {
-          const candidate = await exportRes.arrayBuffer()
-          if (candidate.byteLength > 1000) buffer = candidate
-        }
-      }
-
-      // Method 3: Direct download with cookies bypass
-      if (!buffer) {
-        const directUrl = `https://drive.google.com/uc?id=${file.id}&export=download`
-        const directRes = await fetch(directUrl, {
-          headers: { "User-Agent": "Mozilla/5.0" },
-          redirect: "follow"
-        })
-        if (directRes.ok) {
-          const candidate = await directRes.arrayBuffer()
-          if (candidate.byteLength > 1000) buffer = candidate
-        }
-      }
+      const r1 = await fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${apiKey}`)
+      if (r1.ok) { const c = await r1.arrayBuffer(); if (c.byteLength > 1000) buffer = c }
 
       if (!buffer) {
-        results.push({ name: file.name, ok: false, error: `All download methods failed for ${file.id}` })
-        continue
+        const r2 = await fetch(`https://drive.google.com/uc?export=download&id=${file.id}&confirm=t`, { redirect: 'follow' })
+        if (r2.ok) { const c = await r2.arrayBuffer(); if (c.byteLength > 1000) buffer = c }
       }
 
-      // Upload to Blob
-      const blob = await put(`images/${property}/${file.name}`, buffer, {
+      if (!buffer) { results.push({ name: file.blobPath, ok: false, error: 'Download failed' }); continue }
+
+      const blob = await put(`images/${property}/${file.blobPath}`, buffer, {
         access: 'public',
-        contentType: imgRes.headers.get('content-type') || 'image/jpeg',
+        contentType: 'image/jpeg',
         addRandomSuffix: false,
       })
-
-      results.push({ name: file.name, ok: true, url: blob.url, size: buffer.byteLength })
+      results.push({ name: file.blobPath, ok: true, url: blob.url })
     } catch (e) {
-      results.push({ name: file.name, ok: false, error: String(e) })
+      results.push({ name: file.blobPath, ok: false, error: String(e) })
     }
   }
 
   const succeeded = results.filter(r => r.ok).length
-  const failed = results.filter(r => !r.ok)
-
   return NextResponse.json({
     property,
     totalInDrive: driveFiles.length,
-    alreadyUploaded: existingNames.size,
+    alreadyUploaded: existingPaths.size,
     pendingCount: pending.length,
     batchProcessed: batch.length,
     succeeded,
     remaining: Math.max(0, pending.length - succeeded),
-    failures: failed,
+    failures: results.filter(r => !r.ok),
   })
 }
 
@@ -142,18 +117,12 @@ export async function GET(request: NextRequest) {
   if (request.headers.get('x-admin-secret') !== ADMIN_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
-  const envCheck = {
-    GOOGLE_API_KEY: !!process.env.GOOGLE_API_KEY,
-    BLOB_READ_WRITE_TOKEN: !!process.env.BLOB_READ_WRITE_TOKEN,
-  }
-
+  const apiKey = !!process.env.GOOGLE_API_KEY
+  const blobToken = !!process.env.BLOB_READ_WRITE_TOKEN
   const summary: Record<string, number> = {}
   for (const prop of Object.keys(DRIVE_FOLDERS)) {
     const blobs = await list({ prefix: `images/${prop}/` })
     summary[prop] = blobs.blobs.length
   }
-
-  return NextResponse.json({ envVars: envCheck, uploaded: summary })
+  return NextResponse.json({ envVars: { GOOGLE_API_KEY: apiKey, BLOB_READ_WRITE_TOKEN: blobToken }, uploaded: summary })
 }
-// token updated 1778827127
