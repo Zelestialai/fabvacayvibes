@@ -37,7 +37,7 @@ export const properties: Property[] = [
     description: 'White-sand beaches, turquoise waters, and fiery sunsets await when you stay at this stunning 5-bedroom, 3-bathroom vacation rental in Clearwater. The home greets guests with a sleek interior packed with modern decor and high-end amenities. Easily host family gatherings between the kitchen, dining areas, and living room thanks to the breezy open floor plan.',
     shortDesc: 'White-sand beaches, turquoise waters & fiery sunsets. Private pool, steps from Pier 60.',
     amenities: ['Private Pool', 'Pet Friendly', 'WiFi', 'Near Ocean', 'Modern Kitchen', 'Outdoor Dining'],
-    imageUrl: 'https://uc.orez.io/i/d9fccbcf4d134005b4a23f9add34764f-Medium',
+    imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/casa-grande/01-001_18%20Maywood%20Ave_by_Johnruzphoto.com.jpg',
     ownerrezUrl: 'https://www.fabvacayvibes.com/casa-grand%c3%a8-orp5b613a7x',
     highlights: ['Walk to Pier 60', 'Clearwater Marine Aquarium nearby', 'BayCare Ballpark — Spring Training'],
     photos: [
@@ -99,7 +99,7 @@ export const properties: Property[] = [
     description: 'Owl & Hare is a 4-bed wellness retreat fitted with a pool, hot tub & vintage Airstream perched in the Joshua Tree Highlands overlooking the park entrance. Comprised of 2 stand-alone homes, the property is perfect for couples, families, or any group wanting to be together in a serene compound.',
     shortDesc: 'Wellness retreat in the Joshua Tree Highlands. Pool, hot tub & vintage Airstream with park views.',
     amenities: ['Private Pool', 'Hot Tub', 'Vintage Airstream', 'Pet Friendly', 'WiFi', 'Fire Pit', 'Mountain Views', 'Desert Views'],
-    imageUrl: 'https://uc.orez.io/i/e52465e2ecfc4e90ac7a4d1cf90d6867-Medium',
+    imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/owl-and-hare/8283ViaRecosaJoshuaTreeCa4_3_25-.jpg',
     ownerrezUrl: 'https://www.fabvacayvibes.com/owl-hare-orp5b6e904x',
     highlights: ['5 min to Joshua Tree NP', '5 min to Downtown JT', "25 min to Pappy & Harriet's"],
     photos: [
@@ -334,7 +334,7 @@ export const properties: Property[] = [
     description: "Nestled on a premier ridge in Oakhurst, Sierra Crest Haven is a sprawling 4,700 sq. ft. private estate designed for those who seek both adventure and absolute relaxation. This 7-bedroom home offers a rare 'dual-view' experience: start your morning watching the sunrise over the high Sierra peaks and end your day with the sunset over the valley.",
     shortDesc: '4,700 sq ft mountain estate on a premier ridge. Dual sunrise & sunset views over the High Sierra.',
     amenities: ['Hot Tub', 'Fireplace', 'Mountain Views', 'Forest Setting', 'WiFi', 'Accessible', 'Multiple Living Areas'],
-    imageUrl: 'https://uc.orez.io/i/7975782670be426bbcb386e4d1a002f6-Medium',
+    imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/sierra-crest-haven/DRONE/Drone001.jpg',
     ownerrezUrl: 'https://www.fabvacayvibes.com/sierra-crest-haven-orp5b74fbax',
     highlights: ['Dual sunrise & sunset views', 'Near Yosemite', '4,700 sq ft estate'],
     photos: [
