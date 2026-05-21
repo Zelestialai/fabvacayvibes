@@ -95,7 +95,7 @@ export const properties: Property[] = [
     bathrooms: 4,
     sleepsMin: 7,
     sleepsMax: 10,
-    pricePerNight: 500,
+    pricePerNight: 700,
     description: 'Owl & Hare is a 4-bed wellness retreat fitted with a pool, hot tub & vintage Airstream perched in the Joshua Tree Highlands overlooking the park entrance. Comprised of 2 stand-alone homes, the property is perfect for couples, families, or any group wanting to be together in a serene compound.',
     shortDesc: 'Wellness retreat in the Joshua Tree Highlands. Pool, hot tub & vintage Airstream with park views.',
     amenities: ['Private Pool', 'Hot Tub', 'Vintage Airstream', 'Pet Friendly', 'WiFi', 'Fire Pit', 'Mountain Views', 'Desert Views'],
