@@ -46,7 +46,7 @@ export default function RentAnalyzerForm() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  const fetchSuggestions = (value) => {
+  const fetchSuggestions = (value: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     if (value.length < 3) { setSuggestions([]); return }
     debounceRef.current = setTimeout(async () => {
@@ -59,7 +59,7 @@ export default function RentAnalyzerForm() {
     }, 300)
   }
 
-  const selectSuggestion = (description) => {
+  const selectSuggestion = (description: string) => {
     setForm(f => ({ ...f, address: description }))
     setSuggestions([])
     setShowSuggestions(false)
