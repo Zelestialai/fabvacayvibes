@@ -150,6 +150,64 @@ export default function Home() {
       </section>
 
       {/* CTA */}
+
+      {/* PROPERTY MANAGEMENT */}
+      <section id="property-management" className="section-pad" style={{ background: '#100820', borderTop: '1px solid rgba(244,162,58,0.08)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <RevealOnScroll>
+            <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>For Property Owners</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 48, fontWeight: 300, color: 'white', lineHeight: 1.15, marginBottom: 20, maxWidth: 700 }}>
+              Let Us Manage Your Short-Term Rental
+            </h2>
+            <p style={{ fontSize: 16, color: 'var(--text-muted)', lineHeight: 1.8, maxWidth: 600, marginBottom: 60 }}>
+              We handle everything — from listing optimization and guest communications to cleaning coordination and dynamic pricing — so you earn more without lifting a finger.
+            </p>
+          </RevealOnScroll>
+
+          {/* Features grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 2, marginBottom: 64 }}>
+            {[
+              { icon: '📸', title: 'Professional Listing Setup', desc: 'Stunning photography, compelling descriptions, and optimized listings across Airbnb, VRBO, and direct booking.' },
+              { icon: '💰', title: 'Dynamic Pricing', desc: 'AI-powered pricing that adjusts daily based on demand, seasonality, and local events to maximize your revenue.' },
+              { icon: '🧹', title: 'Cleaning & Maintenance', desc: 'Vetted cleaning crews, supply restocking, and proactive maintenance coordination after every guest.' },
+              { icon: '💬', title: '24/7 Guest Communication', desc: 'Instant responses to inquiries and round-the-clock guest support — glowing reviews, guaranteed.' },
+              { icon: '📊', title: 'Owner Dashboard', desc: 'Real-time visibility into bookings, revenue, and expenses. Monthly statements delivered automatically.' },
+              { icon: '🛡️', title: 'Risk & Damage Protection', desc: 'Thorough guest screening, security deposits, and damage claim management so you are always protected.' },
+            ].map(({ icon, title, desc }) => (
+              <RevealOnScroll key={title}>
+                <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.1)', padding: 36, transition: 'border-color 0.3s' }}>
+                  <div style={{ fontSize: 32, marginBottom: 16 }}>{icon}</div>
+                  <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, fontWeight: 400, color: 'white', marginBottom: 10 }}>{title}</h3>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7 }}>{desc}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <RevealOnScroll>
+            <div style={{ display: 'flex', gap: 48, alignItems: 'center', flexWrap: 'wrap', padding: '48px', background: 'linear-gradient(135deg, rgba(244,162,58,0.08) 0%, rgba(30,15,69,0.5) 100%)', border: '1px solid rgba(244,162,58,0.2)', borderRadius: 4 }}>
+              <div style={{ flex: 1, minWidth: 280 }}>
+                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, fontWeight: 300, color: 'var(--orange-warm)', marginBottom: 8 }}>
+                  Ready to unlock your property&apos;s potential?
+                </p>
+                <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7 }}>
+                  We manage properties across Florida and California. Get a free revenue projection for your home.
+                </p>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flexShrink: 0 }}>
+                <a href="mailto:FabVacayVibes@gmail.com?subject=Property Management Inquiry" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none', textAlign: 'center' }}>
+                  Get Free Estimate
+                </a>
+                <a href="tel:7273869642" style={{ border: '1px solid rgba(244,162,58,0.4)', color: 'var(--orange)', padding: '14px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none', textAlign: 'center' }}>
+                  Call (727) 386-9642
+                </a>
+              </div>
+            </div>
+          </RevealOnScroll>
+        </div>
+      </section>
+
       <section id="contact" className="section-pad" style={{ textAlign: 'center', background: 'linear-gradient(135deg,#2D1B69 0%,#1E0F45 50%,#3d1a0a 100%)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 80% at 50% 50%, rgba(244,162,58,0.1) 0%, transparent 70%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
@@ -176,7 +234,7 @@ export default function Home() {
           </div>
           {[
             { title: 'Properties', links: properties.map(p => ({ label: p.name, href: `/properties/${p.slug}` })) },
-            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'Contact', href: '#contact' }] },
+            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'List Your Property', href: '#property-management' }, { label: 'Contact', href: '#contact' }] },
             { title: 'Contact', links: [{ label: '(727) 386-9642', href: 'tel:7273869642' }, { label: 'FabVacayVibes@gmail.com', href: 'mailto:FabVacayVibes@gmail.com' }] },
           ].map(col => (
             <div key={col.title}>
