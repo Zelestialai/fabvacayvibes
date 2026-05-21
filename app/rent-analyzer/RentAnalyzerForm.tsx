@@ -48,14 +48,21 @@ export default function RentAnalyzerForm() {
 
   const fetchSuggestions = (value: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    if (value.length < 3) { setSuggestions([]); return }
+    if (value.length < 3) {
+      setSuggestions([])
+      setShowSuggestions(false)
+      return
+    }
     debounceRef.current = setTimeout(async () => {
       try {
         const res = await fetch('/api/places-autocomplete?input=' + encodeURIComponent(value))
         const data = await res.json()
-        setSuggestions(data.suggestions || [])
-        setShowSuggestions(true)
-      } catch {}
+        const results = data.suggestions || []
+        setSuggestions(results)
+        setShowSuggestions(results.length > 0)
+      } catch (err) {
+        console.error('Autocomplete error:', err)
+      }
     }, 300)
   }
 
@@ -114,8 +121,8 @@ export default function RentAnalyzerForm() {
       </section>
 
       {/* Form */}
-      <section style={{ padding: '60px 24px', maxWidth: 780, margin: '0 auto' }}>
-        <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: '40px 40px 32px' }}>
+      <section style={{ padding: '60px 24px', maxWidth: 780, margin: '0 auto', overflow: 'visible' }}>
+        <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: '40px 40px 32px', overflow: 'visible' }}>
           <div style={{ marginBottom: 20 }}>
             <label style={labelStyle}>Property Address *</label>
             <div ref={wrapperRef} style={{ position: 'relative' }}>
