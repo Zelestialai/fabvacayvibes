@@ -208,6 +208,90 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* PROPERTY FINDER */}
+      <section id="property-finder" className="section-pad" style={{ background: 'var(--purple)', borderTop: '1px solid rgba(244,162,58,0.08)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div className="why-grid">
+            {/* Left: copy */}
+            <div>
+              <RevealOnScroll>
+                <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Investment Services</p>
+                <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 48, fontWeight: 300, color: 'white', lineHeight: 1.15, marginBottom: 24 }}>
+                  We Find Your Next Short-Term Rental Investment
+                </h2>
+                <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.85, marginBottom: 32 }}>
+                  Looking to invest in a vacation rental but don&apos;t know where to start? We source, analyze, and vet properties in the most lucrative short-term rental markets — so you buy with confidence.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 40 }}>
+                  {[
+                    { step: '01', title: 'Define Your Goals', desc: 'We start with your budget, preferred markets, and return expectations to build your ideal property profile.' },
+                    { step: '02', title: 'Market Research & Sourcing', desc: 'We identify high-yield markets and source on and off-market properties with strong STR revenue potential.' },
+                    { step: '03', title: 'Revenue Projections', desc: 'Every property comes with a detailed STR analysis — projected occupancy, nightly rates, and annual ROI.' },
+                    { step: '04', title: 'Acquisition Support', desc: 'We guide you through offers, inspections, and closing — and can manage your new property from day one.' },
+                  ].map(({ step, title, desc }) => (
+                    <RevealOnScroll key={step}>
+                      <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, color: 'rgba(244,162,58,0.25)', fontWeight: 300, lineHeight: 1, flexShrink: 0, width: 48 }}>{step}</span>
+                        <div>
+                          <p style={{ fontSize: 14, fontWeight: 500, color: 'var(--orange-warm)', marginBottom: 4 }}>{title}</p>
+                          <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7 }}>{desc}</p>
+                        </div>
+                      </div>
+                    </RevealOnScroll>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                  <a href="mailto:FabVacayVibes@gmail.com?subject=Property Finder Inquiry" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>
+                    Start Your Search
+                  </a>
+                  <a href="tel:7273869642" style={{ border: '1px solid rgba(244,162,58,0.4)', color: 'var(--orange)', padding: '16px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none' }}>
+                    Schedule a Call
+                  </a>
+                </div>
+              </RevealOnScroll>
+            </div>
+
+            {/* Right: stats + markets */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <RevealOnScroll delay={200}>
+                <div style={{ background: 'rgba(253,246,236,0.04)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: 32 }}>
+                  <p style={{ fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 24 }}>Markets We Know</p>
+                  {[
+                    { market: 'Clearwater / Tampa Bay, FL', tag: 'Beach · Year-Round Demand' },
+                    { market: 'Joshua Tree, CA', tag: 'Desert · High Weekend Rates' },
+                    { market: 'Oakhurst / Yosemite, CA', tag: 'Mountain · Peak Season Premiums' },
+                    { market: 'Scottsdale, AZ', tag: 'Luxury · Event-Driven Revenue' },
+                    { market: 'Smoky Mountains, TN', tag: 'Cabin · All-Season Bookings' },
+                  ].map(({ market, tag }) => (
+                    <div key={market} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid rgba(244,162,58,0.08)', flexWrap: 'wrap', gap: 8 }}>
+                      <span style={{ fontSize: 14, color: 'var(--cream)' }}>{market}</span>
+                      <span style={{ fontSize: 10, letterSpacing: 1.5, color: 'var(--orange)', background: 'rgba(244,162,58,0.08)', padding: '4px 10px', borderRadius: 2 }}>{tag}</span>
+                    </div>
+                  ))}
+                </div>
+              </RevealOnScroll>
+
+              <RevealOnScroll delay={300}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  {[
+                    { value: '3+', label: 'Years STR Experience' },
+                    { value: '15%+', label: 'Avg. Cash-on-Cash Return' },
+                    { value: '85%+', label: 'Average Occupancy Rate' },
+                    { value: '5★', label: 'Average Guest Rating' },
+                  ].map(({ value, label }) => (
+                    <div key={label} style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.1)', borderRadius: 4, padding: '20px 16px', textAlign: 'center' }}>
+                      <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, color: 'var(--orange-warm)', fontWeight: 300, margin: 0 }}>{value}</p>
+                      <p style={{ fontSize: 11, color: 'var(--text-muted)', letterSpacing: 1, marginTop: 4 }}>{label}</p>
+                    </div>
+                  ))}
+                </div>
+              </RevealOnScroll>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" className="section-pad" style={{ textAlign: 'center', background: 'linear-gradient(135deg,#2D1B69 0%,#1E0F45 50%,#3d1a0a 100%)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 80% at 50% 50%, rgba(244,162,58,0.1) 0%, transparent 70%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
@@ -234,7 +318,7 @@ export default function Home() {
           </div>
           {[
             { title: 'Properties', links: properties.map(p => ({ label: p.name, href: `/properties/${p.slug}` })) },
-            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'List Your Property', href: '#property-management' }, { label: 'Contact', href: '#contact' }] },
+            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'List Your Property', href: '#property-management' }, { label: 'Find a Property', href: '#property-finder' }, { label: 'Contact', href: '#contact' }] },
             { title: 'Contact', links: [{ label: '(727) 386-9642', href: 'tel:7273869642' }, { label: 'FabVacayVibes@gmail.com', href: 'mailto:FabVacayVibes@gmail.com' }] },
           ].map(col => (
             <div key={col.title}>

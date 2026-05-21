@@ -34,6 +34,7 @@ export default function Nav() {
     { label: 'About', hash: '#why' },
     { label: 'Reviews', hash: '#reviews' },
     { label: 'List Your Property', hash: '#property-management' },
+    { label: 'Find a Property', hash: '#property-finder' },
   ]
 
   return (
@@ -130,6 +131,11 @@ export default function Nav() {
             onClick={() => setMenuOpen(false)}
             style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1, borderTop: '1px solid rgba(244,162,58,0.1)', marginTop: 8, paddingTop: 16 }}
           >✦ List Your Property</Link>
+          <Link
+            href="/#property-finder"
+            onClick={() => setMenuOpen(false)}
+            style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1 }}
+          >✦ Find a Property</Link>
         </div>
         <button
           onClick={() => { handleHashNav('#properties'); setMenuOpen(false) }}
