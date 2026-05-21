@@ -70,7 +70,7 @@ export default function ServicesPage() {
                   Ready to unlock your property&apos;s potential?
                 </p>
                 <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.7 }}>
-                  We manage properties across Florida and California. Get a free revenue projection for your home.
+                  We manage properties across the US with deep expertise in Florida and California. Get a free revenue projection for your home.
                 </p>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flexShrink: 0 }}>
@@ -97,7 +97,7 @@ export default function ServicesPage() {
                   We Find Your Next Short-Term Rental Investment
                 </h2>
                 <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.85, marginBottom: 32 }}>
-                  Looking to invest in a vacation rental but don&apos;t know where to start? We source, analyze, and vet properties in the most lucrative short-term rental markets — so you buy with confidence.
+                  Looking to invest in a vacation rental anywhere in the US but don&apos;t know where to start? We source, analyze, and vet properties across the country&apos;s most lucrative short-term rental markets — so you buy with confidence.
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 20, marginBottom: 40 }}>
                   {[
@@ -131,13 +131,20 @@ export default function ServicesPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <RevealOnScroll delay={200}>
                 <div style={{ background: 'rgba(253,246,236,0.04)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: 32 }}>
-                  <p style={{ fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 24 }}>Markets We Know</p>
+                  <p style={{ fontSize: 10, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 24 }}>Markets Across the USA</p>
                   {[
-                    { market: 'Clearwater / Tampa Bay, FL', tag: 'Beach · Year-Round Demand' },
+                    { market: 'Florida (Statewide)', tag: 'Beach · Theme Parks · Year-Round' },
+                    { market: 'Myrtle Beach, SC', tag: 'Beach · Golf · Family Getaways' },
+                    { market: 'Poconos, PA', tag: 'Mountain · Ski · Lakefront Cabins' },
+                    { market: 'Outer Banks, NC', tag: 'Beachfront · High Season Premiums' },
+                    { market: 'Smoky Mountains, TN/NC', tag: 'Cabin · All-Season Bookings' },
                     { market: 'Joshua Tree, CA', tag: 'Desert · High Weekend Rates' },
                     { market: 'Oakhurst / Yosemite, CA', tag: 'Mountain · Peak Season Premiums' },
+                    { market: 'Utah (Moab / St. George)', tag: 'National Parks · Adventure Travel' },
+                    { market: 'Hocking Hills, OH', tag: 'Cabin · Nature · Weekend Escapes' },
+                    { market: 'Red River Gorge, KY', tag: 'Scenic · Climbing · Retreat' },
                     { market: 'Scottsdale, AZ', tag: 'Luxury · Event-Driven Revenue' },
-                    { market: 'Smoky Mountains, TN', tag: 'Cabin · All-Season Bookings' },
+                    { market: 'Gulf Shores, AL', tag: 'Beach · Affordable · High Demand' },
                   ].map(({ market, tag }) => (
                     <div key={market} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid rgba(244,162,58,0.08)', flexWrap: 'wrap', gap: 8 }}>
                       <span style={{ fontSize: 14, color: 'var(--cream)' }}>{market}</span>
