@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ suggestions: [] })
   }
 
-  const GOOGLE_KEY = process.env.GOOGLE_API_KEY
+  const GOOGLE_KEY = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_API_KEY
   if (!GOOGLE_KEY) return NextResponse.json({ suggestions: [] })
 
   try {
