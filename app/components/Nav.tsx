@@ -33,8 +33,7 @@ export default function Nav() {
     { label: 'Properties', hash: '#properties' },
     { label: 'About', hash: '#why' },
     { label: 'Reviews', hash: '#reviews' },
-    { label: 'List Your Property', hash: '#property-management' },
-    { label: 'Find a Property', hash: '#property-finder' },
+    { label: 'Services', hash: '/services', isPage: true },
   ]
 
   return (
@@ -54,14 +53,18 @@ export default function Nav() {
         {/* Desktop links */}
         <ul style={{ display: 'flex', gap: 36, alignItems: 'center', listStyle: 'none', margin: 0, padding: 0 }}
           className="nav-desktop">
-          {navLinks.map(({ label, hash }) => (
+          {navLinks.map(({ label, hash, isPage }) => (
             <li key={hash}>
-              <button
-                onClick={() => handleHashNav(hash)}
-                style={{ fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--cream)', background: 'none', border: 'none', cursor: 'pointer', opacity: 0.8, fontFamily: 'inherit' }}
-              >
-                {label}
-              </button>
+              {isPage ? (
+                <Link href={hash} style={{ fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--cream)', textDecoration: 'none', opacity: 0.8 }}>{label}</Link>
+              ) : (
+                <button
+                  onClick={() => handleHashNav(hash)}
+                  style={{ fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--cream)', background: 'none', border: 'none', cursor: 'pointer', opacity: 0.8, fontFamily: 'inherit' }}
+                >
+                  {label}
+                </button>
+              )}
             </li>
           ))}
           <li>
@@ -127,15 +130,10 @@ export default function Nav() {
             style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1 }}
           >→ Sierra Crest Haven</Link>
           <Link
-            href="/#property-management"
+            href="/services"
             onClick={() => setMenuOpen(false)}
             style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1, borderTop: '1px solid rgba(244,162,58,0.1)', marginTop: 8, paddingTop: 16 }}
-          >✦ List Your Property</Link>
-          <Link
-            href="/#property-finder"
-            onClick={() => setMenuOpen(false)}
-            style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1 }}
-          >✦ Find a Property</Link>
+          >✦ Our Services</Link>
         </div>
         <button
           onClick={() => { handleHashNav('#properties'); setMenuOpen(false) }}
