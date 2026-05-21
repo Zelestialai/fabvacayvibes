@@ -145,6 +145,7 @@ export default function ServicesPage() {
                     { market: 'Red River Gorge, KY', tag: 'Scenic · Climbing · Retreat' },
                     { market: 'Scottsdale, AZ', tag: 'Luxury · Event-Driven Revenue' },
                     { market: 'Gulf Shores, AL', tag: 'Beach · Affordable · High Demand' },
+                    { market: 'Shenandoah, VA', tag: 'Valley · Wine Country · Nature Retreats' },
                   ].map(({ market, tag }) => (
                     <div key={market} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderBottom: '1px solid rgba(244,162,58,0.08)', flexWrap: 'wrap', gap: 8 }}>
                       <span style={{ fontSize: 14, color: 'var(--cream)' }}>{market}</span>
