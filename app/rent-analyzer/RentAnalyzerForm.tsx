@@ -33,14 +33,14 @@ const labelStyle: React.CSSProperties = {
 export default function RentAnalyzerForm() {
   const [form, setForm] = useState({ address: '', bedrooms: '3', bathrooms: '2', guests: '6' })
   const [loading, setLoading] = useState(false)
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState<{description: string; place_id: string}[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const debounceRef = useRef(null)
-  const wrapperRef = useRef(null)
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handler = (e) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setShowSuggestions(false)
+    const handler = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setShowSuggestions(false)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
