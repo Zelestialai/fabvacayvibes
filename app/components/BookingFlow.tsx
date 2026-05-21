@@ -343,6 +343,28 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
           <div style={{ marginTop: 20, width: 40, height: 2, background: 'var(--orange)', margin: '20px auto 0', animation: 'pulse 1s infinite' }} />
         </div>
       )}
+
+      {/* Best Price Guarantee */}
+      <div style={{ marginTop: 12, padding: '16px 20px', background: 'rgba(244,162,58,0.05)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+          <span style={{ fontSize: 20, flexShrink: 0 }}>🏷️</span>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--orange-warm)', marginBottom: 4, letterSpacing: 0.5 }}>
+              Best Price Guarantee
+            </p>
+            <p style={{ fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>
+              Found a lower price on Airbnb or VRBO?{' '}
+              <a
+                href={`mailto:FabVacayVibes@gmail.com?subject=Price Match Request — ${propertyName}&body=Hi! I found a lower price on [OTA] for ${propertyName}. Here are the details:%0A%0AProperty: ${propertyName}%0ADates: %0APrice found: %0ALink: %0A%0APlease match this price for a direct booking!`}
+                style={{ color: 'var(--orange)', textDecoration: 'underline', cursor: 'pointer' }}
+              >
+                Send us the details
+              </a>
+              {' '}and we&apos;ll beat it for your direct booking.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
