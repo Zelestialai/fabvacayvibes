@@ -118,7 +118,8 @@ export default function ServicesPage() {
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                  <a href="mailto:FabVacayVibes@gmail.com?subject=Property Finder Inquiry" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>
+                  <Link href='/rent-analyzer' style={{ display: 'inline-block', background: 'rgba(244,162,58,0.15)', color: 'var(--orange-warm)', padding: '10px 20px', fontSize: 11, letterSpacing: '2px', textTransform: 'uppercase', borderRadius: 2, textDecoration: 'none', border: '1px solid rgba(244,162,58,0.2)', marginBottom: 12 }}>Try Free Rent Analyzer →</Link>
+                  <a href='mailto:FabVacayVibes@gmail.com?subject=Property Finder Inquiry' style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>
                     Start Your Search
                   </a>
                   <a href="tel:7273869642" style={{ border: '1px solid rgba(244,162,58,0.4)', color: 'var(--orange)', padding: '16px 32px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none' }}>

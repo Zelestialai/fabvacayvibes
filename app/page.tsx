@@ -176,7 +176,7 @@ export default function Home() {
           </div>
           {[
             { title: 'Properties', links: properties.map(p => ({ label: p.name, href: `/properties/${p.slug}` })) },
-            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'Our Services', href: '/services' }, { label: 'Contact', href: '#contact' }] },
+            { title: 'Quick Links', links: [{ label: 'Properties', href: '#properties' }, { label: 'Reviews', href: '#reviews' }, { label: 'Our Services', href: '/services' }, { label: 'Rent Analyzer', href: '/rent-analyzer' }, { label: 'Contact', href: '#contact' }] },
             { title: 'Contact', links: [{ label: '(727) 386-9642', href: 'tel:7273869642' }, { label: 'FabVacayVibes@gmail.com', href: 'mailto:FabVacayVibes@gmail.com' }] },
           ].map(col => (
             <div key={col.title}>
