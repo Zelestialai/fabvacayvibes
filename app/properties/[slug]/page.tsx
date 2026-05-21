@@ -131,7 +131,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
           <div>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 32, paddingBottom: 32, borderBottom: '1px solid rgba(244,162,58,0.15)' }}>
               <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 42, color: 'var(--orange-warm)', fontWeight: 300 }}>
-                ${property.pricePerNight.toLocaleString()}
+                <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>from </span>${property.pricePerNight.toLocaleString()}
               </span>
               <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>/ night</span>
               <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--orange)', letterSpacing: 2, textTransform: 'uppercase', border: '1px solid rgba(244,162,58,0.3)', padding: '6px 14px', borderRadius: 2 }}>
