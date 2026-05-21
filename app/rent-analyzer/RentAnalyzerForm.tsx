@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 interface Comparable {
@@ -33,6 +33,37 @@ const labelStyle: React.CSSProperties = {
 export default function RentAnalyzerForm() {
   const [form, setForm] = useState({ address: '', bedrooms: '3', bathrooms: '2', guests: '6' })
   const [loading, setLoading] = useState(false)
+  const [suggestions, setSuggestions] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const debounceRef = useRef(null)
+  const wrapperRef = useRef(null)
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setShowSuggestions(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const fetchSuggestions = (value) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (value.length < 3) { setSuggestions([]); return }
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/places-autocomplete?input=' + encodeURIComponent(value))
+        const data = await res.json()
+        setSuggestions(data.suggestions || [])
+        setShowSuggestions(true)
+      } catch {}
+    }, 300)
+  }
+
+  const selectSuggestion = (description) => {
+    setForm(f => ({ ...f, address: description }))
+    setSuggestions([])
+    setShowSuggestions(false)
+  }
   const [error, setError] = useState('')
   const [result, setResult] = useState<Result | null>(null)
 
@@ -87,11 +118,49 @@ export default function RentAnalyzerForm() {
         <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, padding: '40px 40px 32px' }}>
           <div style={{ marginBottom: 20 }}>
             <label style={labelStyle}>Property Address *</label>
-            <input value={form.address} onChange={set('address')}
-              placeholder="e.g. Clearwater, FL or Joshua Tree, CA"
-              style={inputStyle} onKeyDown={e => e.key === 'Enter' && analyze()} />
+            <div ref={wrapperRef} style={{ position: 'relative' }}>
+              <input
+                value={form.address}
+                onChange={e => { set('address')(e); fetchSuggestions(e.target.value) }}
+                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+                placeholder="e.g. 123 Main St, Clearwater, FL"
+                style={inputStyle}
+                onKeyDown={e => e.key === 'Enter' && !showSuggestions && analyze()}
+                autoComplete="off"
+              />
+              {showSuggestions && suggestions.length > 0 && (
+                <div style={{
+                  position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 100,
+                  background: '#1a0d3d', border: '1px solid rgba(244,162,58,0.3)',
+                  borderTop: 'none', borderRadius: '0 0 4px 4px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                }}>
+                  {suggestions.map((s: {description: string; place_id: string}, i: number) => (
+                    <button
+                      key={s.place_id}
+                      onMouseDown={() => selectSuggestion(s.description)}
+                      style={{
+                        display: 'block', width: '100%', textAlign: 'left',
+                        padding: '12px 16px', background: 'transparent', border: 'none',
+                        borderBottom: i < suggestions.length - 1 ? '1px solid rgba(244,162,58,0.08)' : 'none',
+                        color: '#FDF6EC', fontSize: 13, cursor: 'pointer',
+                        fontFamily: 'DM Sans, sans-serif',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(244,162,58,0.1)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                    >
+                      <span style={{ color: '#F4A23A', marginRight: 8 }}>📍</span>
+                      {s.description}
+                    </button>
+                  ))}
+                  <div style={{ padding: '5px 16px', background: 'rgba(0,0,0,0.2)', textAlign: 'right' }}>
+                    <span style={{ fontSize: 10, color: 'rgba(253,246,236,0.3)', letterSpacing: 1 }}>Powered by Google</span>
+                  </div>
+                </div>
+              )}
+            </div>
             <p style={{ fontSize: 11, color: 'rgba(253,246,236,0.35)', marginTop: 6 }}>
-              Tip: City + State works great (e.g. &quot;Myrtle Beach, SC&quot; or &quot;Smoky Mountains, TN&quot;)
+              Enter an address, city, or zip code
             </p>
           </div>
 
