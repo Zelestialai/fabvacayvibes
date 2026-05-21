@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   }
 
   const GOOGLE_KEY = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_API_KEY
-  if (!GOOGLE_KEY) return NextResponse.json({ suggestions: [], debug: 'No API key' })
+  if (!GOOGLE_KEY) return NextResponse.json({ suggestions: [] })
 
   try {
     // Use Places API (New) - Autocomplete endpoint
@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     if (!res.ok) {
       console.error('Places API (New) error:', data)
-      return NextResponse.json({ suggestions: [], debug: JSON.stringify(data).substring(0, 200) })
+      return NextResponse.json({ suggestions: [] })
     }
 
     const suggestions = (data.suggestions || [])
@@ -45,6 +45,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ suggestions })
   } catch (error) {
     console.error('Places autocomplete error:', error)
-    return NextResponse.json({ suggestions: [], debug: String(error) })
+    return NextResponse.json({ suggestions: [] })
   }
 }
