@@ -88,15 +88,16 @@ export async function POST(request: NextRequest) {
       headers: { 'x-api-key': AIRROI_KEY },
     })
 
+    const calcText = await calcRes.text()
+    console.log('AirROI response:', calcRes.status, calcText.substring(0, 500))
+    
     if (!calcRes.ok) {
-      const errText = await calcRes.text()
-      console.error('AirROI calculator error:', calcRes.status, errText)
       return NextResponse.json({ 
-        error: 'Could not estimate revenue for this location. Please try a city or zip code instead of a street address.' 
+        error: `AirROI error ${calcRes.status}: ${calcText.substring(0, 200)}`
       }, { status: 400 })
     }
 
-    const calcData = await calcRes.json()
+    const calcData = JSON.parse(calcText)
 
     // Step 3: Get comparable listings for richer context
     const compsUrl = new URL('https://api.airroi.com/listings/comparables')
