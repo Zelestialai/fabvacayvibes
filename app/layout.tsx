@@ -141,7 +141,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GP6D3BGY20"></script>
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-GP6D3BGY20');
+        ` }} />
+        {children}
+      </body>
     </html>
   )
 }
