@@ -34,7 +34,6 @@ export default function Nav() {
     { label: 'About', hash: '#why' },
     { label: 'Reviews', hash: '#reviews' },
     { label: 'Services', hash: '/services', isPage: true },
-    { label: 'Rent Analyzer', hash: '/rent-analyzer', isPage: true },
   ]
 
   return (
@@ -135,7 +134,6 @@ export default function Nav() {
             onClick={() => setMenuOpen(false)}
             style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1, borderTop: '1px solid rgba(244,162,58,0.1)', marginTop: 8, paddingTop: 16 }}
           >✦ Our Services</Link>
-          <Link href='/rent-analyzer' onClick={() => setMenuOpen(false)} style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1 }}>✦ Rent Analyzer</Link>
         </div>
         <button
           onClick={() => { handleHashNav('#properties'); setMenuOpen(false) }}
