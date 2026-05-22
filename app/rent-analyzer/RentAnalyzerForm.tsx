@@ -66,8 +66,11 @@ export default function RentAnalyzerForm() {
     }, 300)
   }
 
-  const selectSuggestion = (description: string) => {
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string>('')
+
+  const selectSuggestion = (description: string, placeId: string) => {
     setForm(f => ({ ...f, address: description }))
+    setSelectedPlaceId(placeId)
     setSuggestions([])
     setShowSuggestions(false)
   }
@@ -84,7 +87,7 @@ export default function RentAnalyzerForm() {
       const res = await fetch('/api/rent-analyzer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, placeId: selectedPlaceId }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to analyze')
@@ -128,7 +131,7 @@ export default function RentAnalyzerForm() {
             <div ref={wrapperRef} style={{ position: 'relative' }}>
               <input
                 value={form.address}
-                onChange={e => { set('address')(e); fetchSuggestions(e.target.value) }}
+                onChange={e => { set('address')(e); setSelectedPlaceId(''); fetchSuggestions(e.target.value) }}
                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                 placeholder="e.g. 123 Main St, Clearwater, FL"
                 style={inputStyle}
@@ -145,7 +148,7 @@ export default function RentAnalyzerForm() {
                   {suggestions.map((s: {description: string; place_id: string}, i: number) => (
                     <button
                       key={s.place_id}
-                      onMouseDown={() => selectSuggestion(s.description)}
+                      onMouseDown={() => selectSuggestion(s.description, s.place_id)}
                       style={{
                         display: 'block', width: '100%', textAlign: 'left',
                         padding: '12px 16px', background: 'transparent', border: 'none',

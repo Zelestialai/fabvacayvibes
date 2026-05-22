@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { address, bedrooms, bathrooms, guests } = await request.json()
+    const { address, bedrooms, bathrooms, guests, placeId } = await request.json()
 
     if (!address || !bedrooms) {
       return NextResponse.json({ error: 'Address and bedrooms are required' }, { status: 400 })
@@ -17,12 +17,16 @@ export async function POST(request: NextRequest) {
     let lat: number, lng: number, formattedAddress: string
 
     if (GOOGLE_KEY) {
+      // Use place_id from autocomplete for accurate geocoding, fallback to address text
+      const geoQuery = placeId
+        ? `place_id:${placeId}`
+        : address
       const geoRes = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(geoQuery)}&key=${GOOGLE_KEY}`
       )
       const geoData = await geoRes.json()
       if (geoData.status !== 'OK' || !geoData.results?.[0]) {
-        return NextResponse.json({ error: 'Could not find that address. Please try a more specific address including city and state.' }, { status: 400 })
+        return NextResponse.json({ error: 'Could not find that address. Please select from the autocomplete suggestions.' }, { status: 400 })
       }
       lat = geoData.results[0].geometry.location.lat
       lng = geoData.results[0].geometry.location.lng
