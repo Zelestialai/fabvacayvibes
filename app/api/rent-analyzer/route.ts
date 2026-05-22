@@ -17,30 +17,29 @@ export async function POST(request: NextRequest) {
     const bathroomsFloat = parseFloat(bathrooms || bedrooms)
     const guestsInt = parseInt(guests) || bedroomsInt * 2
 
-    // Step 1: Get coordinates - use frontend-provided coords if available
+    // Step 1: Get coordinates
     let lat: number | null = frontendLat || null
     let lng: number | null = frontendLng || null
     let formattedAddress = address
 
-    if ((!lat || !lng) && placeId && PLACES_KEY) {
+    // If no coords from frontend, geocode via Nominatim (free, no API key needed)
+    if (!lat || !lng) {
       try {
-        const placeRes = await fetch(
-          `https://places.googleapis.com/v1/places/${placeId}`,
-          { headers: { 'X-Goog-Api-Key': PLACES_KEY, 'X-Goog-FieldMask': 'location,formattedAddress' } }
-        )
-        const placeData = await placeRes.json()
-        console.log('Places API response:', JSON.stringify(placeData).substring(0, 200))
-        if (placeData.location?.latitude) {
-          lat = placeData.location.latitude
-          lng = placeData.location.longitude
-          formattedAddress = placeData.formattedAddress || address
+        const cleanAddr = address.replace(/, USA$/, '').replace(/, United States$/, '')
+        const nomUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanAddr)}&format=json&limit=1&countrycodes=us`
+        const nomRes = await fetch(nomUrl, { headers: { 'User-Agent': 'FabVacayVibes/1.0 (fabvacayvibes.com)' } })
+        const nomData = await nomRes.json()
+        if (nomData?.[0]) {
+          lat = parseFloat(nomData[0].lat)
+          lng = parseFloat(nomData[0].lon)
+          formattedAddress = nomData[0].display_name || address
         }
       } catch (e) {
-        console.error('Places API error:', e)
+        console.error('Nominatim error:', e)
       }
     }
 
-    console.log(`lat=${lat} lng=${lng} address=${address} placeId=${placeId} PLACES_KEY=${!!PLACES_KEY}`)
+    console.log(`lat=${lat} lng=${lng}`)
 
     // Step 2: Build AirROI request
     const calcUrl = new URL('https://api.airroi.com/calculator/estimate')
