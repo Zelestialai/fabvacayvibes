@@ -328,7 +328,7 @@ export const properties: Property[] = [
     emoji: '🏔️',
     bedrooms: 7,
     bathrooms: 3,
-    sleepsMin: 12,
+    sleepsMin: 1,
     sleepsMax: 16,
     pricePerNight: 945,
     description: "Nestled on a premier ridge in Oakhurst, Sierra Crest Haven is a sprawling 4,700 sq. ft. private estate designed for those who seek both adventure and absolute relaxation. This 7-bedroom home offers a rare 'dual-view' experience: start your morning watching the sunrise over the high Sierra peaks and end your day with the sunset over the valley.",
