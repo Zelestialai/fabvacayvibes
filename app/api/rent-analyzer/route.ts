@@ -55,6 +55,8 @@ export async function POST(request: NextRequest) {
     calcUrl.searchParams.set('guests', String(guestsInt))
     calcUrl.searchParams.set('currency', 'usd')
 
+    console.log('AirROI URL:', calcUrl.toString())
+    console.log('lat:', lat, 'lng:', lng, 'address:', address)
     const calcRes = await fetch(calcUrl.toString(), {
       method: 'GET',
       headers: { 'x-api-key': AIRROI_KEY },
