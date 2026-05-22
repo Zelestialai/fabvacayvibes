@@ -213,7 +213,7 @@ export default function RentAnalyzerForm() {
             {loading ? 'Analyzing Market Data...' : 'Get Revenue Estimate →'}
           </button>
           <p style={{ fontSize: 11, color: 'rgba(253,246,236,0.3)', textAlign: 'center', marginTop: 12 }}>
-            Powered by AirROI · 20M+ properties · Instant results
+            Live market data · 20M+ properties · Instant results
           </p>
         </div>
 
@@ -297,19 +297,36 @@ export default function RentAnalyzerForm() {
             )}
 
             {/* CTA */}
-            <div style={{ marginTop: 16, padding: '28px 32px', background: 'linear-gradient(135deg, rgba(244,162,58,0.08), rgba(30,15,69,0.5))', border: '1px solid rgba(244,162,58,0.2)', borderRadius: 4 }}>
-              <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, color: '#F7C05A', marginBottom: 8 }}>
-                Want to maximize this revenue?
+            <div style={{ marginTop: 16, padding: '36px 40px', background: 'linear-gradient(135deg, rgba(244,162,58,0.1), rgba(30,15,69,0.6))', border: '1px solid rgba(244,162,58,0.25)', borderRadius: 4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 52, color: '#F4A23A', fontWeight: 300, lineHeight: 1 }}>125%</span>
+                <div>
+                  <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, color: '#F7C05A', margin: 0 }}>of projected revenue</p>
+                  <p style={{ fontSize: 12, color: 'rgba(253,246,236,0.5)', margin: 0, letterSpacing: 1 }}>when you work with us</p>
+                </div>
+              </div>
+              <p style={{ fontSize: 14, color: 'rgba(253,246,236,0.7)', marginBottom: 24, lineHeight: 1.8, maxWidth: 560 }}>
+                Our clients consistently outperform market averages. Through professional photography, dynamic pricing, optimized listings, and 5★ guest experience — we help you earn more, not just what the market says you should.
               </p>
-              <p style={{ fontSize: 13, color: 'rgba(253,246,236,0.6)', marginBottom: 20, lineHeight: 1.7 }}>
-                Our property management and finder services are built to get you numbers like these — and beyond.
-              </p>
+              {finalAnnual && (
+                <div style={{ display: 'flex', gap: 24, marginBottom: 24, flexWrap: 'wrap' }}>
+                  <div style={{ background: 'rgba(253,246,236,0.04)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 2, padding: '14px 20px', textAlign: 'center' }}>
+                    <p style={{ fontSize: 9, color: 'rgba(253,246,236,0.5)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Market Estimate</p>
+                    <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, color: 'rgba(253,246,236,0.6)', margin: 0 }}>${Math.round(finalAnnual).toLocaleString()}</p>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', fontSize: 20, color: '#F4A23A' }}>→</div>
+                  <div style={{ background: 'rgba(244,162,58,0.1)', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 2, padding: '14px 20px', textAlign: 'center' }}>
+                    <p style={{ fontSize: 9, color: '#F4A23A', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>With Fab Vacay Vibes</p>
+                    <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 24, color: '#F7C05A', margin: 0 }}>${Math.round(finalAnnual * 1.25).toLocaleString()}</p>
+                  </div>
+                </div>
+              )}
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                <a href={`mailto:FabVacayVibes@gmail.com?subject=Revenue Estimate Follow-up&body=I just ran an estimate for ${result.address} and would love to chat!`}
-                  style={{ background: '#F4A23A', color: '#1E0F45', padding: '12px 24px', fontSize: 11, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, borderRadius: 2, textDecoration: 'none' }}>
-                  Talk to Us
+                <a href={`mailto:FabVacayVibes@gmail.com?subject=Revenue Estimate Follow-up — ${result.address}&body=Hi! I just ran a revenue estimate for ${result.address} and would love to learn how Fab Vacay Vibes can help me exceed these projections.`}
+                  style={{ background: '#F4A23A', color: '#1E0F45', padding: '14px 28px', fontSize: 11, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600, borderRadius: 2, textDecoration: 'none' }}>
+                  Let&apos;s Beat This Together
                 </a>
-                <Link href="/services" style={{ border: '1px solid rgba(244,162,58,0.4)', color: '#F4A23A', padding: '12px 24px', fontSize: 11, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none' }}>
+                <Link href="/services" style={{ border: '1px solid rgba(244,162,58,0.4)', color: '#F4A23A', padding: '14px 28px', fontSize: 11, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none' }}>
                   Our Services
                 </Link>
               </div>
