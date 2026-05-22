@@ -68,6 +68,9 @@ export default function RentAnalyzerForm() {
 
   const [selectedPlaceId, setSelectedPlaceId] = useState<string>('')
   const [selectedCoords, setSelectedCoords] = useState<{lat: number; lng: number} | null>(null)
+  const [showLeadForm, setShowLeadForm] = useState(false)
+  const [leadSubmitted, setLeadSubmitted] = useState(false)
+  const [lead, setLead] = useState({ name: '', email: '', phone: '', role: 'owner' })
 
   const selectSuggestion = (description: string, placeId: string, lat?: number, lng?: number) => {
     setForm(f => ({ ...f, address: description }))
@@ -82,8 +85,25 @@ export default function RentAnalyzerForm() {
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.value }))
 
+  const setLead2 = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+    setLead(l => ({ ...l, [k]: e.target.value }))
+
+  const submitLead = async () => {
+    if (!lead.name.trim() || !lead.email.trim()) return
+    // Send lead to email
+    await fetch('/api/lead-capture', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...lead, address: form.address, bedrooms: form.bedrooms, bathrooms: form.bathrooms, guests: form.guests }),
+    }).catch(() => {})
+    setLeadSubmitted(true)
+    setShowLeadForm(false)
+    analyze()
+  }
+
   const analyze = async () => {
     if (!form.address.trim()) { setError('Please enter a property address'); return }
+    if (!leadSubmitted) { setShowLeadForm(true); return }
     setLoading(true); setError(''); setResult(null)
     try {
       const res = await fetch('/api/rent-analyzer', {
@@ -338,6 +358,68 @@ export default function RentAnalyzerForm() {
           </div>
         )}
       </section>
+      {/* Lead capture modal */}
+      {showLeadForm && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+          <div style={{ background: '#1E0F45', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 8, padding: '48px 40px', maxWidth: 480, width: '100%', position: 'relative' }}>
+            <button onClick={() => setShowLeadForm(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: 'rgba(253,246,236,0.4)', fontSize: 20, cursor: 'pointer' }}>✕</button>
+
+            <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: '#F4A23A', marginBottom: 12 }}>Almost There</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: 'white', marginBottom: 8, lineHeight: 1.2 }}>
+              Get Your Free Revenue Estimate
+            </h2>
+            <p style={{ fontSize: 13, color: 'rgba(253,246,236,0.6)', marginBottom: 28, lineHeight: 1.7 }}>
+              Enter your details and we&apos;ll show you your property&apos;s earning potential — and how we can help you exceed it.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <label style={labelStyle}>Full Name *</label>
+                <input value={lead.name} onChange={setLead2('name')} placeholder="John Smith"
+                  style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Email Address *</label>
+                <input value={lead.email} onChange={setLead2('email')} placeholder="john@example.com" type="email"
+                  style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>Phone Number</label>
+                <input value={lead.phone} onChange={setLead2('phone')} placeholder="(555) 000-0000" type="tel"
+                  style={inputStyle} />
+              </div>
+              <div>
+                <label style={labelStyle}>I am a...</label>
+                <select value={lead.role} onChange={setLead2('role')} style={{ ...inputStyle, cursor: 'pointer' }}>
+                  <option value="owner" style={{ background: '#1E0F45' }}>Property Owner looking to rent</option>
+                  <option value="investor" style={{ background: '#1E0F45' }}>Investor looking to buy</option>
+                  <option value="both" style={{ background: '#1E0F45' }}>Both</option>
+                  <option value="other" style={{ background: '#1E0F45' }}>Just exploring</option>
+                </select>
+              </div>
+            </div>
+
+            <button
+              onClick={submitLead}
+              disabled={!lead.name.trim() || !lead.email.trim()}
+              style={{
+                width: '100%', marginTop: 24, padding: '16px',
+                background: !lead.name.trim() || !lead.email.trim() ? 'rgba(244,162,58,0.3)' : '#F4A23A',
+                color: '#1E0F45', border: 'none', borderRadius: 2,
+                fontSize: 13, letterSpacing: '2.5px', textTransform: 'uppercase',
+                fontWeight: 600, cursor: !lead.name.trim() || !lead.email.trim() ? 'default' : 'pointer',
+                fontFamily: 'inherit',
+              }}
+            >
+              Show My Revenue Estimate →
+            </button>
+
+            <p style={{ fontSize: 11, color: 'rgba(253,246,236,0.3)', textAlign: 'center', marginTop: 12 }}>
+              No spam. We&apos;ll only reach out if you want us to.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
