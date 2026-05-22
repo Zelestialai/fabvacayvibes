@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
     calcUrl.searchParams.set('longitude', String(lng))
     calcUrl.searchParams.set('bedrooms', String(bedroomsInt))
     calcUrl.searchParams.set('guests', String(guestsInt))
+    calcUrl.searchParams.set('baths', String(bathroomsFloat))
     calcUrl.searchParams.set('currency', 'usd')
 
     const calcRes = await fetch(calcUrl.toString(), {
