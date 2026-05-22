@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
       body: JSON.stringify({
         input,
         includedRegionCodes: ['us'],
-        includedPrimaryTypes: ['geocode', 'locality', 'sublocality', 'postal_code', 'administrative_area_level_1'],
         languageCode: 'en',
       }),
       cache: 'no-store',
