@@ -26,7 +26,10 @@ export async function POST(request: NextRequest) {
       )
       const geoData = await geoRes.json()
       if (geoData.status !== 'OK' || !geoData.results?.[0]) {
-        return NextResponse.json({ error: 'Could not find that address. Please select from the autocomplete suggestions.' }, { status: 400 })
+        return NextResponse.json({ 
+          error: `Geocoding failed: ${geoData.status} for query: ${geoQuery}`,
+          debug: geoData 
+        }, { status: 400 })
       }
       lat = geoData.results[0].geometry.location.lat
       lng = geoData.results[0].geometry.location.lng
