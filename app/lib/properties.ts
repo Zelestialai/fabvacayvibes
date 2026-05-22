@@ -33,7 +33,7 @@ export const properties: Property[] = [
     bathrooms: 3,
     sleepsMin: 10,
     sleepsMax: 16,
-    pricePerNight: 356,
+    pricePerNight: 500,
     description: 'White-sand beaches, turquoise waters, and fiery sunsets await when you stay at this stunning 5-bedroom, 3-bathroom vacation rental in Clearwater. The home greets guests with a sleek interior packed with modern decor and high-end amenities. Easily host family gatherings between the kitchen, dining areas, and living room thanks to the breezy open floor plan.',
     shortDesc: 'White-sand beaches, turquoise waters & fiery sunsets. Private pool, steps from Pier 60.',
     amenities: ['Private Pool', 'Pet Friendly', 'WiFi', 'Near Ocean', 'Modern Kitchen', 'Outdoor Dining'],
