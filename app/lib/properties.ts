@@ -8,6 +8,10 @@ export interface Property {
   emoji: string
   bedrooms: number
   bathrooms: number
+  squareFeet?: number
+  checkIn?: string
+  checkOut?: string
+  address?: string
   sleepsMin: number
   sleepsMax: number
   pricePerNight: number
@@ -31,10 +35,14 @@ export const properties: Property[] = [
     emoji: '🌊',
     bedrooms: 5,
     bathrooms: 3,
+    squareFeet: 2100,
+    checkIn: '4:00 PM',
+    checkOut: '11:00 AM',
+    address: '18 N Maywood Ave, Clearwater, FL 33765',
     sleepsMin: 1,
     sleepsMax: 16,
     pricePerNight: 500,
-    description: 'White-sand beaches, turquoise waters, and fiery sunsets await when you stay at this stunning 5-bedroom, 3-bathroom vacation rental in Clearwater. The home greets guests with a sleek interior packed with modern decor and high-end amenities. Easily host family gatherings between the kitchen, dining areas, and living room thanks to the breezy open floor plan.',
+    description: 'Welcome to Casa Grandè — a stunning 5-bedroom, 3-bathroom luxury vacation home nestled in Clearwater, FL. Spanning 2,100 sq ft, this beautifully designed home features a private pool, modern open-plan kitchen, and spacious living and dining areas perfect for large groups and family gatherings. Pet friendly and accommodating up to 16 guests, Casa Grandè offers the perfect base to explore the best of Clearwater — from the world-famous Clearwater Beach to the Clearwater Marine Aquarium, Pier 60, and BayCare Ballpark.',
     shortDesc: 'Luxury 5-bedroom vacation home in Clearwater, FL. Private pool, pet friendly, sleeps up to 16 guests. Perfect for large groups and family getaways.',
     amenities: ['Private Pool', 'Pet Friendly', 'WiFi', 'Near Ocean', 'Modern Kitchen', 'Outdoor Dining'],
     imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/casa-grande/38-038_18%20Maywood%20Ave_by_Johnruzphoto.com.jpg',
@@ -93,7 +101,11 @@ export const properties: Property[] = [
     emoji: '🏜️',
     bedrooms: 4,
     bathrooms: 4,
-    sleepsMin: 7,
+    squareFeet: 2100,
+    checkIn: '4:00 PM',
+    checkOut: '11:00 AM',
+    address: '8283 Via Rocosa, Joshua Tree, CA 92252',
+    sleepsMin: 1,
     sleepsMax: 10,
     pricePerNight: 700,
     description: 'Owl & Hare is a 4-bed wellness retreat fitted with a pool, hot tub & vintage Airstream perched in the Joshua Tree Highlands overlooking the park entrance. Comprised of 2 stand-alone homes, the property is perfect for couples, families, or any group wanting to be together in a serene compound.',
@@ -328,10 +340,14 @@ export const properties: Property[] = [
     emoji: '🏔️',
     bedrooms: 7,
     bathrooms: 3,
+    squareFeet: 4800,
+    checkIn: '4:00 PM',
+    checkOut: '11:00 AM',
+    address: '42139 Old Yosemite Road, Oakhurst, CA 93644',
     sleepsMin: 1,
     sleepsMax: 16,
     pricePerNight: 945,
-    description: "Nestled on a premier ridge in Oakhurst, Sierra Crest Haven is a sprawling 4,700 sq. ft. private estate designed for those who seek both adventure and absolute relaxation. This 7-bedroom home offers a rare 'dual-view' experience: start your morning watching the sunrise over the high Sierra peaks and end your day with the sunset over the valley.",
+    description: "Nestled on a premier ridge in Oakhurst, Sierra Crest Haven is a sprawling 4,800 sq. ft. private estate designed for those who seek both adventure and absolute relaxation. Just minutes from Yosemite National Park, this 7-bedroom luxury estate features a game room, full bar, hot tub, fireplace, and stunning Sierra mountain views. With multiple living areas and sleeping accommodations for up to 16 guests, it's the ultimate retreat for large groups.",
     shortDesc: '4,700 sq ft mountain estate on a premier ridge. Dual sunrise & sunset views over the High Sierra.',
     amenities: ['Hot Tub', 'Fireplace', 'Mountain Views', 'Forest Setting', 'WiFi', 'Accessible', 'Multiple Living Areas'],
     imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/sierra-crest-haven/DRONE/Drone001.jpg',

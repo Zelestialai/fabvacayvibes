@@ -116,10 +116,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
           <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(42px,6vw,80px)', fontWeight: 300, color: 'white', lineHeight: 1, marginBottom: 16 }}>
             {property.name}
           </h1>
-          <div style={{ display: 'flex', gap: 24, fontSize: 13, color: 'var(--text-muted)' }}>
+          <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-muted)', flexWrap: 'wrap' }}>
             <span>{property.bedrooms} Bedrooms</span>
+            <span style={{ opacity: 0.4 }}>·</span>
             <span>{property.bathrooms} Bathrooms</span>
-            <span>Sleeps {property.sleepsMin}–{property.sleepsMax}</span>
+            <span style={{ opacity: 0.4 }}>·</span>
+            <span>Sleeps {property.sleepsMax}</span>
+            {property.squareFeet && <><span style={{ opacity: 0.4 }}>·</span><span>{property.squareFeet.toLocaleString()} sq ft</span></>}
           </div>
         </div>
       </section>
@@ -159,6 +162,25 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 48 }}>
               {property.amenities.map(a => (
                 <span key={a} style={{ fontSize: 12, letterSpacing: 1, color: 'var(--cream)', border: '1px solid rgba(244,162,58,0.2)', padding: '8px 16px', borderRadius: 2, background: 'rgba(253,246,236,0.03)' }}>{a}</span>
+              ))}
+            </div>
+
+            {/* Property Details */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 0, marginBottom: 48, border: '1px solid rgba(244,162,58,0.12)' }}>
+              {[
+                { label: 'Check-in', value: property.checkIn || '4:00 PM' },
+                { label: 'Check-out', value: property.checkOut || '11:00 AM' },
+                { label: 'Bedrooms', value: String(property.bedrooms) },
+                { label: 'Bathrooms', value: String(property.bathrooms) },
+                { label: 'Max Guests', value: String(property.sleepsMax) },
+                ...(property.squareFeet ? [{ label: 'Living Area', value: `${property.squareFeet.toLocaleString()} sq ft` }] : []),
+                ...(property.address ? [{ label: 'Address', value: property.address }] : []),
+                { label: 'Pets', value: property.amenities.includes('Pet Friendly') ? 'Allowed (max 2)' : 'Not Allowed' },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ padding: '20px 24px', borderBottom: '1px solid rgba(244,162,58,0.08)', borderRight: '1px solid rgba(244,162,58,0.08)' }}>
+                  <p style={{ fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 6 }}>{label}</p>
+                  <p style={{ fontSize: 14, color: 'var(--cream)' }}>{value}</p>
+                </div>
               ))}
             </div>
 
