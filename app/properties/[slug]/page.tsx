@@ -18,8 +18,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const BASE = 'https://fabvacayvibes.com'
   const url = `${BASE}/properties/${property.slug}`
-  const title = `${property.name} — Luxury ${property.type} Rental | Fab Vacay Vibes`
-  const description = `${property.shortDesc} ${property.bedrooms} bedrooms, ${property.bathrooms} bathrooms, sleeps ${property.sleepsMin}-${property.sleepsMax}. Book direct from $${property.pricePerNight.toLocaleString()}/night.`
+  const locationStr = `${property.location}, ${property.state}`
+  const title = `${property.name} — Luxury ${property.type} Vacation Rental in ${locationStr} | Fab Vacay Vibes`
+  const description = `Book ${property.name}, a luxury ${property.bedrooms}-bedroom vacation rental in ${locationStr}. ${property.shortDesc} Sleeps ${property.sleepsMin}-${property.sleepsMax} guests from ${property.pricePerNight.toLocaleString()}/night. Book direct and save up to 15% vs Airbnb.`
 
   return {
     title,

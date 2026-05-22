@@ -84,7 +84,7 @@ export default function PhotoGallery({ photos, propertyName }: PhotoGalleryProps
           >
             <Image
               src={encodePhoto(photo)}
-              alt={`${propertyName} photo ${idx + 1}`}
+              alt={`${propertyName} - ${["exterior","living room","kitchen","bedroom","bathroom","pool","dining","outdoor","view","amenity"][idx % 10]} photo ${idx + 1} in ${propertyName}`}
               fill
               sizes="(max-width: 768px) 33vw, 25vw"
               style={{ objectFit: 'cover', transition: 'transform 0.4s ease' }}

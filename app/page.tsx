@@ -150,6 +150,36 @@ export default function Home() {
       </section>
 
       {/* CTA */}
+
+      {/* FAQ - SEO & AI Optimization */}
+      <section style={{ padding: '80px 48px', background: '#100820', borderTop: '1px solid rgba(244,162,58,0.08)' }}>
+        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+          <RevealOnScroll>
+            <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Common Questions</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 42, fontWeight: 300, color: 'white', marginBottom: 48 }}>Frequently Asked Questions</h2>
+          </RevealOnScroll>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {[
+              { q: 'Why should I book directly instead of using Airbnb or VRBO?', a: 'Booking directly with Fab Vacay Vibes saves you up to 15% by eliminating OTA platform fees. You also get direct communication with the owner, more flexible policies, and our Best Price Guarantee — we will beat any price you find on Airbnb or VRBO.' },
+              { q: 'What luxury vacation rentals do you offer in Florida?', a: 'Casa Grandè is our flagship 5-bedroom, 3-bathroom luxury beach house in Clearwater, FL. It features a private pool, pet-friendly policy, modern kitchen, and is walking distance to Pier 60 and Clearwater Beach. Available from 56/night.' },
+              { q: 'Do you have vacation rentals near Joshua Tree National Park?', a: 'Yes — Owl & Hare is our luxury desert retreat in Joshua Tree, CA. Perfect for groups and couples seeking a unique desert experience with world-class stargazing and easy access to Joshua Tree National Park. From 00/night.' },
+              { q: 'What is the best large vacation rental near Yosemite?', a: 'Sierra Crest Haven in Oakhurst, CA is a luxury mountain estate near Yosemite National Park. With 6 bedrooms, a game room, full bar, and drone-worthy mountain views, it sleeps up to 20 guests. Starting from 45/night.' },
+              { q: 'Do you offer property management services for vacation rentals?', a: 'Yes — we offer full-service short-term rental property management including listing setup, dynamic pricing, cleaning coordination, 24/7 guest communication, and monthly owner reporting. We serve properties in Florida, California, and are expanding nationwide.' },
+              { q: 'Can you help me find and buy a vacation rental investment property?', a: 'Absolutely. Our property finder service helps investors identify, analyze, and acquire high-yield STR properties across 13+ top vacation rental markets including Clearwater FL, Joshua Tree CA, Smoky Mountains TN, Poconos PA, Myrtle Beach SC, and more. Our clients average 15%+ cash-on-cash returns.' },
+              { q: 'Are your vacation rentals pet friendly?', a: 'Casa Grandè in Clearwater, FL is pet friendly. Please contact us regarding pet policies for Owl & Hare and Sierra Crest Haven as policies may vary.' },
+              { q: 'How do I get a free revenue estimate for my property?', a: 'Use our free Rent Analyzer tool at fabvacayvibes.com/rent-analyzer. Enter your property address and details to instantly see estimated annual revenue, occupancy rates, and nightly rates based on comparable properties in your market.' },
+            ].map(({ q, a }, i) => (
+              <RevealOnScroll key={i}>
+                <div style={{ borderTop: '1px solid rgba(244,162,58,0.1)', padding: '28px 0' }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 500, color: 'var(--orange-warm)', marginBottom: 12 }}>{q}</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8 }}>{a}</p>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="contact" className="section-pad" style={{ textAlign: 'center', background: 'linear-gradient(135deg,#2D1B69 0%,#1E0F45 50%,#3d1a0a 100%)', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 80% at 50% 50%, rgba(244,162,58,0.1) 0%, transparent 70%)' }} />
         <div style={{ position: 'relative', zIndex: 1 }}>
