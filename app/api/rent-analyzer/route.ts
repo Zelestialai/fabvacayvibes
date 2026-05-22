@@ -9,79 +9,50 @@ export async function POST(request: NextRequest) {
     }
 
     const AIRROI_KEY = process.env.AIRROI_API_KEY
-    const GOOGLE_KEY = process.env.GOOGLE_API_KEY
-
     if (!AIRROI_KEY) return NextResponse.json({ error: 'API key not configured' }, { status: 500 })
 
-    // Step 1: Geocode address using Google Maps
-    let lat: number, lng: number, formattedAddress: string
-
-    if (GOOGLE_KEY && placeId) {
-      // Use Places API (New) to get lat/lng from place_id directly
-      const placeRes = await fetch(
-        `https://places.googleapis.com/v1/places/${placeId}`,
-        {
-          headers: {
-            'X-Goog-Api-Key': process.env.GOOGLE_PLACES_API_KEY || GOOGLE_KEY,
-            'X-Goog-FieldMask': 'location,formattedAddress,displayName',
-          }
-        }
-      )
-      const placeData = await placeRes.json()
-      if (!placeData.location) {
-        return NextResponse.json({ error: 'Could not get location from address. Please try again.' }, { status: 400 })
-      }
-      lat = placeData.location.latitude
-      lng = placeData.location.longitude
-      formattedAddress = placeData.formattedAddress || address
-    } else if (GOOGLE_KEY) {
-      // Fallback: use Places API text search
-      const searchRes = await fetch(
-        `https://places.googleapis.com/v1/places:searchText`,
-        {
-          method: 'POST',
-          headers: {
-            'X-Goog-Api-Key': process.env.GOOGLE_PLACES_API_KEY || GOOGLE_KEY,
-            'X-Goog-FieldMask': 'places.location,places.formattedAddress',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ textQuery: address, includedType: 'locality', regionCode: 'US' })
-        }
-      )
-      const searchData = await searchRes.json()
-      const place = searchData.places?.[0]
-      if (!place?.location) {
-        return NextResponse.json({ error: 'Could not find that address. Please select from the autocomplete dropdown.' }, { status: 400 })
-      }
-      lat = place.location.latitude
-      lng = place.location.longitude
-      formattedAddress = place.formattedAddress || address
-    } else {
-      // Fallback: use nominatim (free geocoder)
-      const geoRes = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1`,
-        { headers: { 'User-Agent': 'FabVacayVibes/1.0' } }
-      )
-      const geoData = await geoRes.json()
-      if (!geoData?.[0]) {
-        return NextResponse.json({ error: 'Could not find that address.' }, { status: 400 })
-      }
-      lat = parseFloat(geoData[0].lat)
-      lng = parseFloat(geoData[0].lon)
-      formattedAddress = geoData[0].display_name
-    }
+    const PLACES_KEY = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_API_KEY
 
     const bedroomsInt = parseInt(bedrooms)
     const bathroomsFloat = parseFloat(bathrooms || bedrooms)
     const guestsInt = parseInt(guests) || bedroomsInt * 2
 
-    // Step 2: Call AirROI calculator endpoint (GET with query params)
+    // Step 1: Get lat/lng from place_id via Places API (New)
+    let lat: number | null = null
+    let lng: number | null = null
+    let formattedAddress = address
+
+    if (placeId && PLACES_KEY) {
+      const placeRes = await fetch(
+        `https://places.googleapis.com/v1/places/${placeId}`,
+        {
+          headers: {
+            'X-Goog-Api-Key': PLACES_KEY,
+            'X-Goog-FieldMask': 'location,formattedAddress',
+          }
+        }
+      )
+      if (placeRes.ok) {
+        const placeData = await placeRes.json()
+        if (placeData.location) {
+          lat = placeData.location.latitude
+          lng = placeData.location.longitude
+          formattedAddress = placeData.formattedAddress || address
+        }
+      }
+    }
+
+    // Step 2: Call AirROI - use lat/lng if available, otherwise pass address
     const calcUrl = new URL('https://api.airroi.com/calculator/estimate')
-    calcUrl.searchParams.set('latitude', String(lat))
-    calcUrl.searchParams.set('longitude', String(lng))
+    if (lat !== null && lng !== null) {
+      calcUrl.searchParams.set('latitude', String(lat))
+      calcUrl.searchParams.set('longitude', String(lng))
+    } else {
+      calcUrl.searchParams.set('address', address)
+    }
     calcUrl.searchParams.set('bedrooms', String(bedroomsInt))
-    calcUrl.searchParams.set('guests', String(guestsInt))
     calcUrl.searchParams.set('baths', String(bathroomsFloat))
+    calcUrl.searchParams.set('guests', String(guestsInt))
     calcUrl.searchParams.set('currency', 'usd')
 
     const calcRes = await fetch(calcUrl.toString(), {
@@ -90,43 +61,38 @@ export async function POST(request: NextRequest) {
     })
 
     const calcText = await calcRes.text()
-    console.log('AirROI response:', calcRes.status, calcText.substring(0, 500))
-    
+    console.log('AirROI calc response:', calcRes.status, calcText.substring(0, 500))
+
     if (!calcRes.ok) {
-      return NextResponse.json({ 
-        error: `AirROI error ${calcRes.status}: ${calcText.substring(0, 200)}`
+      return NextResponse.json({
+        error: `Could not estimate revenue for this location. ${calcText.substring(0, 150)}`
       }, { status: 400 })
     }
 
     const calcData = JSON.parse(calcText)
 
-    // Step 3: Get comparable listings for richer context
+    // Step 3: Get comparable listings
     const compsUrl = new URL('https://api.airroi.com/listings/comparables')
-    compsUrl.searchParams.set('latitude', String(lat))
-    compsUrl.searchParams.set('longitude', String(lng))
+    if (lat !== null && lng !== null) {
+      compsUrl.searchParams.set('latitude', String(lat))
+      compsUrl.searchParams.set('longitude', String(lng))
+    } else {
+      compsUrl.searchParams.set('address', address)
+    }
     compsUrl.searchParams.set('bedrooms', String(bedroomsInt))
     compsUrl.searchParams.set('baths', String(bathroomsFloat))
     compsUrl.searchParams.set('guests', String(guestsInt))
     compsUrl.searchParams.set('currency', 'usd')
 
-    let compsData = null
+    let comparables = null
     const compsRes = await fetch(compsUrl.toString(), {
       method: 'GET',
       headers: { 'x-api-key': AIRROI_KEY },
     })
     if (compsRes.ok) {
-      compsData = await compsRes.json()
+      const compsData = await compsRes.json()
+      comparables = compsData?.listings?.slice(0, 6) || null
     }
-
-    // Step 4: Get market info
-    const marketRes = await fetch('https://api.airroi.com/markets/lookup', {
-      method: 'GET',
-      headers: { 'x-api-key': AIRROI_KEY },
-      // markets/lookup may need different params - try with coords
-    })
-    // Actually markets/lookup is a GET - check docs say it takes lat/lng as query params or POST
-    // Let's use markets/search instead
-    let marketData = null
 
     return NextResponse.json({
       address: formattedAddress,
@@ -136,7 +102,7 @@ export async function POST(request: NextRequest) {
       bathrooms: bathroomsFloat,
       guests: guestsInt,
       estimate: calcData,
-      comparables: compsData?.listings?.slice(0, 6) || null,
+      comparables,
     })
 
   } catch (error) {
