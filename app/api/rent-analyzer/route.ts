@@ -16,24 +16,46 @@ export async function POST(request: NextRequest) {
     // Step 1: Geocode address using Google Maps
     let lat: number, lng: number, formattedAddress: string
 
-    if (GOOGLE_KEY) {
-      // Use place_id from autocomplete for accurate geocoding, fallback to address text
-      const geoQuery = placeId
-        ? `place_id:${placeId}`
-        : address
-      const geoRes = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(geoQuery)}&key=${GOOGLE_KEY}`
+    if (GOOGLE_KEY && placeId) {
+      // Use Places API (New) to get lat/lng from place_id directly
+      const placeRes = await fetch(
+        `https://places.googleapis.com/v1/places/${placeId}`,
+        {
+          headers: {
+            'X-Goog-Api-Key': process.env.GOOGLE_PLACES_API_KEY || GOOGLE_KEY,
+            'X-Goog-FieldMask': 'location,formattedAddress,displayName',
+          }
+        }
       )
-      const geoData = await geoRes.json()
-      if (geoData.status !== 'OK' || !geoData.results?.[0]) {
-        return NextResponse.json({ 
-          error: `Geocoding failed: ${geoData.status} for query: ${geoQuery}`,
-          debug: geoData 
-        }, { status: 400 })
+      const placeData = await placeRes.json()
+      if (!placeData.location) {
+        return NextResponse.json({ error: 'Could not get location from address. Please try again.' }, { status: 400 })
       }
-      lat = geoData.results[0].geometry.location.lat
-      lng = geoData.results[0].geometry.location.lng
-      formattedAddress = geoData.results[0].formatted_address
+      lat = placeData.location.latitude
+      lng = placeData.location.longitude
+      formattedAddress = placeData.formattedAddress || address
+    } else if (GOOGLE_KEY) {
+      // Fallback: use Places API text search
+      const searchRes = await fetch(
+        `https://places.googleapis.com/v1/places:searchText`,
+        {
+          method: 'POST',
+          headers: {
+            'X-Goog-Api-Key': process.env.GOOGLE_PLACES_API_KEY || GOOGLE_KEY,
+            'X-Goog-FieldMask': 'places.location,places.formattedAddress',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ textQuery: address, includedType: 'locality', regionCode: 'US' })
+        }
+      )
+      const searchData = await searchRes.json()
+      const place = searchData.places?.[0]
+      if (!place?.location) {
+        return NextResponse.json({ error: 'Could not find that address. Please select from the autocomplete dropdown.' }, { status: 400 })
+      }
+      lat = place.location.latitude
+      lng = place.location.longitude
+      formattedAddress = place.formattedAddress || address
     } else {
       // Fallback: use nominatim (free geocoder)
       const geoRes = await fetch(
