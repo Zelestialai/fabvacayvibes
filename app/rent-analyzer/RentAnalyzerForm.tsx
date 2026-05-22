@@ -71,6 +71,12 @@ export default function RentAnalyzerForm() {
   const [showLeadForm, setShowLeadForm] = useState(false)
   const [leadSubmitted, setLeadSubmitted] = useState(false)
   const [lead, setLead] = useState({ name: '', email: '', phone: '', role: 'owner' })
+  const [estimateCount, setEstimateCount] = useState(0)
+  const MAX_ESTIMATES = 3
+  // Simple math captcha
+  const [captcha] = useState(() => { const a = Math.floor(Math.random()*10)+1; const b = Math.floor(Math.random()*10)+1; return { a, b, answer: String(a+b) } })
+  const [captchaInput, setCaptchaInput] = useState('')
+  const [captchaError, setCaptchaError] = useState('')
 
   const selectSuggestion = (description: string, placeId: string, lat?: number, lng?: number) => {
     setForm(f => ({ ...f, address: description }))
@@ -90,6 +96,11 @@ export default function RentAnalyzerForm() {
 
   const submitLead = async () => {
     if (!lead.name.trim() || !lead.email.trim()) return
+    if (captchaInput.trim() !== captcha.answer) {
+      setCaptchaError('Incorrect answer. Please try again.')
+      return
+    }
+    setCaptchaError('')
     // Send lead to email
     await fetch('/api/lead-capture', {
       method: 'POST',
@@ -104,6 +115,10 @@ export default function RentAnalyzerForm() {
   const analyze = async () => {
     if (!form.address.trim()) { setError('Please enter a property address'); return }
     if (!leadSubmitted) { setShowLeadForm(true); return }
+    if (estimateCount >= MAX_ESTIMATES) {
+      setError(`You've used all ${MAX_ESTIMATES} free estimates. Contact us for more analysis!`)
+      return
+    }
     setLoading(true); setError(''); setResult(null)
     try {
       const res = await fetch('/api/rent-analyzer', {
@@ -114,6 +129,7 @@ export default function RentAnalyzerForm() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to analyze')
       setResult(data)
+      setEstimateCount(c => c + 1)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
     } finally {
@@ -232,9 +248,14 @@ export default function RentAnalyzerForm() {
           }}>
             {loading ? 'Analyzing Market Data...' : 'Get Revenue Estimate →'}
           </button>
-          <p style={{ fontSize: 11, color: 'rgba(253,246,236,0.3)', textAlign: 'center', marginTop: 12 }}>
-            Live market data · 20M+ properties · Instant results
-          </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
+            <p style={{ fontSize: 11, color: 'rgba(253,246,236,0.3)', margin: 0 }}>Live market data · 20M+ properties</p>
+            {leadSubmitted && (
+              <p style={{ fontSize: 11, color: estimateCount >= MAX_ESTIMATES ? '#ff8080' : 'rgba(244,162,58,0.6)', margin: 0 }}>
+                {MAX_ESTIMATES - estimateCount} free estimate{MAX_ESTIMATES - estimateCount !== 1 ? 's' : ''} remaining
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Results */}
@@ -363,7 +384,6 @@ export default function RentAnalyzerForm() {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div style={{ background: '#1E0F45', border: '1px solid rgba(244,162,58,0.3)', borderRadius: 8, padding: '48px 40px', maxWidth: 480, width: '100%', position: 'relative' }}>
             <button onClick={() => setShowLeadForm(false)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', color: 'rgba(253,246,236,0.4)', fontSize: 20, cursor: 'pointer' }}>✕</button>
-
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: '#F4A23A', marginBottom: 12 }}>Almost There</p>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, color: 'white', marginBottom: 8, lineHeight: 1.2 }}>
               Get Your Free Revenue Estimate
@@ -371,22 +391,18 @@ export default function RentAnalyzerForm() {
             <p style={{ fontSize: 13, color: 'rgba(253,246,236,0.6)', marginBottom: 28, lineHeight: 1.7 }}>
               Enter your details and we&apos;ll show you your property&apos;s earning potential — and how we can help you exceed it.
             </p>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
                 <label style={labelStyle}>Full Name *</label>
-                <input value={lead.name} onChange={setLead2('name')} placeholder="John Smith"
-                  style={inputStyle} />
+                <input value={lead.name} onChange={setLead2('name')} placeholder="John Smith" style={inputStyle} />
               </div>
               <div>
                 <label style={labelStyle}>Email Address *</label>
-                <input value={lead.email} onChange={setLead2('email')} placeholder="john@example.com" type="email"
-                  style={inputStyle} />
+                <input value={lead.email} onChange={setLead2('email')} placeholder="john@example.com" type="email" style={inputStyle} />
               </div>
               <div>
                 <label style={labelStyle}>Phone Number</label>
-                <input value={lead.phone} onChange={setLead2('phone')} placeholder="(555) 000-0000" type="tel"
-                  style={inputStyle} />
+                <input value={lead.phone} onChange={setLead2('phone')} placeholder="(555) 000-0000" type="tel" style={inputStyle} />
               </div>
               <div>
                 <label style={labelStyle}>I am a...</label>
@@ -397,23 +413,32 @@ export default function RentAnalyzerForm() {
                   <option value="other" style={{ background: '#1E0F45' }}>Just exploring</option>
                 </select>
               </div>
+              <div>
+                <label style={labelStyle}>Quick check: What is {captcha.a} + {captcha.b}? *</label>
+                <input
+                  value={captchaInput}
+                  onChange={e => { setCaptchaInput(e.target.value); setCaptchaError('') }}
+                  placeholder="Enter the answer"
+                  style={inputStyle}
+                  type="number"
+                />
+                {captchaError && <p style={{ fontSize: 11, color: '#ff8080', marginTop: 4 }}>{captchaError}</p>}
+              </div>
             </div>
-
             <button
               onClick={submitLead}
-              disabled={!lead.name.trim() || !lead.email.trim()}
+              disabled={!lead.name.trim() || !lead.email.trim() || !captchaInput.trim()}
               style={{
                 width: '100%', marginTop: 24, padding: '16px',
-                background: !lead.name.trim() || !lead.email.trim() ? 'rgba(244,162,58,0.3)' : '#F4A23A',
+                background: !lead.name.trim() || !lead.email.trim() || !captchaInput.trim() ? 'rgba(244,162,58,0.3)' : '#F4A23A',
                 color: '#1E0F45', border: 'none', borderRadius: 2,
                 fontSize: 13, letterSpacing: '2.5px', textTransform: 'uppercase',
-                fontWeight: 600, cursor: !lead.name.trim() || !lead.email.trim() ? 'default' : 'pointer',
+                fontWeight: 600, cursor: !lead.name.trim() || !lead.email.trim() || !captchaInput.trim() ? 'default' : 'pointer',
                 fontFamily: 'inherit',
               }}
             >
               Show My Revenue Estimate →
             </button>
-
             <p style={{ fontSize: 11, color: 'rgba(253,246,236,0.3)', textAlign: 'center', marginTop: 12 }}>
               No spam. We&apos;ll only reach out if you want us to.
             </p>
