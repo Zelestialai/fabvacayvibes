@@ -114,7 +114,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { slug, arrival, departure, adults, children, pets, guest } = body
+    const { slug, arrival, departure, adults, children, pets, guest, couponCode } = body
 
     if (!slug || !arrival || !departure || !guest?.email || !PROPERTY_EXTERNAL_IDS[slug]) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -150,6 +150,7 @@ export async function POST(request: NextRequest) {
         Adults: adults || 2, Children: children || 0, Pets: pets || 0,
         SendQuoteEmail: false,
         RedirectAfterBookingUrl: `${origin}/booking-confirmed`,
+        ...(couponCode ? { CouponCode: couponCode } : {}),
       }),
     })
     const quoteText = await quoteRes.text()

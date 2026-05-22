@@ -57,6 +57,8 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [guest, setGuest] = useState({ firstName: '', lastName: '', email: '', phone: '' })
+  const [couponCode, setCouponCode] = useState('')
+  const [couponApplied, setCouponApplied] = useState(false)
 
   const today = new Date().toISOString().split('T')[0]
 
@@ -106,7 +108,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
       const res = await fetch('/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: propertySlug, arrival, departure, adults, children, pets, guest }),
+        body: JSON.stringify({ slug: propertySlug, arrival, departure, adults, children, pets, guest, couponCode: couponCode.trim() || undefined }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Booking failed')
@@ -312,6 +314,33 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates }:
             <label style={labelStyle}>Phone Number</label>
             <input type="tel" value={guest.phone} onChange={e => setGuest(g => ({ ...g, phone: e.target.value }))} style={inputStyle} placeholder="+1 (555) 000-0000" />
           </div>
+
+          {/* Coupon Code */}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <label style={labelStyle}>Coupon / Promo Code</label>
+              <input
+                type="text"
+                value={couponCode}
+                onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponApplied(false) }}
+                style={{ ...inputStyle, textTransform: 'uppercase', letterSpacing: 2 }}
+                placeholder="ENTER CODE"
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+              <button
+                onClick={() => { if (couponCode.trim()) setCouponApplied(true) }}
+                style={{ padding: '12px 16px', background: couponApplied ? 'rgba(74,222,128,0.15)' : 'rgba(244,162,58,0.1)', border: `1px solid ${couponApplied ? 'rgba(74,222,128,0.4)' : 'rgba(244,162,58,0.3)'}`, color: couponApplied ? '#4ade80' : 'var(--orange)', fontSize: 11, letterSpacing: 1, cursor: 'pointer', borderRadius: 2, whiteSpace: 'nowrap', fontFamily: 'inherit' }}
+              >
+                {couponApplied ? '✓ Applied' : 'Apply'}
+              </button>
+            </div>
+          </div>
+          {couponApplied && (
+            <p style={{ fontSize: 11, color: '#4ade80', marginTop: -8 }}>
+              ✓ Coupon &quot;{couponCode}&quot; will be applied at checkout
+            </p>
+          )}
 
           {error && <p style={{ fontSize: 13, color: '#ff6b6b', background: 'rgba(255,107,107,0.1)', padding: '10px 14px', borderRadius: 2 }}>{error}</p>}
 
