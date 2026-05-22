@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { address, bedrooms, bathrooms, guests, placeId } = await request.json()
+    const { address, bedrooms, bathrooms, guests, placeId, lat: frontendLat, lng: frontendLng } = await request.json()
 
     if (!address || !bedrooms) {
       return NextResponse.json({ error: 'Address and bedrooms are required' }, { status: 400 })
@@ -17,12 +17,12 @@ export async function POST(request: NextRequest) {
     const bathroomsFloat = parseFloat(bathrooms || bedrooms)
     const guestsInt = parseInt(guests) || bedroomsInt * 2
 
-    // Step 1: Get coordinates
-    let lat: number | null = null
-    let lng: number | null = null
+    // Step 1: Get coordinates - use frontend-provided coords if available
+    let lat: number | null = frontendLat || null
+    let lng: number | null = frontendLng || null
     let formattedAddress = address
 
-    if (placeId && PLACES_KEY) {
+    if ((!lat || !lng) && placeId && PLACES_KEY) {
       try {
         const placeRes = await fetch(
           `https://places.googleapis.com/v1/places/${placeId}`,

@@ -67,10 +67,12 @@ export default function RentAnalyzerForm() {
   }
 
   const [selectedPlaceId, setSelectedPlaceId] = useState<string>('')
+  const [selectedCoords, setSelectedCoords] = useState<{lat: number; lng: number} | null>(null)
 
-  const selectSuggestion = (description: string, placeId: string) => {
+  const selectSuggestion = (description: string, placeId: string, lat?: number, lng?: number) => {
     setForm(f => ({ ...f, address: description }))
     setSelectedPlaceId(placeId)
+    setSelectedCoords(lat && lng ? { lat, lng } : null)
     setSuggestions([])
     setShowSuggestions(false)
   }
@@ -87,7 +89,7 @@ export default function RentAnalyzerForm() {
       const res = await fetch('/api/rent-analyzer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, placeId: selectedPlaceId }),
+        body: JSON.stringify({ ...form, placeId: selectedPlaceId, lat: selectedCoords?.lat, lng: selectedCoords?.lng }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to analyze')
@@ -131,7 +133,7 @@ export default function RentAnalyzerForm() {
             <div ref={wrapperRef} style={{ position: 'relative' }}>
               <input
                 value={form.address}
-                onChange={e => { set('address')(e); setSelectedPlaceId(''); fetchSuggestions(e.target.value) }}
+                onChange={e => { set('address')(e); setSelectedPlaceId(''); setSelectedCoords(null); fetchSuggestions(e.target.value) }}
                 onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                 placeholder="e.g. 123 Main St, Clearwater, FL"
                 style={inputStyle}
@@ -145,10 +147,10 @@ export default function RentAnalyzerForm() {
                   borderTop: 'none', borderRadius: '0 0 4px 4px',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
                 }}>
-                  {suggestions.map((s: {description: string; place_id: string}, i: number) => (
+                  {suggestions.map((s: {description: string; place_id: string; lat?: number; lng?: number}, i: number) => (
                     <button
                       key={s.place_id}
-                      onMouseDown={() => selectSuggestion(s.description, s.place_id)}
+                      onMouseDown={() => selectSuggestion(s.description, s.place_id, s.lat, s.lng)}
                       style={{
                         display: 'block', width: '100%', textAlign: 'left',
                         padding: '12px 16px', background: 'transparent', border: 'none',
