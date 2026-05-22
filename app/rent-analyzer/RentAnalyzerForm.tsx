@@ -101,13 +101,13 @@ export default function RentAnalyzerForm() {
     }
   }
 
-  const est = result?.estimate as Record<string, number> | undefined
-  // Handle different response shapes from AirROI
-  const annualRevenue = est?.annual_revenue || est?.projected_annual_revenue || est?.estimated_annual_revenue
-  const monthlyRevenue = est?.monthly_revenue || est?.projected_monthly_revenue
-  const finalAnnual = annualRevenue || (monthlyRevenue ? monthlyRevenue * 12 : null)
-  const occupancy = est?.occupancy_rate || est?.projected_occupancy || est?.avg_occupancy
-  const adr = est?.average_daily_rate || est?.avg_daily_rate || est?.adr || est?.projected_adr
+  const est = result?.estimate as Record<string, unknown> | undefined
+  const finalAnnual = est?.revenue as number | undefined
+  const occupancy = est?.occupancy as number | undefined
+  const adr = est?.average_daily_rate as number | undefined
+  const percentiles = est?.percentiles as Record<string, {avg: number; p25: number; p50: number; p75: number; p90: number}> | undefined
+  const monthlyDist = est?.monthly_revenue_distributions as number[] | undefined
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 
   return (
     <div style={{ background: '#1E0F45', minHeight: '100vh' }}>

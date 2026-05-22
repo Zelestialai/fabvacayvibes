@@ -95,18 +95,20 @@ export async function POST(request: NextRequest) {
       const compsRes = await fetch(compsUrl.toString(), { method: 'GET', headers: { 'x-api-key': AIRROI_KEY } })
       if (compsRes.ok) {
         const compsData = await compsRes.json()
-        comparables = compsData?.listings?.slice(0, 6) || null
+        comparables = (compsData?.comparable_listings || compsData?.listings)?.slice(0, 6) || null
       }
     } catch (e) {
       console.error('Comps error:', e)
     }
 
+    // Also grab comparables from the estimate response itself
+    const estimateComps = calcData?.comparable_listings?.slice(0, 6) || null
     return NextResponse.json({
       address: formattedAddress,
       latitude: lat,
       longitude: lng,
       estimate: calcData,
-      comparables,
+      comparables: comparables || estimateComps,
     })
 
   } catch (error) {
