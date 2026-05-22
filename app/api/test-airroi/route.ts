@@ -1,22 +1,35 @@
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const AIRROI_KEY = process.env.AIRROI_API_KEY
+  const AIRROI_KEY = process.env.AIRROI_API_KEY!
 
-  // Test with hardcoded Clearwater, FL coords
-  const url = new URL('https://api.airroi.com/calculator/estimate')
-  url.searchParams.set('latitude', '27.9659')
-  url.searchParams.set('longitude', '-82.8001')
-  url.searchParams.set('bedrooms', '3')
-  url.searchParams.set('baths', '2')
-  url.searchParams.set('guests', '6')
-  url.searchParams.set('currency', 'usd')
+  const results: Record<string, unknown> = {}
 
-  const res = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { 'X-API-KEY': AIRROI_KEY! },
+  // Test 1: GET with query params (current approach)
+  const url1 = 'https://api.airroi.com/calculator/estimate?latitude=27.9659&longitude=-82.8001&bedrooms=3&baths=2&guests=6&currency=usd'
+  const r1 = await fetch(url1, { method: 'GET', headers: { 'X-API-KEY': AIRROI_KEY } })
+  results['GET_queryparams'] = { status: r1.status, body: await r1.text() }
+
+  // Test 2: POST with JSON body
+  const r2 = await fetch('https://api.airroi.com/calculator/estimate', {
+    method: 'POST',
+    headers: { 'X-API-KEY': AIRROI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ latitude: 27.9659, longitude: -82.8001, bedrooms: 3, baths: 2, guests: 6, currency: 'usd' })
   })
+  results['POST_json'] = { status: r2.status, body: await r2.text() }
 
-  const text = await res.text()
-  return NextResponse.json({ status: res.status, url: url.toString(), response: text.substring(0, 1000) })
+  // Test 3: GET with address string
+  const url3 = 'https://api.airroi.com/calculator/estimate?address=Clearwater,FL&bedrooms=3&baths=2&guests=6&currency=usd'
+  const r3 = await fetch(url3, { method: 'GET', headers: { 'X-API-KEY': AIRROI_KEY } })
+  results['GET_address'] = { status: r3.status, body: await r3.text() }
+
+  // Test 4: POST with address
+  const r4 = await fetch('https://api.airroi.com/calculator/estimate', {
+    method: 'POST',
+    headers: { 'X-API-KEY': AIRROI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ address: 'Clearwater, FL', bedrooms: 3, baths: 2, guests: 6, currency: 'usd' })
+  })
+  results['POST_address'] = { status: r4.status, body: await r4.text() }
+
+  return NextResponse.json(results)
 }
