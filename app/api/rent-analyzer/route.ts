@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
     const calcUrl = new URL('https://api.airroi.com/calculator/estimate')
     
     if (lat !== null && lng !== null) {
-      calcUrl.searchParams.set('latitude', lat.toFixed(6))
-      calcUrl.searchParams.set('longitude', lng.toFixed(6))
+      calcUrl.searchParams.set('lat', lat.toFixed(6))
+      calcUrl.searchParams.set('lng', lng.toFixed(6))
     } else {
       // Strip ", USA" suffix that AirROI may not like
       const cleanAddress = address.replace(/, USA$/, '').replace(/, United States$/, '')
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     const calcRes = await fetch(calcUrl.toString(), {
       method: 'GET',
-      headers: { 'X-API-KEY': AIRROI_KEY },
+      headers: { 'x-api-key': AIRROI_KEY },
     })
 
     const calcText = await calcRes.text()
@@ -81,8 +81,8 @@ export async function POST(request: NextRequest) {
     try {
       const compsUrl = new URL('https://api.airroi.com/listings/comparables')
       if (lat !== null && lng !== null) {
-        compsUrl.searchParams.set('latitude', lat.toFixed(6))
-        compsUrl.searchParams.set('longitude', lng.toFixed(6))
+        compsUrl.searchParams.set('lat', lat.toFixed(6))
+        compsUrl.searchParams.set('lng', lng.toFixed(6))
       } else {
         const cleanAddress = address.replace(/, USA$/, '').replace(/, United States$/, '')
         compsUrl.searchParams.set('address', cleanAddress)
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       compsUrl.searchParams.set('guests', String(guestsInt))
       compsUrl.searchParams.set('currency', 'usd')
 
-      const compsRes = await fetch(compsUrl.toString(), { method: 'GET', headers: { 'X-API-KEY': AIRROI_KEY } })
+      const compsRes = await fetch(compsUrl.toString(), { method: 'GET', headers: { 'x-api-key': AIRROI_KEY } })
       if (compsRes.ok) {
         const compsData = await compsRes.json()
         comparables = compsData?.listings?.slice(0, 6) || null
