@@ -14,7 +14,7 @@ export async function GET() {
 
   const res = await fetch(url.toString(), {
     method: 'GET',
-    headers: { 'x-api-key': AIRROI_KEY! },
+    headers: { 'X-API-KEY': AIRROI_KEY! },
   })
 
   const text = await res.text()

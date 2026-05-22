@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     const calcRes = await fetch(calcUrl.toString(), {
       method: 'GET',
-      headers: { 'x-api-key': AIRROI_KEY },
+      headers: { 'X-API-KEY': AIRROI_KEY },
     })
 
     const calcText = await calcRes.text()
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       compsUrl.searchParams.set('guests', String(guestsInt))
       compsUrl.searchParams.set('currency', 'usd')
 
-      const compsRes = await fetch(compsUrl.toString(), { method: 'GET', headers: { 'x-api-key': AIRROI_KEY } })
+      const compsRes = await fetch(compsUrl.toString(), { method: 'GET', headers: { 'X-API-KEY': AIRROI_KEY } })
       if (compsRes.ok) {
         const compsData = await compsRes.json()
         comparables = compsData?.listings?.slice(0, 6) || null
