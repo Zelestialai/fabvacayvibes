@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     const guestData = JSON.parse(guestText)
 
     // Create quote via legacy API
-    const origin = request.headers.get('origin') || 'https://fabvacayvibes.vercel.app'
+    const origin = request.headers.get('origin') || 'https://fabvacayvibes.com'
     const quoteRes = await fetch(`${LEGACY}/quotes`, {
       method: 'POST',
       headers: getHeaders(creds),
