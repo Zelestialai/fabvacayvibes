@@ -43,6 +43,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+// Fetch custom description from Blob if available
+async function getCustomDescription(slug: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/content/descriptions/${slug}.txt`,
+      { next: { revalidate: 300 } } // cache 5 mins
+    )
+    if (res.ok) {
+      const text = await res.text()
+      return text.trim() || null
+    }
+  } catch {}
+  return null
+}
+
 // Fetch booked dates server-side for initial render
 async function getBookedDates(slug: string): Promise<string[]> {
   try {
@@ -65,7 +80,10 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
   const property = properties.find(p => p.slug === slug)
   if (!property) notFound()
 
-  const bookedDates = await getBookedDates(slug)
+  const [bookedDates, customDescription] = await Promise.all([
+    getBookedDates(slug),
+    getCustomDescription(slug),
+  ])
   const bookedSet = new Set(bookedDates)
 
   return (
