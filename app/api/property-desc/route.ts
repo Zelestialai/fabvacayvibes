@@ -18,21 +18,34 @@ export async function GET(request: NextRequest) {
 
   const results: Record<string, unknown> = {}
 
-  // Try various legacy API endpoints
-  const endpoints = [
+  // Try all known OwnerRez v2 sub-resources
+  const v2Endpoints = [
     `/properties/${id}`,
-    `/properties/${id}/descriptions`,
-    `/properties/${id}/listing`,
-    `/properties/${id}/content`,
+    `/properties/${id}/photos`,
+    `/properties/${id}/amenities`,
+    `/properties/${id}/rates`,
+    `/properties/${id}/surcharges`,
+    `/properties/${id}/taxes`,
+    `/properties/${id}/seasons`,
+    `/properties/${id}/availability`,
+    `/properties/${id}/checkinmethods`,
+    `/properties/${id}/rulesandpolicies`,
+    `/listings`,
   ]
 
-  for (const ep of endpoints) {
-    const res = await fetch(`https://app.ownerrez.com/api${ep}`, { headers })
-    const text = await res.text()
-    try {
-      results[ep] = { status: res.status, data: JSON.parse(text) }
-    } catch {
-      results[ep] = { status: res.status, raw: text.substring(0, 500) }
+  for (const ep of v2Endpoints) {
+    const res = await fetch(`https://api.ownerrez.com/v2${ep}`, { headers })
+    if (res.ok) {
+      const data = await res.json()
+      // Only show if has description-like fields
+      const str = JSON.stringify(data)
+      if (str.includes('description') || str.includes('summary') || str.includes('headline') || str.includes('name')) {
+        results[`v2${ep}`] = data
+      } else {
+        results[`v2${ep}`] = `OK but no description fields. Keys: ${Object.keys(data).join(', ')}`
+      }
+    } else {
+      results[`v2${ep}`] = `${res.status}`
     }
   }
 
