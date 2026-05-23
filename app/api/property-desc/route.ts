@@ -16,14 +16,25 @@ export async function GET(request: NextRequest) {
   const creds = Buffer.from(`${email}:${token}`).toString('base64')
   const headers = { 'Authorization': `Basic ${creds}`, 'User-Agent': 'FabVacayVibes/1.0' }
 
-  // Try multiple endpoints to find descriptions
-  const [descRes, fieldRes] = await Promise.all([
-    fetch(`https://api.ownerrez.com/v2/properties/${id}/descriptions`, { headers }),
-    fetch(`https://api.ownerrez.com/v2/properties/${id}/fields`, { headers }),
-  ])
+  const results: Record<string, unknown> = {}
 
-  const desc = descRes.ok ? await descRes.json() : { status: descRes.status }
-  const fields = fieldRes.ok ? await fieldRes.json() : { status: fieldRes.status }
+  // Try various legacy API endpoints
+  const endpoints = [
+    `/properties/${id}`,
+    `/properties/${id}/descriptions`,
+    `/properties/${id}/listing`,
+    `/properties/${id}/content`,
+  ]
 
-  return NextResponse.json({ slug, id, descriptions: desc, fields })
+  for (const ep of endpoints) {
+    const res = await fetch(`https://app.ownerrez.com/api${ep}`, { headers })
+    const text = await res.text()
+    try {
+      results[ep] = { status: res.status, data: JSON.parse(text) }
+    } catch {
+      results[ep] = { status: res.status, raw: text.substring(0, 500) }
+    }
+  }
+
+  return NextResponse.json(results)
 }
