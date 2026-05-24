@@ -6,6 +6,7 @@ import BookingFlow from '../../components/BookingFlow'
 import InquiryForm from '../../components/InquiryForm'
 import AvailabilityCalendar from '../../components/AvailabilityCalendar'
 import PhotoGallery from '../../components/PhotoGallery'
+import ExpandableDescription from '../../components/ExpandableDescription'
 
 export async function generateStaticParams() {
   return properties.map(p => ({ slug: p.slug }))
@@ -162,13 +163,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
             </div>
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>About This Property</p>
-            <div style={{ marginBottom: 40 }}>
-              {(customDescription || property.description).split('\n\n').filter((p: string) => p.trim()).map((para: string, i: number) => (
-                <p key={i} style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, lineHeight: 1.8, color: 'var(--cream)', marginBottom: 20 }}>
-                  {para.trim()}
-                </p>
-              ))}
-            </div>
+            <ExpandableDescription description={customDescription || property.description} />
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 20 }}>Highlights</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 40 }}>
