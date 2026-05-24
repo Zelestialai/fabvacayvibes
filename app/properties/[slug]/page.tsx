@@ -162,9 +162,13 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
             </div>
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>About This Property</p>
-            <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 20, lineHeight: 1.7, color: 'var(--cream)', marginBottom: 40 }}>
-              {property.description}
-            </p>
+            <div style={{ marginBottom: 40 }}>
+              {(customDescription || property.description).split('\n\n').filter((p: string) => p.trim()).map((para: string, i: number) => (
+                <p key={i} style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, lineHeight: 1.8, color: 'var(--cream)', marginBottom: 20 }}>
+                  {para.trim()}
+                </p>
+              ))}
+            </div>
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 20 }}>Highlights</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 40 }}>
