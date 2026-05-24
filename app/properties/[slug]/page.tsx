@@ -126,7 +126,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
 
       {/* HERO */}
       <section style={{ position: 'relative', height: '70vh', overflow: 'hidden', minHeight: 500 }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${property.photos?.[0] ? encodeURIComponent(property.photos[0]).replace(/%2F/g, '/') : property.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${property.photos?.[0] || property.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(30,15,69,0.95) 0%, rgba(30,15,69,0.2) 60%, transparent 100%)' }} />
         <div className="hero-text-pad" style={{ position: 'absolute', left: 0, right: 0, maxWidth: 900 }}>
           <span style={{ display: 'inline-block', fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', border: '1px solid rgba(244,162,58,0.4)', padding: '5px 12px', borderRadius: 1, marginBottom: 16 }}>
