@@ -1,3 +1,4 @@
+import { sendLeadEmail } from '../../lib/email'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -28,6 +29,9 @@ export async function POST(request: NextRequest) {
 
     // Log to console for Vercel logs
     console.log('New Rent Analyzer Lead:', { name, email, phone, role, address, bedrooms })
+    try {
+      await sendLeadEmail({ name, email, phone, role, address, bedrooms, bathrooms, guests })
+    } catch (e) { console.error('Email error:', e) }
 
     return NextResponse.json({ success: true })
   } catch (error) {
