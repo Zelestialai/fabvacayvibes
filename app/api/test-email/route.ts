@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const resend = new Resend(key)
     const result = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'Fab Vacay Vibes <noreply@fabvacayvibes.com>',
       to: 'FabVacayVibes@gmail.com',
       subject: 'Test Email from Fab Vacay Vibes',
       html: '<p>This is a test email. If you see this, Resend is working!</p>',

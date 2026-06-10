@@ -4,7 +4,7 @@ function getResend() {
   return new Resend(process.env.RESEND_API_KEY)
 }
 
-const FROM = 'Fab Vacay Vibes <onboarding@resend.dev>'
+const FROM = 'Fab Vacay Vibes <noreply@fabvacayvibes.com>'
 const TO = 'FabVacayVibes@gmail.com'
 
 export async function sendInquiryEmail({
