@@ -1,6 +1,8 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY)
+}
 
 const FROM = 'Fab Vacay Vibes <onboarding@resend.dev>'
 const TO = 'FabVacayVibes@gmail.com'
@@ -18,7 +20,7 @@ export async function sendInquiryEmail({
   adults?: number
   message: string
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: TO,
     replyTo: email,
@@ -64,7 +66,7 @@ export async function sendLeadEmail({
   bathrooms: string
   guests: string
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: TO,
     replyTo: email,
@@ -102,7 +104,7 @@ export async function sendServiceInquiryEmail({
   service: string
   message: string
 }) {
-  return resend.emails.send({
+  return getResend().emails.send({
     from: FROM,
     to: TO,
     replyTo: email,

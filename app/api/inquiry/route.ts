@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       // Try alternative: send as a message/thread
       try {
         const property = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
-        await sendInquiryEmail({ propertyName: property.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
+        await sendInquiryEmail({ propertyName: property.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
       } catch (e) { console.error('Email error:', e) }
       return NextResponse.json({
         success: true,
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     // Send email notification
     try {
       const property = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
-      await sendInquiryEmail({ propertyName: property.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
+      await sendInquiryEmail({ propertyName: property.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
     } catch (e) { console.error('Email error:', e) }
 
     return NextResponse.json({
