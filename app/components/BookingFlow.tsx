@@ -5,6 +5,12 @@ interface BookingFlowProps {
   propertySlug: string
   propertyName: string
   bookedDates: Set<string>
+  initialDates?: {
+    arrival?: string
+    departure?: string
+    adults?: number
+    children?: number
+  }
 }
 
 type Step = 'dates' | 'quote' | 'guest' | 'redirect'
@@ -46,12 +52,12 @@ const labelStyle = {
   display: 'block',
 }
 
-export default function BookingFlow({ propertySlug, propertyName, bookedDates }: BookingFlowProps) {
+export default function BookingFlow({ propertySlug, propertyName, bookedDates, initialDates }: BookingFlowProps) {
   const [step, setStep] = useState<Step>('dates')
-  const [arrival, setArrival] = useState('')
-  const [departure, setDeparture] = useState('')
-  const [adults, setAdults] = useState(2)
-  const [children, setChildren] = useState(0)
+  const [arrival, setArrival] = useState(initialDates?.arrival || '')
+  const [departure, setDeparture] = useState(initialDates?.departure || '')
+  const [adults, setAdults] = useState(initialDates?.adults || 2)
+  const [children, setChildren] = useState(initialDates?.children || 0)
   const [pets, setPets] = useState(0)
   const [quote, setQuote] = useState<Quote | null>(null)
   const [loading, setLoading] = useState(false)

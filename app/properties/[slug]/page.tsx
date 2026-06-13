@@ -76,8 +76,15 @@ async function getBookedDates(slug: string): Promise<string[]> {
   }
 }
 
-export default async function PropertyPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PropertyPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { slug } = await params
+  const sp = await searchParams
+  const initialDates = {
+    arrival: typeof sp.arrival === 'string' ? sp.arrival : undefined,
+    departure: typeof sp.departure === 'string' ? sp.departure : undefined,
+    adults: typeof sp.adults === 'string' ? parseInt(sp.adults) : undefined,
+    children: typeof sp.children === 'string' ? parseInt(sp.children) : undefined,
+  }
   const property = properties.find(p => p.slug === slug)
   if (!property) notFound()
 
@@ -214,6 +221,7 @@ export default async function PropertyPage({ params }: { params: Promise<{ slug:
               propertySlug={property.slug}
               propertyName={property.name}
               bookedDates={bookedSet}
+              initialDates={initialDates}
             />
             <div style={{ marginTop: 16, padding: 24, background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.1)', borderRadius: 4, textAlign: 'center' }}>
               <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>Questions? Contact us directly</p>
