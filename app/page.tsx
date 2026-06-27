@@ -1,6 +1,7 @@
 import Nav from './components/Nav'
 import PropertyCard from './components/PropertyCard'
 import RevealOnScroll from './components/RevealOnScroll'
+import HeroSlideshow from './components/HeroSlideshow'
 import { properties } from './lib/properties'
 
 export default function Home() {
