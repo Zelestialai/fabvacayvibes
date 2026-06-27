@@ -152,6 +152,54 @@ export default function Home() {
       {/* CTA */}
 
 
+      {/* ABOUT */}
+      <section id="about" style={{ padding: '96px 48px', background: 'linear-gradient(160deg, #1a0d3d 0%, #120826 100%)', borderTop: '1px solid rgba(244,162,58,0.08)' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 80, alignItems: 'center' }}>
+          
+          {/* Left — decorative stat block */}
+          <RevealOnScroll>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', padding: '32px 36px', borderRadius: 3 }}>
+                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 64, color: '#F4A23A', fontWeight: 300, lineHeight: 1, marginBottom: 8 }}>3+</p>
+                <p style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(253,246,236,0.5)' }}>Years of Hosting</p>
+              </div>
+              <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', padding: '32px 36px', borderRadius: 3 }}>
+                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 64, color: '#F4A23A', fontWeight: 300, lineHeight: 1, marginBottom: 8 }}>5★</p>
+                <p style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(253,246,236,0.5)' }}>Average Guest Rating</p>
+              </div>
+              <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', padding: '32px 36px', borderRadius: 3 }}>
+                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 64, color: '#F4A23A', fontWeight: 300, lineHeight: 1, marginBottom: 8 }}>3</p>
+                <p style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(253,246,236,0.5)' }}>Luxury Properties</p>
+              </div>
+            </div>
+          </RevealOnScroll>
+
+          {/* Right — story */}
+          <RevealOnScroll delay={150}>
+            <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: '#F4A23A', marginBottom: 16 }}>Meet Your Hosts</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4vw,48px)', fontWeight: 300, color: 'white', lineHeight: 1.15, marginBottom: 32 }}>
+              A family built on<br /><em style={{ color: '#F7C05A', fontStyle: 'italic' }}>hospitality & travel.</em>
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {[
+                "Hi, I'm Sonya! I'm a healthcare administrator by profession and the founder & CEO of Fab Vacay Vibes, a luxury vacation rental company built on a passion for creating exceptional guest experiences.",
+                "My co-host and husband, Daksh, is a Principal Software Engineer, and together with our beloved fur-baby, we share a love for exploring new places and making lasting memories. Our journey into hosting and managing was inspired by the incredible hospitality we've experienced while traveling around the world. We wanted to create the kind of stay that leaves guests feeling welcomed, cared for, and excited to return.",
+                "When we're not hosting, you'll usually find us traveling, hiking scenic trails, wine tasting, or enjoying a relaxing picnic outdoors. And on quieter days, I'm happiest curled up on the couch with our doggo, embracing a well-earned lazy afternoon.",
+                "Whether you're visiting for a family vacation, a celebration, or simply a peaceful getaway, we're committed to making your stay comfortable, memorable, and filled with thoughtful touches. We look forward to welcoming you!"
+              ].map((para, i) => (
+                <p key={i} style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.85 }}>{para}</p>
+              ))}
+            </div>
+            <div style={{ marginTop: 40, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <a href="#properties" style={{ display: 'inline-block', background: '#F4A23A', color: '#1E0F45', padding: '13px 28px', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 600, borderRadius: 2, textDecoration: 'none' }}>View Our Properties</a>
+              <a href="#contact" style={{ display: 'inline-block', border: '1px solid rgba(244,162,58,0.4)', color: '#F4A23A', padding: '13px 28px', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', fontWeight: 400, borderRadius: 2, textDecoration: 'none' }}>Get in Touch</a>
+            </div>
+          </RevealOnScroll>
+
+        </div>
+      </section>
+
+
       {/* Brand Philosophy Quote */}
       <section style={{ padding: '80px 48px', background: 'linear-gradient(135deg, #0d0620 0%, #1a0d3d 50%, #0d0620 100%)', borderTop: '1px solid rgba(244,162,58,0.08)', borderBottom: '1px solid rgba(244,162,58,0.08)' }}>
         <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
