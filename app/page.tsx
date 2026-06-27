@@ -151,6 +151,23 @@ export default function Home() {
 
       {/* CTA */}
 
+
+      {/* Brand Philosophy Quote */}
+      <section style={{ padding: '80px 48px', background: 'linear-gradient(135deg, #0d0620 0%, #1a0d3d 50%, #0d0620 100%)', borderTop: '1px solid rgba(244,162,58,0.08)', borderBottom: '1px solid rgba(244,162,58,0.08)' }}>
+        <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
+          <RevealOnScroll>
+            <div style={{ marginBottom: 24, display: 'flex', justifyContent: 'center', gap: 12, alignItems: 'center' }}>
+              <div style={{ height: 1, width: 48, background: 'rgba(244,162,58,0.4)' }} />
+              <span style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: '#F4A23A' }}>Our Philosophy</span>
+              <div style={{ height: 1, width: 48, background: 'rgba(244,162,58,0.4)' }} />
+            </div>
+            <blockquote style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 28, fontWeight: 300, fontStyle: 'italic', color: 'var(--cream)', lineHeight: 1.7, margin: '0 0 32px' }}>
+              &ldquo;At Fab Vacay Vibes, we believe luxury isn&apos;t just about beautiful homes&mdash;it&apos;s about thoughtful hospitality, exceptional service, and creating experiences you&apos;ll remember long after your trip ends. We can&apos;t wait to host you!&rdquo;
+            </blockquote>
+            <p style={{ fontSize: 12, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(244,162,58,0.7)' }}>— The Fab Vacay Vibes Team</p>
+          </RevealOnScroll>
+        </div>
+      </section>
       {/* FAQ - SEO & AI Optimization */}
       <section style={{ padding: '80px 48px', background: '#100820', borderTop: '1px solid rgba(244,162,58,0.08)' }}>
         <div style={{ maxWidth: 860, margin: '0 auto' }}>
