@@ -15,35 +15,12 @@ export default function Home() {
         display: 'flex', flexDirection: 'column',
         justifyContent: 'center', alignItems: 'center',
         textAlign: 'center', overflow: 'hidden',
-        padding: '120px 24px 80px',
+        padding: '120px 24px 160px',
+        background: '#0a041e',
       }}>
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: `radial-gradient(ellipse 80% 60% at 50% 80%, rgba(244,162,58,0.18) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 20% 20%, rgba(74,26,107,0.6) 0%, transparent 50%),
-            linear-gradient(175deg, #1E0F45 0%, #2D1B69 40%, #1A0D3D 100%)`,
-        }} />
-        <div style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
-            radial-gradient(1.5px 1.5px at 55% 15%, rgba(247,192,90,0.7) 0%, transparent 100%),
-            radial-gradient(1px 1px at 75% 8%, rgba(255,255,255,0.5) 0%, transparent 100%),
-            radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,0.3) 0%, transparent 100%)`,
-        }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 280, background: 'linear-gradient(to top, rgba(232,98,26,0.25) 0%, rgba(244,162,58,0.1) 40%, transparent 100%)' }} />
-        <svg style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '100%', height: 220, pointerEvents: 'none' }} viewBox="0 0 1440 220" preserveAspectRatio="none">
-          <polygon points="0,220 180,80 360,220" fill="#2D1B69" opacity="0.7"/>
-          <polygon points="200,220 420,60 640,220" fill="#1A0D3D" opacity="0.9"/>
-          <polygon points="500,220 720,90 940,220" fill="#2D1B69" opacity="0.7"/>
-          <polygon points="760,220 980,70 1200,220" fill="#1A0D3D" opacity="0.9"/>
-          <polygon points="1040,220 1240,85 1440,220" fill="#2D1B69" opacity="0.7"/>
-          <polygon points="0,220 280,120 560,220" fill="#100820" opacity="0.85"/>
-          <polygon points="400,220 680,105 960,220" fill="#100820" opacity="0.85"/>
-          <polygon points="800,220 1080,115 1360,220" fill="#100820" opacity="0.85"/>
-          <rect x="0" y="200" width="1440" height="20" fill="#100820"/>
-        </svg>
+        <HeroSlideshow />
 
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 760 }}>
+        <div style={{ position: 'relative', zIndex: 5, maxWidth: 760 }}>
           <p style={{ fontSize: 11, letterSpacing: 5, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 28, opacity: 0, animation: 'fadeUp 0.8s ease 0.2s forwards' }}>
             Beach · Mountain · Desert
           </p>
