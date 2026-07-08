@@ -47,7 +47,11 @@ export default function Nav() {
         transition: 'background 0.4s, backdrop-filter 0.4s',
       }}>
         <Link href="/" style={{ textDecoration: 'none', zIndex: 101, display: 'flex', alignItems: 'center' }}>
-          <img src="/logo-gold.png" alt="Fab Vacay Vibes" height={52} style={{ height: 52, width: 'auto', filter: 'drop-shadow(0 0 8px rgba(244,162,58,0.3))' }} />
+          <img src="/logo-gold.png" alt="Fab Vacay Vibes" style={{ height: 70, width: 'auto', filter: 'drop-shadow(0 0 8px rgba(244,162,58,0.3))' }} />
+          <div style={{ marginLeft: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, fontWeight: 400, color: 'white', letterSpacing: 1, lineHeight: 1.1 }}>FAB<br/>VACAY VIBES</span>
+            <span style={{ fontSize: 7.5, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(244,162,58,0.7)', marginTop: 3 }}>Luxury Vacation Rentals</span>
+          </div>
         </Link>
 
         {/* Desktop links */}
