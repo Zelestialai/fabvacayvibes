@@ -67,9 +67,12 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/logo-icon.svg',
-    shortcut: '/logo-icon.svg',
-    apple: '/logo-icon.svg',
+    icon: [
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
   verification: {
     google: 'Cz-26RV5AEDSoEL2EP62W4WVMlYQtvAVAnblsvHLcU8',
@@ -82,7 +85,7 @@ const orgSchema = {
   '@type': 'LodgingBusiness',
   name: 'Fab Vacay Vibes',
   url: BASE_URL,
-  logo: `${BASE_URL}/logo.svg`,
+  logo: `${BASE_URL}/logo-gold.png`,
   image: `${BASE_URL}/og-image.svg`,
   description: 'Luxury vacation rentals in Clearwater FL, Joshua Tree CA, and Oakhurst CA near Yosemite. Book direct and save up to 15%. Also offering full-service STR property management and investment property finder services nationwide.',
   telephone: '+17273869642',

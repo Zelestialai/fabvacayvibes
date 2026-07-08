@@ -243,7 +243,7 @@ export default function Home() {
         <div className="footer-inner">
           <div>
             <a href="/" style={{ textDecoration: 'none', display: 'block', marginBottom: 12 }}>
-              <img src="/logo.svg" alt="Fab Vacay Vibes" style={{ height: 48, width: 'auto' }} />
+              <img src="/logo-gold.png" alt="Fab Vacay Vibes" style={{ height: 64, width: 'auto', filter: 'drop-shadow(0 0 10px rgba(244,162,58,0.2))' }} />
             </a>
             <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.6, maxWidth: 260 }}>Luxury vacation rentals across America&apos;s most stunning landscapes.</p>
           </div>

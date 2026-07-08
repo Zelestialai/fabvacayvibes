@@ -47,7 +47,7 @@ export default function Nav() {
         transition: 'background 0.4s, backdrop-filter 0.4s',
       }}>
         <Link href="/" style={{ textDecoration: 'none', zIndex: 101, display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.svg" alt="Fab Vacay Vibes" height={44} style={{ height: 44, width: 'auto' }} />
+          <img src="/logo-gold.png" alt="Fab Vacay Vibes" height={52} style={{ height: 52, width: 'auto', filter: 'drop-shadow(0 0 8px rgba(244,162,58,0.3))' }} />
         </Link>
 
         {/* Desktop links */}
