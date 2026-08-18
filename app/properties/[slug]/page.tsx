@@ -44,6 +44,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+// Fetch synced OwnerRez data from Blob
+async function getSyncedData(slug: string) {
+  try {
+    const res = await fetch(
+      `https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/content/sync/${slug}.json`,
+      { next: { revalidate: 3600 } } // cache 1 hour
+    )
+    if (res.ok) return await res.json()
+  } catch {}
+  return null
+}
+
 // Fetch custom description from Blob if available
 async function getCustomDescription(slug: string): Promise<string | null> {
   try {
@@ -88,10 +100,22 @@ export default async function PropertyPage({ params, searchParams }: { params: P
   const property = properties.find(p => p.slug === slug)
   if (!property) notFound()
 
-  const [bookedDates, customDescription] = await Promise.all([
+  const [bookedDates, customDescription, syncedData] = await Promise.all([
     getBookedDates(slug),
     getCustomDescription(slug),
+    getSyncedData(slug),
   ])
+
+  // Merge synced OwnerRez data with local property data (synced takes priority)
+  const mergedProperty = {
+    ...property,
+    bedrooms: syncedData?.bedrooms ?? property.bedrooms,
+    bathrooms: syncedData?.bathrooms ?? property.bathrooms,
+    sleepsMax: syncedData?.max_guests ?? property.sleepsMax,
+    squareFeet: syncedData?.living_area ?? property.squareFeet,
+    checkIn: syncedData?.check_in ? syncedData.check_in.replace(':00', '').replace('16', '4:00 PM').replace('15', '3:00 PM') : property.checkIn,
+    checkOut: syncedData?.check_out ? syncedData.check_out.replace(':00', '').replace('11', '11:00 AM').replace('10', '10:00 AM') : property.checkOut,
+  }
   const bookedSet = new Set(bookedDates)
 
   return (
@@ -143,12 +167,13 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             {property.name}
           </h1>
           <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-muted)', flexWrap: 'wrap' }}>
-            <span>{property.bedrooms} Bedrooms</span>
+            <span>{mergedProperty.bedrooms} Bedrooms</span>
             <span style={{ opacity: 0.4 }}>·</span>
-            <span>{property.bathrooms} Bathrooms</span>
+            <span>{mergedProperty.bathrooms} Bathrooms</span>
             <span style={{ opacity: 0.4 }}>·</span>
-            <span>Sleeps {property.sleepsMax}</span>
-            {property.squareFeet && <><span style={{ opacity: 0.4 }}>·</span><span>{property.squareFeet.toLocaleString()} sq ft</span></>}
+            <span>Sleeps {mergedProperty.sleepsMax}</span>
+            {mergedProperty.squareFeet && <><span style={{ opacity: 0.4 }}>·</span><span>{mergedProperty.squareFeet.toLocaleString()} sq ft</span></>}
+            {syncedData?.syncedAt && <><span style={{ opacity: 0.4 }}>·</span><span style={{ fontSize: 10, opacity: 0.4 }}>Updated {new Date(syncedData.syncedAt).toLocaleDateString()}</span></>}
           </div>
         </div>
       </section>
@@ -192,14 +217,14 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             {/* Property Details */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 0, marginBottom: 48, border: '1px solid rgba(244,162,58,0.12)' }}>
               {[
-                { label: 'Check-in', value: property.checkIn || '4:00 PM' },
-                { label: 'Check-out', value: property.checkOut || '11:00 AM' },
-                { label: 'Bedrooms', value: String(property.bedrooms) },
-                { label: 'Bathrooms', value: String(property.bathrooms) },
-                { label: 'Max Guests', value: String(property.sleepsMax) },
-                ...(property.squareFeet ? [{ label: 'Living Area', value: `${property.squareFeet.toLocaleString()} sq ft` }] : []),
+                { label: 'Check-in', value: mergedProperty.checkIn || '4:00 PM' },
+                { label: 'Check-out', value: mergedProperty.checkOut || '11:00 AM' },
+                { label: 'Bedrooms', value: String(mergedProperty.bedrooms) },
+                { label: 'Bathrooms', value: String(mergedProperty.bathrooms) },
+                { label: 'Max Guests', value: String(mergedProperty.sleepsMax) },
+                ...(mergedProperty.squareFeet ? [{ label: 'Living Area', value: `${mergedProperty.squareFeet.toLocaleString()} sq ft` }] : []),
                 ...(property.address ? [{ label: 'Address', value: property.address }] : []),
-                { label: 'Pets', value: property.amenities.includes('Pet Friendly') ? 'Allowed (max 2)' : 'Not Allowed' },
+                { label: 'Pets', value: syncedData?.max_pets > 0 ? `Allowed (max ${syncedData.max_pets})` : property.amenities.includes('Pet Friendly') ? 'Allowed (max 2)' : 'Not Allowed' },
               ].map(({ label, value }) => (
                 <div key={label} style={{ padding: '20px 24px', borderBottom: '1px solid rgba(244,162,58,0.08)', borderRight: '1px solid rgba(244,162,58,0.08)' }}>
                   <p style={{ fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 6 }}>{label}</p>
