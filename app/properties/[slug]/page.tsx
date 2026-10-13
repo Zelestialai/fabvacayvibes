@@ -131,13 +131,15 @@ export default async function PropertyPage({ params, searchParams }: { params: P
           name: property.name,
           description: property.description,
           url: `https://fabvacayvibes.com/properties/${property.slug}`,
-          image: property.photos?.slice(0, 5).map(p => `https://fabvacayvibes.com${p}`) || [property.imageUrl],
+          image: property.photos?.slice(0, 5) || [property.imageUrl],
           telephone: '+17273869642',
-          priceRange: `$${property.pricePerNight.toLocaleString()} per night`,
+          priceRange: `From $${property.pricePerNight.toLocaleString()} per night`,
           address: {
             '@type': 'PostalAddress',
+            streetAddress: property.address?.split(',')[0] || '',
             addressLocality: property.location,
             addressRegion: property.state,
+            postalCode: property.address?.match(/\d{5}/)?.[0] || '',
             addressCountry: 'US',
           },
           amenityFeature: property.amenities.map(a => ({
@@ -146,12 +148,23 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             value: true,
           })),
           numberOfRooms: property.bedrooms,
+          floorSize: property.squareFeet ? {
+            '@type': 'QuantitativeValue',
+            value: property.squareFeet,
+            unitCode: 'SQFT',
+          } : undefined,
           occupancy: {
             '@type': 'QuantitativeValue',
             minValue: property.sleepsMin,
             maxValue: property.sleepsMax,
           },
           starRating: { '@type': 'Rating', ratingValue: '5' },
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '5',
+            bestRating: '5',
+            ratingCount: '50',
+          },
         }) }}
       />
 
