@@ -128,12 +128,16 @@ export default async function PropertyPage({ params, searchParams }: { params: P
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'VacationRental',
+          '@id': `https://fabvacayvibes.com/properties/${property.slug}#vacationrental`,
           name: property.name,
           description: property.description,
           url: `https://fabvacayvibes.com/properties/${property.slug}`,
           image: property.photos?.slice(0, 5) || [property.imageUrl],
           telephone: '+17273869642',
-          priceRange: `From $${property.pricePerNight.toLocaleString()} per night`,
+          priceRange: `From $${property.pricePerNight.toLocaleString()}/night`,
+          petsAllowed: property.petsAllowed ?? false,
+          checkinTime: '16:00:00',
+          checkoutTime: property.checkOut?.includes('10') ? '10:00:00' : '11:00:00',
           address: {
             '@type': 'PostalAddress',
             streetAddress: property.address?.split(',')[0] || '',
@@ -142,21 +146,39 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             postalCode: property.address?.match(/\d{5}/)?.[0] || '',
             addressCountry: 'US',
           },
-          amenityFeature: property.amenities.map(a => ({
-            '@type': 'LocationFeatureSpecification',
-            name: a,
-            value: true,
-          })),
-          numberOfRooms: property.bedrooms,
-          floorSize: property.squareFeet ? {
-            '@type': 'QuantitativeValue',
-            value: property.squareFeet,
-            unitCode: 'SQFT',
-          } : undefined,
-          occupancy: {
-            '@type': 'QuantitativeValue',
-            minValue: property.sleepsMin,
-            maxValue: property.sleepsMax,
+          ...(property.latitude && property.longitude ? {
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: property.latitude,
+              longitude: property.longitude,
+            }
+          } : {}),
+          containsPlace: {
+            '@type': 'Accommodation',
+            additionalType: 'EntirePlace',
+            numberOfBedrooms: mergedProperty.bedrooms,
+            numberOfBathroomsTotal: mergedProperty.bathrooms,
+            occupancy: {
+              '@type': 'QuantitativeValue',
+              value: mergedProperty.sleepsMax,
+            },
+            ...(mergedProperty.squareFeet ? {
+              floorSize: {
+                '@type': 'QuantitativeValue',
+                value: mergedProperty.squareFeet,
+                unitCode: 'FTK',
+              }
+            } : {}),
+            amenityFeature: property.amenities.map(a => ({
+              '@type': 'LocationFeatureSpecification',
+              name: a,
+              value: true,
+            })),
+          },
+          brand: {
+            '@type': 'Brand',
+            name: 'Fab Vacay Vibes',
+            url: 'https://fabvacayvibes.com',
           },
           starRating: { '@type': 'Rating', ratingValue: '5' },
           aggregateRating: {

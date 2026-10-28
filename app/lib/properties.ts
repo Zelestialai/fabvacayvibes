@@ -12,6 +12,9 @@ export interface Property {
   checkIn?: string
   checkOut?: string
   address?: string
+  latitude?: number
+  longitude?: number
+  petsAllowed?: boolean
   sleepsMin: number
   sleepsMax: number
   pricePerNight: number
@@ -39,6 +42,9 @@ export const properties: Property[] = [
     checkIn: '4:00 PM',
     checkOut: '11:00 AM',
     address: '18 N Maywood Ave, Clearwater, FL 33765',
+    latitude: 27.9675,
+    longitude: -82.7351,
+    petsAllowed: true,
     sleepsMin: 1,
     sleepsMax: 16,
     pricePerNight: 500,
@@ -105,6 +111,9 @@ export const properties: Property[] = [
     checkIn: '4:00 PM',
     checkOut: '11:00 AM',
     address: '8283 Via Rocosa, Joshua Tree, CA 92252',
+    latitude: 34.0956,
+    longitude: -116.3015,
+    petsAllowed: true,
     sleepsMin: 1,
     sleepsMax: 10,
     pricePerNight: 700,
@@ -342,8 +351,11 @@ export const properties: Property[] = [
     bathrooms: 3,
     squareFeet: 4800,
     checkIn: '4:00 PM',
-    checkOut: '11:00 AM',
+    checkOut: '10:00 AM',
     address: '42139 Old Yosemite Road, Oakhurst, CA 93644',
+    latitude: 37.3444,
+    longitude: -119.6496,
+    petsAllowed: false,
     sleepsMin: 1,
     sleepsMax: 16,
     pricePerNight: 945,
