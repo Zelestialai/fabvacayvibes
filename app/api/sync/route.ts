@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
       await put(
         `content/sync/${slug}.json`,
         JSON.stringify(syncedData, null, 2),
-        { access: 'public', addRandomSuffix: false, contentType: 'application/json' }
+        { access: 'public', addRandomSuffix: false, contentType: 'application/json', allowOverwrite: true }
       )
 
       results[slug] = { success: true, name: prop.name, synced: syncedAt }
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
   await put(
     'content/sync/last-sync.json',
     JSON.stringify({ syncedAt, results }, null, 2),
-    { access: 'public', addRandomSuffix: false, contentType: 'application/json' }
+    { access: 'public', addRandomSuffix: false, contentType: 'application/json', allowOverwrite: true }
   )
 
   console.log('Daily sync completed:', results)
