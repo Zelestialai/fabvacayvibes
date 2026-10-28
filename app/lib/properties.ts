@@ -119,7 +119,7 @@ export const properties: Property[] = [
     pricePerNight: 700,
     description: 'Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 is a 4-bedroom, 4-bathroom luxury desert wellness retreat that sleeps up to 10 guests. The property comprises two stand-alone homes on one private compound — perfect for couples, families, or groups who want to be together while enjoying their own space. Standout features include a private pool, hot tub, vintage Airstream trailer, and fire pit, all set against dramatic High Desert landscape. Pet friendly (dogs only, max 2, high chair provided). Joshua Tree National Park west entrance is a 5-minute drive; Downtown Joshua Tree with shops and restaurants is also 5 minutes away. Pappy & Harriet\'s Pioneertown Palace is 25 minutes away.',
     shortDesc: 'Luxury 4-bedroom desert wellness retreat in Joshua Tree, CA. Private pool, hot tub & vintage Airstream. Two stand-alone homes. 5 min to Joshua Tree National Park.',
-    amenities: ['Private Pool', 'Hot Tub', 'Vintage Airstream', 'Pet Friendly', 'High-Speed WiFi', 'Fire Pit', 'Mountain Views', 'Desert Views', 'High Chair Provided'],
+    amenities: ['Private Pool', 'Hot Tub', 'Vintage Airstream', 'Pickleball Court', 'Pet Friendly', 'High-Speed WiFi', 'Fire Pit', 'Mountain Views', 'Desert Views', 'High Chair Provided'],
     imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/owl-and-hare/8283ViaRecosaJoshuaTreeCa4_3_25--55.jpg',
     ownerrezUrl: 'https://www.fabvacayvibes.com/owl-hare-orp5b6e904x',
     highlights: ['Private Pool & Hot Tub', '5 min to Joshua Tree NP', '5 min to Downtown JT', "25 min to Pappy & Harriet's", 'Pet Friendly (dogs, max 2)'],
