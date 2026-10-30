@@ -4,7 +4,7 @@ export interface Property {
   name: string
   location: string
   state: string
-  type: 'Beach' | 'Desert' | 'Mountain'
+  type: 'Beach' | 'Desert' | 'Mountain' | 'Desert Wellness Retreat'
   emoji: string
   bedrooms: number
   bathrooms: number
@@ -103,7 +103,7 @@ export const properties: Property[] = [
     name: 'Owl & Hare',
     location: 'Joshua Tree',
     state: 'CA',
-    type: 'Desert',
+    type: 'Desert Wellness Retreat',
     emoji: '🏜️',
     bedrooms: 4,
     bathrooms: 4,
@@ -118,7 +118,7 @@ export const properties: Property[] = [
     sleepsMax: 10,
     pricePerNight: 700,
     description: 'Owl & Hare is Joshua Tree\'s premier private group retreat — two stand-alone homes on one gated desert compound, sleeping up to 10 guests across 4 bedrooms and 4 bathrooms (approximately 2,100 sq ft). Groups can gather together or spread out, with full privacy from neighbours. The wellness and recreation lineup is unmatched: private pool, hot tub, traditional sauna, cold plunge, LED therapy room, and a gym — plus a pickleball court, mini golf, bocce ball, ping pong, pool table, and arcade machines. Outside, a BBQ, fire pit, and a vintage Airstream sit beneath wide desert skies. Dog-friendly (max 2 dogs). Joshua Tree National Park west entrance is a 5-minute drive; Downtown Joshua Tree shops and restaurants are 5 minutes away; Pappy & Harriet\'s Pioneertown Palace is 25 minutes away. Located at 8283 Via Rocosa, Joshua Tree, CA 92252.',
-    shortDesc: 'Private Joshua Tree group retreat. Two homes, one compound. Pool, hot tub, sauna, cold plunge, pickleball & more. Sleeps 10. 5 min to Joshua Tree National Park.',
+    shortDesc: 'Two stand-alone homes on one gated desert compound. Pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court & more. Sleeps up to 10. 5 min to Joshua Tree National Park.',
     amenities: ['Private Pool', 'Hot Tub', 'Sauna', 'Cold Plunge', 'LED Therapy Room', 'Gym', 'Pickleball Court', 'Mini Golf', 'Bocce Ball', 'Ping Pong', 'Pool Table', 'Arcade Machines', 'Vintage Airstream', 'BBQ & Fire Pit', 'Pet Friendly', 'High-Speed WiFi', 'Desert Views', 'High Chair Provided'],
     imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/owl-and-hare/8283ViaRecosaJoshuaTreeCa4_3_25--55.jpg',
     ownerrezUrl: 'https://www.fabvacayvibes.com/owl-hare-orp5b6e904x',
