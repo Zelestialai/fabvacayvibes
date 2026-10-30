@@ -187,13 +187,6 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             name: 'Fab Vacay Vibes',
             url: 'https://fabvacayvibes.com',
           },
-          starRating: { '@type': 'Rating', ratingValue: '5' },
-          aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '5',
-            bestRating: '5',
-            ratingCount: '50',
-          },
         }) }}
       />
 

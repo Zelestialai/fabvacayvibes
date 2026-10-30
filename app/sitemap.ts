@@ -17,6 +17,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/services`, lastModified: now, changeFrequency: 'monthly' as const, priority: 0.8 },
     { url: `${base}/rent-analyzer`, lastModified: now, changeFrequency: 'monthly' as const, priority: 0.7 },
     ...propertyPages,
-    { url: `${base}/booking-confirmed`, lastModified: now, changeFrequency: 'yearly' as const, priority: 0.2 },
+    { url: `${base}/privacy`, lastModified: now, changeFrequency: 'monthly' as const, priority: 0.5 },
   ]
 }
