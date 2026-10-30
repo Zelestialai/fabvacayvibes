@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
 import UtmCapture from './components/UtmCapture'
+import CookieConsent from './components/CookieConsent'
 import './globals.css'
 
 const BASE_URL = 'https://fabvacayvibes.com'
@@ -158,11 +159,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
+            // Consent mode v2 defaults — denied until user accepts (EU/UK).
+            // For non-EU/UK visitors the CookieConsent component never fires,
+            // so these defaults remain; GA4 still fires but without ad signals.
+            gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+              wait_for_update: 2000,
+            });
             gtag('config', 'G-GP6D3BGY20', { send_page_view: true });
+          ` }}
+        />
+        {/* OpenAI Ads pixel — pixel ID: MWSrz3MmkXqKVRZTzNtaEM */}
+        <Script
+          id="openai-pixel"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: `
+            !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var e=d.createElement(s);e.async=1;e.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(e,f)}(window,document,'script','https://pixel.openai.com/v1/events');
+            oaiq('init', 'MWSrz3MmkXqKVRZTzNtaEM');
+            oaiq('event', 'page_view');
           ` }}
         />
         {/* Captures UTM params and OpenAI oppref on first landing */}
         <UtmCapture />
+        {/* EU/UK GDPR + UK PECR cookie consent banner */}
+        <CookieConsent />
         {children}
       </body>
     </html>
