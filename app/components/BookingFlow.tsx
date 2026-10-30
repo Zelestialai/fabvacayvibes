@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { trackBeginCheckout } from '../lib/analytics'
+import { appendUtmToUrl } from '../lib/utm'
 
 interface BookingFlowProps {
   propertySlug: string
@@ -119,8 +121,9 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Booking failed')
       setStep('redirect')
-      // Redirect to OwnerRez payment page
-      setTimeout(() => { window.location.href = data.paymentUrl }, 2000)
+      // Redirect to OwnerRez payment page, appending UTM/oppref for attribution
+      const paymentUrlWithUtm = appendUtmToUrl(data.paymentUrl)
+      setTimeout(() => { window.location.href = paymentUrlWithUtm }, 2000)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Booking failed. Please try again or call us.')
     } finally {
@@ -279,7 +282,15 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
             <button onClick={() => setStep('dates')} style={{ background: 'transparent', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '14px', fontSize: 12, letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2 }}>
               ← Back
             </button>
-            <button onClick={() => setStep('guest')} style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '14px', fontSize: 12, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500, border: 'none', cursor: 'pointer', borderRadius: 2 }}>
+            <button onClick={() => {
+              trackBeginCheckout({
+                propertySlug,
+                propertyName,
+                totalAmount: quote?.pricing.total ?? 0,
+                nights: quote?.nights ?? 1,
+              })
+              setStep('guest')
+            }} style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '14px', fontSize: 12, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500, border: 'none', cursor: 'pointer', borderRadius: 2 }}>
               Book Now →
             </button>
           </div>

@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { trackGenerateLead } from '../lib/analytics'
 
 interface InquiryFormProps {
   propertySlug: string
@@ -67,6 +68,7 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to send inquiry')
+      trackGenerateLead({ propertySlug, propertyName })
       setSuccess(true)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to send. Please call us directly.')

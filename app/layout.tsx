@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import UtmCapture from './components/UtmCapture'
 import './globals.css'
 
 const BASE_URL = 'https://fabvacayvibes.com'
@@ -101,12 +102,8 @@ const orgSchema = {
     'https://www.instagram.com/fabvacayvibes',
   ],
   priceRange: '$$$',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '5',
-    bestRating: '5',
-    ratingCount: '50',
-  },
+  // Note: aggregateRating omitted — we do not publish unverified review counts
+  // in structured data. Add this back only when real review data is available.
   hasMap: 'https://maps.google.com/?q=Clearwater,FL',
   amenityFeature: [
     { '@type': 'LocationFeatureSpecification', name: 'Private Pool', value: true },
@@ -123,7 +120,7 @@ const faqSchema = {
   mainEntity: [
     { '@type': 'Question', name: 'Why should I book directly instead of using Airbnb or VRBO?', acceptedAnswer: { '@type': 'Answer', text: 'Booking directly with Fab Vacay Vibes at fabvacayvibes.com saves you up to 15% by eliminating OTA platform fees. You get direct communication with the owner, our Best Price Guarantee, and more flexible check-in/check-out policies. All three properties — Casa Grandè (Clearwater FL), Owl & Hare (Joshua Tree CA), and Sierra Crest Haven (Oakhurst CA near Yosemite) — are available to book directly.' } },
     { '@type': 'Question', name: 'What luxury vacation rentals do you offer in Florida?', acceptedAnswer: { '@type': 'Answer', text: 'Casa Grandè is a 5-bedroom, 3-bathroom luxury vacation home at 18 N Maywood Ave, Clearwater, FL 33765. Spanning 2,100 sq ft, it features a private pool, pet-friendly policy (dogs only, max 2), modern open-plan kitchen, outdoor dining, and sleeps up to 16 guests. Located 4 miles from Clearwater Beach and 3 miles from BayCare Ballpark. From $500/night with direct booking.' } },
-    { '@type': 'Question', name: 'Do you have vacation rentals near Joshua Tree National Park?', acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 is a 4-bedroom, 4-bathroom luxury desert wellness retreat that sleeps up to 10 guests. It features two stand-alone homes on one compound, a private pool, hot tub, vintage Airstream, and fire pit. Situated 5 minutes from the Joshua Tree National Park west entrance and 5 minutes from Downtown Joshua Tree. Pet friendly (max 2 dogs). From $700/night.' } },
+    { '@type': 'Question', name: 'Do you have vacation rentals near Joshua Tree National Park?', acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 is a 4-bedroom, 4-bathroom luxury desert group retreat sleeping up to 10 guests across approximately 2,100 sq ft. Two stand-alone homes share one private gated compound. Amenities include a private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court, mini golf, bocce ball, ping pong, pool table, arcade machines, BBQ, fire pit, and a vintage Airstream. Situated 5 minutes from the Joshua Tree National Park west entrance and 5 minutes from Downtown Joshua Tree. Dog friendly (max 2 dogs). From $700/night.' } },
     { '@type': 'Question', name: 'What is the best large vacation rental near Yosemite?', acceptedAnswer: { '@type': 'Answer', text: 'Sierra Crest Haven at 42139 Old Yosemite Road, Oakhurst, CA 93644 is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft of living space, a hot tub, fireplace, game room, full bar, multiple living areas, and dual sunrise/sunset views over the High Sierra. It sleeps up to 16 guests and is located 14 miles from the Yosemite National Park south entrance (approximately 45 minutes to Yosemite Valley). From $945/night.' } },
     { '@type': 'Question', name: 'Which properties allow pets?', acceptedAnswer: { '@type': 'Answer', text: 'Casa Grandè in Clearwater, FL and Owl & Hare in Joshua Tree, CA are both pet friendly — dogs only, maximum 2 dogs per stay, high chair provided. Sierra Crest Haven in Oakhurst, CA does not allow pets.' } },
     { '@type': 'Question', name: 'How far is the Clearwater vacation rental from the beach?', acceptedAnswer: { '@type': 'Answer', text: 'Casa Grandè is located at 18 N Maywood Ave, Clearwater, FL 33765 — approximately 4 miles from Clearwater Beach and 3 miles from BayCare Ballpark. The property is not within walking distance of the beach; guests typically drive approximately 10 minutes to reach Clearwater Beach or Pier 60.' } },
@@ -148,13 +145,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-GP6D3BGY20"></script>
-        <script dangerouslySetInnerHTML={{ __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-GP6D3BGY20');
-        ` }} />
+        {/* GA4 — loaded after the page is interactive so it does not block rendering */}
+        <Script
+          id="ga4-script"
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-GP6D3BGY20"
+        />
+        <Script
+          id="ga4-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GP6D3BGY20', { send_page_view: true });
+          ` }}
+        />
+        {/* Captures UTM params and OpenAI oppref on first landing */}
+        <UtmCapture />
         {children}
       </body>
     </html>

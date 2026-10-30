@@ -7,6 +7,7 @@ import InquiryForm from '../../components/InquiryForm'
 import AvailabilityCalendar from '../../components/AvailabilityCalendar'
 import PhotoGallery from '../../components/PhotoGallery'
 import ExpandableDescription from '../../components/ExpandableDescription'
+import PropertyAnalytics from '../../components/PropertyAnalytics'
 
 export async function generateStaticParams() {
   return properties.map(p => ({ slug: p.slug }))
@@ -121,6 +122,12 @@ export default async function PropertyPage({ params, searchParams }: { params: P
   return (
     <>
       <Nav />
+      {/* GA4: view_item fires once per property page load */}
+      <PropertyAnalytics
+        propertySlug={property.slug}
+        propertyName={property.name}
+        pricePerNight={property.pricePerNight}
+      />
 
       <Script
         id={`property-schema-${property.slug}`}
