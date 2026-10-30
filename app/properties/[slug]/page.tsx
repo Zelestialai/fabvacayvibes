@@ -292,6 +292,110 @@ export default async function PropertyPage({ params, searchParams }: { params: P
         </div>
       </section>
 
+      {/* OWL & HARE FAQ */}
+      {property.slug === 'owl-and-hare' && (
+        <>
+          <Script
+            id="owl-and-hare-faq-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: [
+                {
+                  '@type': 'Question',
+                  name: 'What makes Owl & Hare different from other Joshua Tree vacation rentals?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare is a private gated compound of two stand-alone homes — not a single house divided into units. Groups get full compound privacy while each home offers its own space, sleeping a total of 10 guests across 4 bedrooms and 4 bathrooms. The wellness and recreation amenities are unusually extensive for Joshua Tree: private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court, mini golf, bocce ball, ping pong, pool table, and arcade machines, all on one property.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Is Owl & Hare good for a group wellness retreat?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Yes. The property is designed for group wellness stays. On-site facilities include a traditional sauna, cold plunge, LED therapy room, and gym alongside a private pool and hot tub. The two-home compound format means groups can gather or retreat individually. Joshua Tree\'s desert environment — altitude, silence, and dark skies — complements any structured wellness program. The property is 5 minutes from Joshua Tree National Park for hiking and outdoor activities.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What wellness amenities does Owl & Hare have?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare\'s wellness amenities include: private pool, hot tub, traditional sauna, cold plunge, LED therapy room, and a gym. These are all on-site at the compound.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Does Owl & Hare have a cold plunge?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Yes, Owl & Hare has a cold plunge on-site at the compound.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Is there a sauna at Owl & Hare?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Yes, Owl & Hare has a traditional sauna on-site at the compound.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What sports and recreation is available at Owl & Hare?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare has a pickleball court, mini golf, bocce ball, ping pong table, pool table, and arcade machines — all on the property. There is also a private pool, hot tub, BBQ, and fire pit. Joshua Tree National Park is 5 minutes away for hiking and climbing.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'How many people does Owl & Hare sleep?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare sleeps up to 10 guests across 4 bedrooms and 4 bathrooms in two stand-alone homes on one compound.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Are dogs allowed at Owl & Hare?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Yes, Owl & Hare is pet friendly. Dogs are welcome, with a maximum of 2 dogs per stay.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'How far is Owl & Hare from Joshua Tree National Park?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare is approximately a 5-minute drive from the Joshua Tree National Park west entrance. Downtown Joshua Tree is also about 5 minutes away. Pappy & Harriet\'s Pioneertown Palace is approximately 25 minutes away.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Does Owl & Hare have a private pool?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Yes, Owl & Hare has a private pool on the compound, along with a hot tub.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Can you host a private group retreat at Owl & Hare?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Yes. Owl & Hare is a gated private compound that sleeps up to 10 guests. The two-home layout gives groups both shared gathering space and private retreat space. On-site wellness facilities (sauna, cold plunge, LED therapy room, gym, pool, hot tub) and recreation (pickleball, mini golf, bocce ball, arcade) support multi-day group programming. Book directly at fabvacayvibes.com/properties/owl-and-hare.' },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What is the two-home compound setup at Owl & Hare?',
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare consists of two separate stand-alone homes on one gated desert compound at 8283 Via Rocosa, Joshua Tree, CA 92252. The homes share the compound\'s amenities — pool, hot tub, sauna, cold plunge, pickleball court, and all recreation facilities — while each home functions independently. Total capacity is 10 guests across 4 bedrooms and 4 bathrooms. The compound is fully private and gated.' },
+                },
+              ],
+            }) }}
+          />
+          <section className="section-pad-sm" style={{ borderTop: '1px solid rgba(244,162,58,0.1)', maxWidth: 900, margin: '0 auto' }}>
+            <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>FAQ</p>
+            <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, fontWeight: 300, color: 'white', marginBottom: 40 }}>Frequently Asked Questions</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {[
+                { q: 'What makes Owl & Hare different from other Joshua Tree vacation rentals?', a: 'Owl & Hare is a private gated compound of two stand-alone homes — not a single house divided into units. Groups get full compound privacy while each home offers its own space, sleeping a total of 10 guests across 4 bedrooms and 4 bathrooms. The wellness and recreation amenities are unusually extensive for Joshua Tree: private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court, mini golf, bocce ball, ping pong, pool table, and arcade machines, all on one property.' },
+                { q: 'Is Owl & Hare good for a group wellness retreat?', a: "Yes. The property is designed for group wellness stays. On-site facilities include a traditional sauna, cold plunge, LED therapy room, and gym alongside a private pool and hot tub. The two-home compound format means groups can gather or retreat individually. Joshua Tree's desert environment — altitude, silence, and dark skies — complements any structured wellness program. The property is 5 minutes from Joshua Tree National Park for hiking and outdoor activities." },
+                { q: 'What wellness amenities does Owl & Hare have?', a: "Owl & Hare's wellness amenities include: private pool, hot tub, traditional sauna, cold plunge, LED therapy room, and a gym. These are all on-site at the compound." },
+                { q: 'Does Owl & Hare have a cold plunge?', a: 'Yes, Owl & Hare has a cold plunge on-site at the compound.' },
+                { q: 'Is there a sauna at Owl & Hare?', a: 'Yes, Owl & Hare has a traditional sauna on-site at the compound.' },
+                { q: 'What sports and recreation is available at Owl & Hare?', a: 'Owl & Hare has a pickleball court, mini golf, bocce ball, ping pong table, pool table, and arcade machines — all on the property. There is also a private pool, hot tub, BBQ, and fire pit. Joshua Tree National Park is 5 minutes away for hiking and climbing.' },
+                { q: 'How many people does Owl & Hare sleep?', a: 'Owl & Hare sleeps up to 10 guests across 4 bedrooms and 4 bathrooms in two stand-alone homes on one compound.' },
+                { q: 'Are dogs allowed at Owl & Hare?', a: 'Yes, Owl & Hare is pet friendly. Dogs are welcome, with a maximum of 2 dogs per stay.' },
+                { q: 'How far is Owl & Hare from Joshua Tree National Park?', a: "Owl & Hare is approximately a 5-minute drive from the Joshua Tree National Park west entrance. Downtown Joshua Tree is also about 5 minutes away. Pappy & Harriet's Pioneertown Palace is approximately 25 minutes away." },
+                { q: 'Does Owl & Hare have a private pool?', a: 'Yes, Owl & Hare has a private pool on the compound, along with a hot tub.' },
+                { q: 'Can you host a private group retreat at Owl & Hare?', a: 'Yes. Owl & Hare is a gated private compound that sleeps up to 10 guests. The two-home layout gives groups both shared gathering space and private retreat space. On-site wellness facilities (sauna, cold plunge, LED therapy room, gym, pool, hot tub) and recreation (pickleball, mini golf, bocce ball, arcade) support multi-day group programming. Book directly at fabvacayvibes.com/properties/owl-and-hare.' },
+                { q: 'What is the two-home compound setup at Owl & Hare?', a: "Owl & Hare consists of two separate stand-alone homes on one gated desert compound at 8283 Via Rocosa, Joshua Tree, CA 92252. The homes share the compound's amenities — pool, hot tub, sauna, cold plunge, pickleball court, and all recreation facilities — while each home functions independently. Total capacity is 10 guests across 4 bedrooms and 4 bathrooms. The compound is fully private and gated." },
+              ].map(({ q, a }, i) => (
+                <details key={i} style={{ borderBottom: '1px solid rgba(244,162,58,0.1)', padding: '0' }}>
+                  <summary style={{ padding: '20px 0', fontSize: 15, color: 'var(--cream)', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>
+                    <span>{q}</span>
+                    <span style={{ color: 'var(--orange)', fontSize: 20, flexShrink: 0, fontWeight: 300 }}>+</span>
+                  </summary>
+                  <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8, paddingBottom: 20, marginTop: 0 }}>{a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
       {/* OTHER PROPERTIES */}
       <section className="section-pad-sm" style={{ borderTop: '1px solid rgba(244,162,58,0.1)' }}>
         <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Explore More</p>
