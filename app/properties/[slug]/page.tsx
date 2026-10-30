@@ -130,6 +130,32 @@ export default async function PropertyPage({ params, searchParams }: { params: P
       />
 
       <Script
+        id={`webpage-schema-${property.slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'WebPage',
+              '@id': `https://fabvacayvibes.com/properties/${property.slug}`,
+              url: `https://fabvacayvibes.com/properties/${property.slug}`,
+              name: `${property.name} — Luxury ${property.type} Vacation Rental in ${property.location}, ${property.state} | Fab Vacay Vibes`,
+              description: property.shortDesc,
+              isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
+            },
+            {
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://fabvacayvibes.com' },
+                { '@type': 'ListItem', position: 2, name: 'Properties', item: 'https://fabvacayvibes.com/#properties' },
+                { '@type': 'ListItem', position: 3, name: property.name, item: `https://fabvacayvibes.com/properties/${property.slug}` },
+              ],
+            },
+          ],
+        }) }}
+      />
+
+      <Script
         id={`property-schema-${property.slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
