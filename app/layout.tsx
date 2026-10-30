@@ -162,12 +162,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             // Consent mode v2 defaults — denied until user accepts (EU/UK).
             // For non-EU/UK visitors the CookieConsent component never fires,
             // so these defaults remain; GA4 still fires but without ad signals.
+            var _ga4IsEuUk=(function(){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;return['Europe/','Atlantic/Reykjavik','Atlantic/Faroe'].some(function(p){return tz.indexOf(p)===0});}catch(e){return false;}})();
             gtag('consent', 'default', {
-              analytics_storage: 'denied',
+              analytics_storage: _ga4IsEuUk ? 'denied' : 'granted',
               ad_storage: 'denied',
               ad_user_data: 'denied',
               ad_personalization: 'denied',
-              wait_for_update: 2000,
+              wait_for_update: _ga4IsEuUk ? 2000 : 0,
             });
             gtag('config', 'G-GP6D3BGY20', { send_page_view: true });
           ` }}
@@ -177,9 +178,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="openai-pixel"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: `
-            !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var e=d.createElement(s);e.async=1;e.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(e,f)}(window,document,'script','https://pixel.openai.com/v1/events');
-            oaiq('init', 'MWSrz3MmkXqKVRZTzNtaEM');
-            oaiq('event', 'page_view');
+            var _oaiqIsEuUk=(function(){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;return['Europe/','Atlantic/Reykjavik','Atlantic/Faroe'].some(function(p){return tz.indexOf(p)===0});}catch(e){return false;}})();
+            !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var e=d.createElement(s);e.async=1;e.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(e,f)}(window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
+            if(_oaiqIsEuUk){oaiq('consent',false);}
+            oaiq('init',{pixelId:'MWSrz3MmkXqKVRZTzNtaEM'});
+            oaiq('measure','page_viewed',{type:'contents'});
           ` }}
         />
         {/* Captures UTM params and OpenAI oppref on first landing */}

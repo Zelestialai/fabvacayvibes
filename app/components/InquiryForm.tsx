@@ -69,6 +69,17 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to send inquiry')
       trackGenerateLead({ propertySlug, propertyName })
+      // OpenAI Ads — lead_created conversion event
+      if (typeof window !== 'undefined' && typeof (window as unknown as { oaiq?: Function }).oaiq === 'function') {
+        const oaiq = (window as unknown as { oaiq: Function }).oaiq
+        const oppref = (() => {
+          try {
+            const p = JSON.parse(sessionStorage.getItem('fvv_campaign_params') || '{}')
+            return p.oppref || undefined
+          } catch { return undefined }
+        })()
+        oaiq('measure', 'lead_created', { type: 'customer_action' }, oppref ? { event_id: oppref } : undefined)
+      }
       setSuccess(true)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to send. Please call us directly.')

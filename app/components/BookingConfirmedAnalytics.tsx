@@ -10,6 +10,23 @@ import { trackPurchaseFromUrl } from '../lib/analytics'
 export default function BookingConfirmedAnalytics() {
   useEffect(() => {
     trackPurchaseFromUrl()
+
+    // OpenAI Ads — order_created conversion event (fires only when OwnerRez provides booking_id)
+    if (typeof window !== 'undefined' && typeof (window as unknown as { oaiq?: Function }).oaiq === 'function') {
+      const oaiq = (window as unknown as { oaiq: Function }).oaiq
+      const params = new URLSearchParams(window.location.search)
+      const bookingId = params.get('booking_id')
+      const amount = params.get('amount')
+      const currency = params.get('currency') || 'USD'
+      if (bookingId) {
+        oaiq(
+          'measure',
+          'order_created',
+          { type: 'contents', amount: amount ? parseFloat(amount) : undefined, currency },
+          { event_id: bookingId }
+        )
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

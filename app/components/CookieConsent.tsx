@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 const CONSENT_KEY = 'fvv_cookie_consent'
 const CONSENT_VERSION = '1' // bump to re-prompt after policy changes
+const CONSENT_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000 // 1 year
 
 type ConsentState = 'granted' | 'denied' | null
 
@@ -24,6 +25,7 @@ function loadConsent(): ConsentState {
     if (!raw) return null
     const parsed = JSON.parse(raw)
     if (parsed.version !== CONSENT_VERSION) return null
+    if (parsed.ts && Date.now() - parsed.ts > CONSENT_MAX_AGE_MS) return null // expired after 1 year
     return parsed.value as ConsentState
   } catch {
     return null
@@ -32,7 +34,7 @@ function loadConsent(): ConsentState {
 
 function saveConsent(value: 'granted' | 'denied') {
   try {
-    localStorage.setItem(CONSENT_KEY, JSON.stringify({ value, version: CONSENT_VERSION }))
+    localStorage.setItem(CONSENT_KEY, JSON.stringify({ value, version: CONSENT_VERSION, ts: Date.now() }))
   } catch { /* ignore */ }
 }
 
@@ -52,10 +54,10 @@ export function applyConsent(state: 'granted' | 'denied') {
     })
   }
 
-  // OpenAI pixel — suppress/enable future events
-  // oaiq queues calls, so we use a flag checked in layout
-  if (typeof window !== 'undefined') {
-    (window as unknown as Record<string, unknown>)['__fvv_analytics_consent'] = state === 'granted'
+  // OpenAI pixel consent API — suppress or enable the pixel
+  if (typeof window !== 'undefined' && typeof (window as unknown as { oaiq?: Function }).oaiq === 'function') {
+    const oaiq = (window as unknown as { oaiq: Function }).oaiq
+    oaiq('consent', state === 'granted')
   }
 }
 
