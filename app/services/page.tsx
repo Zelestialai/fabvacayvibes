@@ -161,8 +161,8 @@ export default function ServicesPage() {
                   {[
                     { value: '3+', label: 'Years STR Experience' },
                     { value: '15%+', label: 'Avg. Cash-on-Cash Return' },
-                    { value: '85%+', label: 'Average Occupancy Rate' },
-                    { value: '5★', label: 'Average Guest Rating' },
+                    { value: '13+', label: 'US Markets Covered' },
+                    { value: '4.9★', label: 'Average Guest Rating' },
                   ].map(({ value, label }) => (
                     <div key={label} style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.1)', borderRadius: 4, padding: '20px 16px', textAlign: 'center' }}>
                       <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 36, color: 'var(--orange-warm)', fontWeight: 300, margin: 0 }}>{value}</p>
