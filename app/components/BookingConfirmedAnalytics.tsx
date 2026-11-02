@@ -19,10 +19,18 @@ export default function BookingConfirmedAnalytics() {
       const amount = params.get('amount')
       const currency = params.get('currency') || 'USD'
       if (bookingId) {
+        // amount from OwnerRez is in dollars (e.g. "1500.00").
+        // OpenAI pixel requires minor units (cents), so multiply by 100.
+        const amountMinorUnits = amount ? Math.round(parseFloat(amount) * 100) : undefined
         oaiq(
           'measure',
           'order_created',
-          { type: 'contents', amount: amount ? parseFloat(amount) : undefined, currency },
+          {
+            type: 'contents',
+            ...(amountMinorUnits !== undefined && !isNaN(amountMinorUnits)
+              ? { amount: amountMinorUnits, currency }
+              : {}),
+          },
           { event_id: bookingId }
         )
       }

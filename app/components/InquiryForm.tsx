@@ -69,16 +69,16 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to send inquiry')
       trackGenerateLead({ propertySlug, propertyName })
-      // OpenAI Ads — lead_created conversion event
+      // OpenAI Ads — lead_created conversion event.
+      // event_id must be unique per submission (not oppref, which is per ad-click).
+      // A UUID generated here deduplicates this event if a server-side CAPI call is
+      // added later using the same ID.
       if (typeof window !== 'undefined' && typeof (window as unknown as { oaiq?: Function }).oaiq === 'function') {
         const oaiq = (window as unknown as { oaiq: Function }).oaiq
-        const oppref = (() => {
-          try {
-            const p = JSON.parse(sessionStorage.getItem('fvv_campaign_params') || '{}')
-            return p.oppref || undefined
-          } catch { return undefined }
-        })()
-        oaiq('measure', 'lead_created', { type: 'customer_action' }, oppref ? { event_id: oppref } : undefined)
+        const eventId = typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `lead-${Date.now()}-${Math.random().toString(36).slice(2)}`
+        oaiq('measure', 'lead_created', { type: 'customer_action' }, { event_id: eventId })
       }
       setSuccess(true)
     } catch (e: unknown) {

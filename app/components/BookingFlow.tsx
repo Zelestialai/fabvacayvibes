@@ -283,12 +283,22 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
               ← Back
             </button>
             <button onClick={() => {
+              const totalAmount = quote?.pricing.total ?? 0
               trackBeginCheckout({
                 propertySlug,
                 propertyName,
-                totalAmount: quote?.pricing.total ?? 0,
+                totalAmount,
                 nights: quote?.nights ?? 1,
               })
+              // OpenAI Ads — checkout_started standard event
+              if (typeof window !== 'undefined' && typeof (window as unknown as { oaiq?: Function }).oaiq === 'function') {
+                const oaiq = (window as unknown as { oaiq: Function }).oaiq
+                oaiq('measure', 'checkout_started', {
+                  type: 'contents',
+                  amount: Math.round(totalAmount * 100), // minor units (cents)
+                  currency: 'USD',
+                })
+              }
               setStep('guest')
             }} style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '14px', fontSize: 12, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500, border: 'none', cursor: 'pointer', borderRadius: 2 }}>
               Book Now →

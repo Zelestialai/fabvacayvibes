@@ -114,7 +114,7 @@ export default function CookieConsent() {
       }}
     >
       <p style={{ flex: '1 1 260px', margin: 0, fontSize: '14px', color: '#d4d4d8', lineHeight: '1.5' }}>
-        We use cookies to analyse site traffic and improve your experience.{' '}
+        We use cookies to analyse site traffic, improve your experience, and measure advertising effectiveness.{' '}
         <a
           href="/privacy"
           style={{ color: '#a78bfa', textDecoration: 'underline' }}

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 }
 
 const CONTACT_EMAIL = 'FabVacayVibes@gmail.com'
-const EFFECTIVE_DATE = 'October 30, 2026'
+const EFFECTIVE_DATE = 'November 1, 2026'
 
 const s: Record<string, React.CSSProperties> = {
   page: { background: '#0d0a1a', minHeight: '100vh', color: 'var(--text-muted, #a0a0b0)' },
