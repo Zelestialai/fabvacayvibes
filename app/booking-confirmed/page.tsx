@@ -1,5 +1,6 @@
 import Nav from '../components/Nav'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import BookingConfirmedAnalytics from '../components/BookingConfirmedAnalytics'
 
 export default function BookingConfirmed() {
@@ -7,10 +8,17 @@ export default function BookingConfirmed() {
     <>
       <Nav />
       {/*
-        GA4 purchase event — fires only when OwnerRez appends booking_id to the
-        redirect URL. A plain page refresh without query params will NOT fire.
+        GA4 + OpenAI Ads purchase event — fires only when OwnerRez appends
+        booking_id to the redirect URL. A plain page refresh without query
+        params will NOT fire.
+
+        Suspense is required for useSearchParams() to work correctly in the
+        Next.js App Router: without it, the entire route opts into full
+        client-side rendering and searchParams are not available on mount.
       */}
-      <BookingConfirmedAnalytics />
+      <Suspense fallback={null}>
+        <BookingConfirmedAnalytics />
+      </Suspense>
       <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 48px', background: 'linear-gradient(135deg,#1E0F45 0%,#2D1B69 50%,#1A0D3D 100%)' }}>
         <div style={{ maxWidth: 560 }}>
           <div style={{ fontSize: 64, marginBottom: 24 }}>🎉</div>
