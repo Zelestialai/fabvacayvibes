@@ -100,13 +100,29 @@ export function trackGenerateLead(params: {
 // We read them from the URL; if they are absent we do NOT fire the event,
 // because a stale page refresh would re-fire the conversion.
 // ---------------------------------------------------------------------------
-export function trackPurchaseFromUrl() {
+export function trackPurchaseFromUrl(
+  preBookingId?: string | null,
+  preAmount?: string | null,
+  preCurrency?: string | null,
+) {
   if (typeof window === 'undefined') return
 
-  const params = new URLSearchParams(window.location.search)
-  const bookingId = params.get('booking_id') || params.get('bookingId') || params.get('reservation_id')
-  const amountStr = params.get('amount') || params.get('total')
-  const currency = params.get('currency') || 'USD'
+  // Prefer pre-parsed values from useSearchParams (avoids App Router URL rewrite race).
+  // Fall back to window.location.search for legacy callers.
+  let bookingId: string | null
+  let amountStr: string | null
+  let currency: string
+
+  if (preBookingId !== undefined) {
+    bookingId = preBookingId || null
+    amountStr = preAmount || null
+    currency = preCurrency || 'USD'
+  } else {
+    const params = new URLSearchParams(window.location.search)
+    bookingId = params.get('booking_id') || params.get('bookingId') || params.get('reservation_id')
+    amountStr = params.get('amount') || params.get('total')
+    currency = params.get('currency') || 'USD'
+  }
 
   // Only fire when OwnerRez supplies at least a booking ID in the URL.
   if (!bookingId) return
