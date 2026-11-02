@@ -59,6 +59,11 @@ export function applyConsent(state: 'granted' | 'denied') {
     const oaiq = (window as unknown as { oaiq: Function }).oaiq
     oaiq('consent', state === 'granted')
   }
+
+  // Meta Pixel consent API
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq('consent', state === 'granted' ? 'grant' : 'revoke')
+  }
 }
 
 export default function CookieConsent() {

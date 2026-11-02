@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { trackPurchaseFromUrl } from '../lib/analytics'
+import { trackPurchaseFromUrl, consumePendingBooking } from '../lib/analytics'
 
 /**
  * Fires GA4 + OpenAI Ads conversion events once on /booking-confirmed — only
@@ -16,12 +16,25 @@ export default function BookingConfirmedAnalytics() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
-    const bookingId = searchParams.get('booking_id')
-    const amount = searchParams.get('amount')
+    // Always consume the saved booking so it can't fire on a later visit.
+    const pending = consumePendingBooking()
+
+    // Prefer details OwnerRez puts in the URL; otherwise fall back to the
+    // booking saved just before the guest was sent to the payment page.
+    const bookingId =
+      searchParams.get('booking_id') || (pending ? `quote-${pending.quoteId}` : null)
+    const amount =
+      searchParams.get('amount') ||
+      (pending?.total !== undefined ? String(pending.total) : null)
     const currency = searchParams.get('currency') || 'USD'
 
-    // GA4 purchase event
-    trackPurchaseFromUrl(bookingId, amount, currency)
+    // GA4 + Meta Pixel purchase events
+    trackPurchaseFromUrl(
+      bookingId,
+      amount,
+      currency,
+      pending ? { propertySlug: pending.propertySlug, propertyName: pending.propertyName } : undefined,
+    )
 
     // OpenAI Ads — order_created conversion event
     if (bookingId && typeof window !== 'undefined' && typeof (window as unknown as { oaiq?: Function }).oaiq === 'function') {

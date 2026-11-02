@@ -13,6 +13,7 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void
     dataLayer?: unknown[]
+    fbq?: (...args: unknown[]) => void
   }
 }
 
@@ -20,6 +21,56 @@ declare global {
 function gtag(...args: unknown[]) {
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
     window.gtag(...args)
+  }
+}
+
+/**
+ * Safe Meta Pixel call — silently skips if the pixel isn't installed
+ * (NEXT_PUBLIC_META_PIXEL_ID unset) or hasn't loaded yet.
+ */
+function fbq(...args: unknown[]) {
+  if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+    window.fbq(...args)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Pending booking — bridges the hop to the OwnerRez payment page.
+//
+// OwnerRez's RedirectAfterBookingUrl is a fixed URL (/booking-confirmed) and
+// is not guaranteed to carry booking details back. So just before sending the
+// guest to pay, we save the quote ID and total in localStorage. The
+// confirmation page reads it once and deletes it, so a refresh can't re-fire
+// the conversion. Entries older than 48h are ignored (abandoned payments).
+// No PII is stored — only the OwnerRez quote ID, total and property.
+// ---------------------------------------------------------------------------
+const PENDING_KEY = 'fvv_pending_booking'
+const PENDING_MAX_AGE_MS = 48 * 60 * 60 * 1000
+
+export type PendingBooking = {
+  quoteId: string
+  total?: number
+  propertySlug: string
+  propertyName: string
+}
+
+export function savePendingBooking(b: PendingBooking) {
+  try {
+    localStorage.setItem(PENDING_KEY, JSON.stringify({ ...b, ts: Date.now() }))
+  } catch { /* storage unavailable — silent no-op */ }
+}
+
+/** Returns the pending booking (if fresh) and deletes it so it's used once. */
+export function consumePendingBooking(): PendingBooking | null {
+  try {
+    const raw = localStorage.getItem(PENDING_KEY)
+    if (!raw) return null
+    localStorage.removeItem(PENDING_KEY)
+    const parsed = JSON.parse(raw)
+    if (!parsed.quoteId || !parsed.ts || Date.now() - parsed.ts > PENDING_MAX_AGE_MS) return null
+    return parsed as PendingBooking
+  } catch {
+    return null
   }
 }
 
@@ -43,6 +94,13 @@ export function trackViewItem(params: {
         quantity: 1,
       },
     ],
+  })
+  fbq('track', 'ViewContent', {
+    content_ids: [params.propertySlug],
+    content_name: params.propertyName,
+    content_type: 'product',
+    value: params.pricePerNight,
+    currency: 'USD',
   })
 }
 
@@ -68,6 +126,14 @@ export function trackBeginCheckout(params: {
       },
     ],
   })
+  fbq('track', 'InitiateCheckout', {
+    content_ids: [params.propertySlug],
+    content_name: params.propertyName,
+    content_type: 'product',
+    value: params.totalAmount,
+    currency: 'USD',
+    num_items: params.nights,
+  })
 }
 
 // ---------------------------------------------------------------------------
@@ -89,6 +155,10 @@ export function trackGenerateLead(params: {
       },
     ],
   })
+  fbq('track', 'Lead', {
+    content_ids: [params.propertySlug],
+    content_name: params.propertyName,
+  })
 }
 
 // ---------------------------------------------------------------------------
@@ -104,6 +174,7 @@ export function trackPurchaseFromUrl(
   preBookingId?: string | null,
   preAmount?: string | null,
   preCurrency?: string | null,
+  property?: { propertySlug: string; propertyName: string },
 ) {
   if (typeof window === 'undefined') return
 
@@ -129,17 +200,35 @@ export function trackPurchaseFromUrl(
 
   const amount = amountStr ? parseFloat(amountStr) : undefined
 
+  const hasAmount = amount !== undefined && !isNaN(amount)
+
   gtag('event', 'purchase', {
     transaction_id: bookingId,
-    ...(amount !== undefined && !isNaN(amount) ? { value: amount, currency } : {}),
+    ...(hasAmount ? { value: amount, currency } : {}),
     items: [
       {
+        ...(property ? { item_id: property.propertySlug, item_name: property.propertyName } : {}),
         item_category: 'vacation_rental',
         quantity: 1,
-        ...(amount !== undefined && !isNaN(amount) ? { price: amount } : {}),
+        ...(hasAmount ? { price: amount } : {}),
       },
     ],
   })
+
+  // Meta Pixel — eventID lets Meta de-duplicate if a server-side event is
+  // added later (Conversions API).
+  fbq(
+    'track',
+    'Purchase',
+    {
+      ...(property ? { content_ids: [property.propertySlug], content_name: property.propertyName } : {}),
+      content_type: 'product',
+      // Meta requires value + currency on Purchase; 0 when the total is unknown.
+      value: hasAmount ? amount : 0,
+      currency,
+    },
+    { eventID: bookingId },
+  )
 
   // Remove the params from the URL bar so a reload doesn't re-fire.
   const clean = new URL(window.location.href)

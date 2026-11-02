@@ -65,7 +65,7 @@ export default function PrivacyPage() {
         <ul style={s.ul}>
           <li style={s.li}><em>Essential cookies</em> — required for the booking flow and session to function. No consent required.</li>
           <li style={s.li}><em>Analytics cookies</em> — Google Analytics 4 cookies (e.g. <code>_ga</code>, <code>_ga_*</code>). Set only with your consent (EU/UK) or in anonymised form (other regions).</li>
-          <li style={s.li}><em>Advertising cookies</em> — OpenAI Ads pixel. Set only with your consent (EU/UK).</li>
+          <li style={s.li}><em>Advertising cookies</em> — Google Ads, Meta (Facebook/Instagram) Pixel and OpenAI Ads pixel. Set only with your consent (EU/UK).</li>
         </ul>
 
         {/* ── 2. HOW WE USE YOUR DATA ── */}
@@ -93,6 +93,7 @@ export default function PrivacyPage() {
         <ul style={s.ul}>
           <li style={s.li}><strong style={{ color: '#fff' }}>OwnerRez</strong> — our booking and property management system. Receives guest name, email, phone, and travel dates to process reservations. <a href="https://www.ownerrez.com/privacy" style={s.a} target="_blank" rel="noopener noreferrer">Privacy policy ↗</a></li>
           <li style={s.li}><strong style={{ color: '#fff' }}>Google Analytics 4 / Google Ads</strong> — analytics and ad measurement. Data is pseudonymised; IP addresses are anonymised. Governed by Google&rsquo;s Consent Mode v2. <a href="https://policies.google.com/privacy" style={s.a} target="_blank" rel="noopener noreferrer">Privacy policy ↗</a></li>
+          <li style={s.li}><strong style={{ color: '#fff' }}>Meta Platforms (Facebook / Instagram)</strong> — Meta Pixel for measuring and retargeting our Facebook and Instagram ads. Activated only with your consent (EU/UK). <a href="https://www.facebook.com/privacy/policy/" style={s.a} target="_blank" rel="noopener noreferrer">Privacy policy ↗</a></li>
           <li style={s.li}><strong style={{ color: '#fff' }}>OpenAI Ads</strong> — advertising pixel for measuring ad performance. Activated only with your consent (EU/UK). <a href="https://openai.com/policies/privacy-policy" style={s.a} target="_blank" rel="noopener noreferrer">Privacy policy ↗</a></li>
           <li style={s.li}><strong style={{ color: '#fff' }}>Vercel</strong> — our website hosting provider. Processes server logs and edge request data. <a href="https://vercel.com/legal/privacy-policy" style={s.a} target="_blank" rel="noopener noreferrer">Privacy policy ↗</a></li>
         </ul>

@@ -6,6 +6,9 @@ import './globals.css'
 
 const BASE_URL = 'https://fabvacayvibes.com'
 
+// Set in Vercel → Settings → Environment Variables. Unset = pixel not loaded.
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
@@ -163,11 +166,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             // For non-EU/UK visitors the CookieConsent component never fires,
             // so these defaults remain; GA4 still fires but without ad signals.
             var _ga4IsEuUk=(function(){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;return['Europe/','Atlantic/Reykjavik','Atlantic/Faroe'].some(function(p){return tz.indexOf(p)===0});}catch(e){return false;}})();
+            // Ad signals follow the same rule as analytics: off until consent for
+            // EU/UK, on elsewhere — so Google Ads can attribute bookings to clicks.
+            var _consentDefault = _ga4IsEuUk ? 'denied' : 'granted';
             gtag('consent', 'default', {
-              analytics_storage: _ga4IsEuUk ? 'denied' : 'granted',
-              ad_storage: 'denied',
-              ad_user_data: 'denied',
-              ad_personalization: 'denied',
+              analytics_storage: _consentDefault,
+              ad_storage: _consentDefault,
+              ad_user_data: _consentDefault,
+              ad_personalization: _consentDefault,
               wait_for_update: _ga4IsEuUk ? 2000 : 0,
             });
             gtag('config', 'G-GP6D3BGY20', { send_page_view: true });
@@ -185,6 +191,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             oaiq('measure','page_viewed',{type:'contents'});
           ` }}
         />
+        {/* Meta (Facebook/Instagram) Pixel — loads only when NEXT_PUBLIC_META_PIXEL_ID is set.
+            EU/UK visitors start revoked; CookieConsent grants it on Accept. */}
+        {META_PIXEL_ID && (
+          <Script
+            id="meta-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{ __html: `
+              var _fbqIsEuUk=(function(){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;return['Europe/','Atlantic/Reykjavik','Atlantic/Faroe'].some(function(p){return tz.indexOf(p)===0});}catch(e){return false;}})();
+              !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+              if(_fbqIsEuUk){fbq('consent','revoke');}
+              fbq('init',${JSON.stringify(META_PIXEL_ID)});
+              fbq('track','PageView');
+            ` }}
+          />
+        )}
         {/* Captures UTM params and OpenAI oppref on first landing */}
         <UtmCapture />
         {/* EU/UK GDPR + UK PECR cookie consent banner */}
