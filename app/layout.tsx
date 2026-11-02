@@ -173,7 +173,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('config', 'G-GP6D3BGY20', { send_page_view: true });
           ` }}
         />
-        {/* OpenAI Ads pixel — pixel ID: MWSrz3MmkXqKVRZTzNtaEM */}
+        {/* OpenAI Ads pixel — pixel ID: MWSrz3MmkXqKVrZTzNtaEM */}
         <Script
           id="openai-pixel"
           strategy="afterInteractive"
@@ -181,7 +181,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             var _oaiqIsEuUk=(function(){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;return['Europe/','Atlantic/Reykjavik','Atlantic/Faroe'].some(function(p){return tz.indexOf(p)===0});}catch(e){return false;}})();
             !function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var e=d.createElement(s);e.async=1;e.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(e,f)}(window,document,'script','https://bzrcdn.openai.com/sdk/oaiq.min.js');
             if(_oaiqIsEuUk){oaiq('consent',false);}
-            oaiq('init',{pixelId:'MWSrz3MmkXqKVRZTzNtaEM'});
+            oaiq('init',{pixelId:'MWSrz3MmkXqKVrZTzNtaEM'});
             oaiq('measure','page_viewed',{type:'contents'});
           ` }}
         />
