@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Book Direct Vacation Rentals — Save Up to 15% | Fab Vacay Vibes',
+  title: 'Book Direct Vacation Rentals — Save Up to 15%',
   description: 'Book direct with Fab Vacay Vibes and save up to 15% vs Airbnb and VRBO. No platform fees. Best Price Guarantee. Three luxury vacation rentals: Clearwater FL, Joshua Tree CA, and near Yosemite CA. Direct owner communication and flexible check-in.',
   alternates: { canonical: 'https://fabvacayvibes.com/book-direct-vacation-rentals' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/book-direct-vacation-rentals',
     siteName: 'Fab Vacay Vibes',
-    title: 'Book Direct Vacation Rentals — Save Up to 15% | Fab Vacay Vibes',
+    title: 'Book Direct Vacation Rentals — Save Up to 15%',
     description: 'Skip Airbnb and VRBO fees. Book direct and save up to 15%. Best Price Guarantee. Three luxury properties across FL and CA.',
   },
 }
@@ -97,7 +97,7 @@ export default function BookDirectVacationRentalsPage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/book-direct-vacation-rentals',
                 url: 'https://fabvacayvibes.com/book-direct-vacation-rentals',
-                name: 'Book Direct Vacation Rentals — Save Up to 15% | Fab Vacay Vibes',
+                name: 'Book Direct Vacation Rentals — Save Up to 15%',
                 description: 'Book direct with Fab Vacay Vibes and save up to 15% vs Airbnb and VRBO. Three luxury vacation rentals in FL and CA.',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },

@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Dog-Friendly Joshua Tree Vacation Rentals | Fab Vacay Vibes',
+  title: 'Dog-Friendly Joshua Tree Vacation Rentals',
   description: 'Owl & Hare is a dog-friendly luxury desert compound in Joshua Tree, CA. Private gated property, pool, hot tub, sauna, and open desert space for dogs to roam. Max 2 dogs. 4 bedrooms, sleeps 10. 5 min to Joshua Tree National Park. Book direct from $700/night.',
   alternates: { canonical: 'https://fabvacayvibes.com/dog-friendly-joshua-tree' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/dog-friendly-joshua-tree',
     siteName: 'Fab Vacay Vibes',
-    title: 'Dog-Friendly Joshua Tree Vacation Rentals | Fab Vacay Vibes',
+    title: 'Dog-Friendly Joshua Tree Vacation Rentals',
     description: 'Dog-friendly luxury desert compound in Joshua Tree. Gated, private, pool & open space. Max 2 dogs. Sleeps 10. Book direct from $700/night.',
   },
 }
@@ -60,7 +60,7 @@ export default function DogFriendlyJoshuaTreePage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/dog-friendly-joshua-tree',
                 url: 'https://fabvacayvibes.com/dog-friendly-joshua-tree',
-                name: 'Dog-Friendly Joshua Tree Vacation Rentals | Fab Vacay Vibes',
+                name: 'Dog-Friendly Joshua Tree Vacation Rentals',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },
               {

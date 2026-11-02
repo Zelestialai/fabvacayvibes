@@ -2,7 +2,7 @@ import Nav from '../components/Nav'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Fab Vacay Vibes',
+  title: 'Privacy Policy',
   description: 'Privacy policy for Fab Vacay Vibes — how we collect, use, and protect your personal data.',
   robots: { index: true, follow: false },
 }

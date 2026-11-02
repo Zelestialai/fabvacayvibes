@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Large Group Vacation Rentals in California | Fab Vacay Vibes',
+  title: 'Large Group Vacation Rentals in California',
   description: 'Two luxury California vacation rentals for large groups: Owl & Hare in Joshua Tree (4BR, sleeps 10) and Sierra Crest Haven near Yosemite (7BR, sleeps 16). Book direct and save up to 15%.',
   alternates: { canonical: 'https://fabvacayvibes.com/large-group-vacation-rentals-california' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/large-group-vacation-rentals-california',
     siteName: 'Fab Vacay Vibes',
-    title: 'Large Group Vacation Rentals in California | Fab Vacay Vibes',
+    title: 'Large Group Vacation Rentals in California',
     description: 'Luxury California vacation rentals for large groups. Joshua Tree (sleeps 10) and near Yosemite (sleeps 16). Book direct from $700/night.',
   },
 }
@@ -88,7 +88,7 @@ export default function LargeGroupCaliforniaPage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/large-group-vacation-rentals-california',
                 url: 'https://fabvacayvibes.com/large-group-vacation-rentals-california',
-                name: 'Large Group Vacation Rentals in California | Fab Vacay Vibes',
+                name: 'Large Group Vacation Rentals in California',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },
               {

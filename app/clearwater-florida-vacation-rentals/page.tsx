@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Luxury Vacation Rentals in Clearwater, Florida | Fab Vacay Vibes',
+  title: 'Luxury Vacation Rentals in Clearwater, Florida',
   description: 'Casa Grandè is a 5-bedroom luxury vacation home in Clearwater, FL with a private pool. Sleeps up to 16. Pet friendly (max 2 dogs). 4 miles to Clearwater Beach, 6 miles to Pier 60. Book direct from $500/night and save up to 15%.',
   alternates: { canonical: 'https://fabvacayvibes.com/clearwater-florida-vacation-rentals' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/clearwater-florida-vacation-rentals',
     siteName: 'Fab Vacay Vibes',
-    title: 'Luxury Vacation Rentals in Clearwater, Florida | Fab Vacay Vibes',
+    title: 'Luxury Vacation Rentals in Clearwater, Florida',
     description: '5BR luxury home with private pool in Clearwater, FL. Sleeps 16, pet friendly. 4 miles to Clearwater Beach. Book direct from $500/night.',
   },
 }
@@ -64,7 +64,7 @@ export default function ClearwaterFloridaVacationRentalsPage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/clearwater-florida-vacation-rentals',
                 url: 'https://fabvacayvibes.com/clearwater-florida-vacation-rentals',
-                name: 'Luxury Vacation Rentals in Clearwater, Florida | Fab Vacay Vibes',
+                name: 'Luxury Vacation Rentals in Clearwater, Florida',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },
               {

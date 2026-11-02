@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const BASE = 'https://fabvacayvibes.com'
   const url = `${BASE}/properties/${property.slug}`
   const locationStr = `${property.location}, ${property.state}`
-  const title = `${property.name} — Luxury ${property.type} Vacation Rental in ${locationStr} | Fab Vacay Vibes`
+  const title = `${property.name} — Luxury ${property.type} Vacation Rental in ${locationStr}`
   const description = `Book ${property.name}, a luxury ${property.bedrooms}-bedroom vacation rental in ${locationStr}. ${property.shortDesc} Sleeps ${property.sleepsMin}-${property.sleepsMax} guests from ${property.pricePerNight.toLocaleString()}/night. Book direct and save up to 15% vs Airbnb.`
 
   return {
@@ -139,7 +139,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
               '@type': 'WebPage',
               '@id': `https://fabvacayvibes.com/properties/${property.slug}`,
               url: `https://fabvacayvibes.com/properties/${property.slug}`,
-              name: `${property.name} — Luxury ${property.type} Vacation Rental in ${property.location}, ${property.state} | Fab Vacay Vibes`,
+              name: `${property.name} — Luxury ${property.type} Vacation Rental in ${property.location}, ${property.state}`,
               description: property.shortDesc,
               isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
             },

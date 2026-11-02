@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Services — Property Management & Finder | Fab Vacay Vibes',
+  title: 'Services — Property Management & Finder',
   description: 'Fab Vacay Vibes offers expert short-term rental property management and investment property finder services across Florida and California.',
 }
 

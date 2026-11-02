@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Joshua Tree Wellness Vacation Rentals | Fab Vacay Vibes',
+  title: 'Joshua Tree Wellness Vacation Rentals',
   description: 'Owl & Hare is a luxury desert wellness retreat in Joshua Tree, CA with private pool, hot tub, sauna, cold plunge, LED therapy room, and gym. 4 bedrooms, sleeps up to 10. 5 minutes to Joshua Tree National Park. Book direct from $700/night.',
   alternates: { canonical: 'https://fabvacayvibes.com/joshua-tree-wellness-rentals' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/joshua-tree-wellness-rentals',
     siteName: 'Fab Vacay Vibes',
-    title: 'Joshua Tree Wellness Vacation Rentals | Fab Vacay Vibes',
+    title: 'Joshua Tree Wellness Vacation Rentals',
     description: 'Luxury desert wellness retreat with pool, sauna, cold plunge & LED therapy room. Sleeps 10. 5 min to JTNP. Book direct from $700/night.',
   },
 }
@@ -60,7 +60,7 @@ export default function JoshuaTreeWellnessPage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/joshua-tree-wellness-rentals',
                 url: 'https://fabvacayvibes.com/joshua-tree-wellness-rentals',
-                name: 'Joshua Tree Wellness Vacation Rentals | Fab Vacay Vibes',
+                name: 'Joshua Tree Wellness Vacation Rentals',
                 description: 'Luxury desert wellness retreat with pool, sauna, cold plunge, LED therapy room, and gym. Sleeps up to 10.',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },

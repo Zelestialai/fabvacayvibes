@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Luxury Vacation Rentals Near Yosemite | Fab Vacay Vibes',
+  title: 'Luxury Vacation Rentals Near Yosemite',
   description: 'Sierra Crest Haven is a 7-bedroom luxury mountain estate in Oakhurst, CA — 14 miles from Yosemite National Park south entrance, 45 minutes to Yosemite Valley. Sleeps 16. Hot tub, fireplace, game room, full bar. Book direct from $945/night.',
   alternates: { canonical: 'https://fabvacayvibes.com/vacation-rentals-near-yosemite' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/vacation-rentals-near-yosemite',
     siteName: 'Fab Vacay Vibes',
-    title: 'Luxury Vacation Rentals Near Yosemite | Fab Vacay Vibes',
+    title: 'Luxury Vacation Rentals Near Yosemite',
     description: '7BR luxury mountain estate 14 miles from Yosemite. Sleeps 16. Hot tub, fireplace, game room. Book direct from $945/night.',
   },
 }
@@ -64,7 +64,7 @@ export default function VacationRentalsNearYosemitePage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/vacation-rentals-near-yosemite',
                 url: 'https://fabvacayvibes.com/vacation-rentals-near-yosemite',
-                name: 'Luxury Vacation Rentals Near Yosemite | Fab Vacay Vibes',
+                name: 'Luxury Vacation Rentals Near Yosemite',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },
               {

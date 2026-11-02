@@ -5,14 +5,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Private Group Retreats in Joshua Tree | Fab Vacay Vibes',
+  title: 'Private Group Retreats in Joshua Tree',
   description: 'Owl & Hare is a 4-bedroom, 4-bathroom luxury desert compound in Joshua Tree, CA — built for private group retreats. Private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court, and more. Sleeps up to 10. Book direct from $700/night.',
   alternates: { canonical: 'https://fabvacayvibes.com/joshua-tree-group-retreats' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/joshua-tree-group-retreats',
     siteName: 'Fab Vacay Vibes',
-    title: 'Private Group Retreats in Joshua Tree | Fab Vacay Vibes',
+    title: 'Private Group Retreats in Joshua Tree',
     description: 'Luxury desert compound for private group retreats. Pool, sauna, cold plunge, gym, pickleball & more. Sleeps 10. 5 min to Joshua Tree National Park.',
   },
 }
@@ -60,7 +60,7 @@ export default function JoshuaTreeGroupRetreatsPage() {
                 '@type': 'WebPage',
                 '@id': 'https://fabvacayvibes.com/joshua-tree-group-retreats',
                 url: 'https://fabvacayvibes.com/joshua-tree-group-retreats',
-                name: 'Private Group Retreats in Joshua Tree | Fab Vacay Vibes',
+                name: 'Private Group Retreats in Joshua Tree',
                 description: 'Luxury desert compound for private group retreats in Joshua Tree, CA. Sleeps up to 10.',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },
