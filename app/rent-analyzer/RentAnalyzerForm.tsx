@@ -309,7 +309,7 @@ export default function RentAnalyzerForm() {
                   {result.comparables.map((comp) => (
                     <div key={comp.listing_info.listing_id} style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.08)', borderRadius: 2, overflow: 'hidden' }}>
                       {comp.listing_info.cover_photo_url && (
-                        <img src={comp.listing_info.cover_photo_url} alt="" style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }} />
+                        <img src={comp.listing_info.cover_photo_url} alt={comp.listing_info.listing_name ? `${comp.listing_info.listing_name.substring(0, 60)} — comparable listing` : 'Comparable listing photo'} style={{ width: '100%', height: 120, objectFit: 'cover', display: 'block' }} />
                       )}
                       <div style={{ padding: '12px 14px' }}>
                         <p style={{ fontSize: 12, color: 'var(--cream)', marginBottom: 4, lineHeight: 1.4 }}>{comp.listing_info.listing_name?.substring(0, 45)}</p>
