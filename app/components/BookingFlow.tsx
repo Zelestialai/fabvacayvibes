@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { trackBeginCheckout } from '../lib/analytics'
+import { trackBeginCheckout, savePendingBooking } from '../lib/analytics'
 import { appendUtmToUrl } from '../lib/utm'
 
 interface BookingFlowProps {
@@ -121,6 +121,12 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Booking failed')
       setStep('redirect')
+      // Save the quote so /booking-confirmed can record the conversion even if
+      // OwnerRez doesn't pass booking details back in the redirect URL.
+      if (data.quoteId) {
+        const total = quote?.pricing.total ?? (typeof data.total === 'number' ? data.total : undefined)
+        savePendingBooking({ quoteId: String(data.quoteId), total, propertySlug, propertyName })
+      }
       // Redirect to OwnerRez payment page, appending UTM/oppref for attribution
       const paymentUrlWithUtm = appendUtmToUrl(data.paymentUrl)
       setTimeout(() => { window.location.href = paymentUrlWithUtm }, 2000)
