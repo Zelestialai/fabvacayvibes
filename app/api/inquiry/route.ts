@@ -50,49 +50,79 @@ export async function POST(request: NextRequest) {
     const guestData = await guestRes.json()
     const guestId = guestData.Id || guestData.id
 
-    // Step 2: Create a draft quote instead of an inquiry.
-    // The /inquiries endpoint links the guest by ID but OwnerRez does not surface
-    // contact details on the inquiry view — you have to manually edit them.
-    // Creating a quote with SendQuoteEmail:false gives OwnerRez a fully linked
-    // guest record with all contact info visible immediately, so you can send a
-    // quote directly without any manual data entry.
-    const quotePayload: Record<string, unknown> = {
-      GuestId: guestId,
-      PropertyId: propertyId,
-      Adults: adults || 2,
-      Children: 0,
-      Pets: 0,
-      SendQuoteEmail: false,
-      Comments: message,
+    // Step 2: Create a record in OwnerRez with the guest fully linked.
+    // If dates are provided → create a draft quote (SendQuoteEmail:false) so you
+    //   can send a payment link directly with no manual data entry.
+    // If no dates → create an inquiry so it still shows up in OwnerRez.
+    // In both cases the guest now has name/email/phone stored correctly.
+
+    let ownerrezId: number | null = null
+    let ownerrezType: 'quote' | 'inquiry' | null = null
+
+    if (arrival && departure) {
+      const quotePayload = {
+        GuestId: guestId,
+        PropertyId: propertyId,
+        Adults: adults || 2,
+        Children: 0,
+        Pets: 0,
+        SendQuoteEmail: false,
+        Comments: message,
+        Arrival: arrival,
+        Departure: departure,
+      }
+      const quoteRes = await fetch(`${LEGACY}/quotes`, {
+        method: 'POST', headers,
+        body: JSON.stringify(quotePayload),
+      })
+      const quoteText = await quoteRes.text()
+      console.log('Quote response:', quoteRes.status, quoteText.substring(0, 300))
+      if (quoteRes.ok) {
+        const quoteData = JSON.parse(quoteText)
+        ownerrezId = quoteData.Id || quoteData.id
+        ownerrezType = 'quote'
+      } else {
+        console.error('Quote creation failed:', quoteRes.status, quoteText)
+      }
     }
 
-    if (arrival) quotePayload.Arrival = arrival
-    if (departure) quotePayload.Departure = departure
+    // Fall back to inquiry if no dates or quote failed
+    if (!ownerrezId) {
+      const inquiryPayload: Record<string, unknown> = {
+        GuestId: guestId,
+        PropertyId: propertyId,
+        Adults: adults || 2,
+        Children: 0,
+        Pets: 0,
+        Comments: message,
+        Source: 'FabVacayVibes Website',
+      }
+      if (arrival) inquiryPayload.Arrival = arrival
+      if (departure) inquiryPayload.Departure = departure
 
-    const quoteRes = await fetch(`${LEGACY}/quotes`, {
-      method: 'POST', headers,
-      body: JSON.stringify(quotePayload),
-    })
+      const inqRes = await fetch(`${LEGACY}/inquiries`, {
+        method: 'POST', headers,
+        body: JSON.stringify(inquiryPayload),
+      })
+      const inqText = await inqRes.text()
+      console.log('Inquiry fallback response:', inqRes.status, inqText.substring(0, 300))
+      if (inqRes.ok) {
+        const inqData = JSON.parse(inqText)
+        ownerrezId = inqData.Id || inqData.id
+        ownerrezType = 'inquiry'
+      }
+    }
 
-    const quoteText = await quoteRes.text()
-    console.log('Quote (from inquiry) response:', quoteRes.status, quoteText.substring(0, 300))
-
-    // Send our email notification regardless of quote success
+    // Send our notification email regardless
     try {
       const propertyName = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
       await sendInquiryEmail({ propertyName: propertyName.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
     } catch (e) { console.error('Email error:', e) }
 
-    if (!quoteRes.ok) {
-      console.error('Quote creation error:', quoteRes.status, quoteText)
-      // Guest was created successfully — still a useful record in OwnerRez
-      return NextResponse.json({ success: true, guestId, note: 'Inquiry received.' })
-    }
-
-    const quoteData = JSON.parse(quoteText)
     return NextResponse.json({
       success: true,
-      quoteId: quoteData.Id || quoteData.id,
+      ownerrezId,
+      ownerrezType,
       guestId,
     })
 

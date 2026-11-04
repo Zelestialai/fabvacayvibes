@@ -55,27 +55,6 @@ export async function POST(request: NextRequest) {
     try { fetchedGuestExpanded = await fetchRes2.json() } catch {}
   }
 
-  // Step 2b: Try PATCH/PUT to update the guest with contact info
-  let patchResult: Record<string, unknown> = {}
-  if (guestId) {
-    const patchRes = await fetch(`${LEGACY}/guests/${guestId}`, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify({
-        Id: guestId,
-        FirstName: 'Test',
-        LastName: 'Guest',
-        Email: 'test-debug2@fabvacayvibes.com',
-        Phone: '5555550001',
-      }),
-    })
-    const patchText = await patchRes.text()
-    patchResult = { status: patchRes.status, body: patchText.substring(0, 300) }
-
-    // Fetch again after patch
-    const fetchRes3 = await fetch(`${LEGACY}/guests/${guestId}`, { headers })
-    try { fetchedGuestExpanded = await fetchRes3.json() } catch {}
-  }
 
   // Step 3: Create a test quote linked to that guest
   let quoteStatus = 0
@@ -114,7 +93,6 @@ export async function POST(request: NextRequest) {
       guestId,
       fetched: fetchedGuest,
       fetchedWithFields: fetchedGuestExpanded,
-      patchResult,
     },
     step3_quote_create: {
       status: quoteStatus,
