@@ -49,60 +49,49 @@ export async function POST(request: NextRequest) {
     const guestData = await guestRes.json()
     const guestId = guestData.Id || guestData.id
 
-    // Step 2: Create inquiry via legacy API
-    // Pass both GuestId and inline guest fields — OwnerRez requires GuestId to link
-    // the contact record, but some versions also need inline fields to display them
-    const inquiryPayload: Record<string, unknown> = {
+    // Step 2: Create a draft quote instead of an inquiry.
+    // The /inquiries endpoint links the guest by ID but OwnerRez does not surface
+    // contact details on the inquiry view — you have to manually edit them.
+    // Creating a quote with SendQuoteEmail:false gives OwnerRez a fully linked
+    // guest record with all contact info visible immediately, so you can send a
+    // quote directly without any manual data entry.
+    const quotePayload: Record<string, unknown> = {
       GuestId: guestId,
-      FirstName: firstName,
-      LastName: lastName,
-      Email: email,
-      Phone: phone || '',
       PropertyId: propertyId,
       Adults: adults || 2,
       Children: 0,
       Pets: 0,
+      SendQuoteEmail: false,
       Comments: message,
-      Source: 'FabVacayVibes Website',
     }
 
-    if (arrival) inquiryPayload.Arrival = arrival
-    if (departure) inquiryPayload.Departure = departure
+    if (arrival) quotePayload.Arrival = arrival
+    if (departure) quotePayload.Departure = departure
 
-    const inquiryRes = await fetch(`${LEGACY}/inquiries`, {
+    const quoteRes = await fetch(`${LEGACY}/quotes`, {
       method: 'POST', headers,
-      body: JSON.stringify(inquiryPayload),
+      body: JSON.stringify(quotePayload),
     })
 
-    const inquiryText = await inquiryRes.text()
-    console.log('Inquiry response:', inquiryRes.status, inquiryText.substring(0, 300))
+    const quoteText = await quoteRes.text()
+    console.log('Quote (from inquiry) response:', quoteRes.status, quoteText.substring(0, 300))
 
-    if (!inquiryRes.ok) {
-      // If inquiry endpoint fails, fall back — still send email via a quote inquiry
-      // Log the error but return success since guest was created
-      console.error('Inquiry API error:', inquiryRes.status, inquiryText)
-      // Try alternative: send as a message/thread
-      try {
-        const property = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
-        await sendInquiryEmail({ propertyName: property.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
-      } catch (e) { console.error('Email error:', e) }
-      return NextResponse.json({
-        success: true,
-        guestId,
-        note: 'Inquiry received. We will contact you shortly.',
-      })
-    }
-
-    const inquiryData = JSON.parse(inquiryText)
-    // Send email notification
+    // Send our email notification regardless of quote success
     try {
-      const property = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
-      await sendInquiryEmail({ propertyName: property.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
+      const propertyName = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
+      await sendInquiryEmail({ propertyName: propertyName.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
     } catch (e) { console.error('Email error:', e) }
 
+    if (!quoteRes.ok) {
+      console.error('Quote creation error:', quoteRes.status, quoteText)
+      // Guest was created successfully — still a useful record in OwnerRez
+      return NextResponse.json({ success: true, guestId, note: 'Inquiry received.' })
+    }
+
+    const quoteData = JSON.parse(quoteText)
     return NextResponse.json({
       success: true,
-      inquiryId: inquiryData.Id || inquiryData.id,
+      quoteId: quoteData.Id || quoteData.id,
       guestId,
     })
 
