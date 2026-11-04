@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
   const surchargesRes = await fetch(`${LEGACY}/surcharges?property_id=452868`, { headers })
   const surchargesText = await surchargesRes.text()
 
-  // Step 4: TEST quote for Owl & Hare WITH pool heating surcharge
+  // Step 4: TEST quote for Owl & Hare WITH pool heating via OptionalSurchargeIds
   const testQuoteWithPoolRes = await fetch(`${LEGACY}/quotes`, {
     method: 'TEST',
     headers,
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       PropertyId: 452868, // Owl & Hare
       Adults: 2, Children: 0, Pets: 0,
       Arrival: '2027-02-10', Departure: '2027-02-13',
-      Charges: [{ SurchargeId: 102655608, Type: 2, Description: 'Pool Heating', Rate: 250, RateIsPercent: false, Amount: 750 }],
+      OptionalSurchargeIds: [102655608],
     }),
   })
   const testQuoteWithPoolText = await testQuoteWithPoolRes.text()
