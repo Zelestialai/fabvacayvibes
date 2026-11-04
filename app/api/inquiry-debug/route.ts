@@ -20,12 +20,21 @@ export async function POST(request: NextRequest) {
     'User-Agent': 'FabVacayVibes/1.0',
   }
 
-  // Step 1: Create a test guest
+  // Step 1a: Try GET on /guests to see schema
+  const guestSchemaRes = await fetch(`${LEGACY}/guests?page_size=1`, { headers })
+  const guestSchemaText = await guestSchemaRes.text()
+
+  // Step 1b: Create a test guest — try both naming conventions
   const guestPayload = {
     FirstName: 'Test',
     LastName: 'Guest',
-    Email: 'test-debug@fabvacayvibes.com',
-    Phone: '5555550000',
+    Email: 'test-debug2@fabvacayvibes.com',
+    Phone: '5555550001',
+    // Also try snake_case in case that's what the API wants
+    first_name: 'Test',
+    last_name: 'Guest',
+    email: 'test-debug2@fabvacayvibes.com',
+    phone: '5555550001',
   }
 
   const guestRes = await fetch(`${LEGACY}/guests`, {
@@ -39,11 +48,37 @@ export async function POST(request: NextRequest) {
 
   const guestId = guestData.Id || guestData.id || null
 
-  // Step 2: If we got a guestId, fetch the guest back to see what's stored
+  // Step 2: Fetch the guest back — use ?fields=all to get everything
   let fetchedGuest: Record<string, unknown> = {}
+  let fetchedGuestExpanded: Record<string, unknown> = {}
   if (guestId) {
     const fetchRes = await fetch(`${LEGACY}/guests/${guestId}`, { headers })
     try { fetchedGuest = await fetchRes.json() } catch {}
+    // Try with explicit fields
+    const fetchRes2 = await fetch(`${LEGACY}/guests/${guestId}?fields=FirstName,LastName,Email,Phone,first_name,last_name,email,phone`, { headers })
+    try { fetchedGuestExpanded = await fetchRes2.json() } catch {}
+  }
+
+  // Step 2b: Try PATCH/PUT to update the guest with contact info
+  let patchResult: Record<string, unknown> = {}
+  if (guestId) {
+    const patchRes = await fetch(`${LEGACY}/guests/${guestId}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        Id: guestId,
+        FirstName: 'Test',
+        LastName: 'Guest',
+        Email: 'test-debug2@fabvacayvibes.com',
+        Phone: '5555550001',
+      }),
+    })
+    const patchText = await patchRes.text()
+    patchResult = { status: patchRes.status, body: patchText.substring(0, 300) }
+
+    // Fetch again after patch
+    const fetchRes3 = await fetch(`${LEGACY}/guests/${guestId}`, { headers })
+    try { fetchedGuestExpanded = await fetchRes3.json() } catch {}
   }
 
   // Step 3: Create a test quote linked to that guest
@@ -72,6 +107,7 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({
+    step0_guest_schema: { status: guestSchemaRes.status, preview: guestSchemaText.substring(0, 600) },
     step1_guest_create: {
       status: guestStatus,
       payload: guestPayload,
@@ -81,6 +117,8 @@ export async function POST(request: NextRequest) {
     step2_guest_fetch: {
       guestId,
       fetched: fetchedGuest,
+      fetchedWithFields: fetchedGuestExpanded,
+      patchResult,
     },
     step3_quote_create: {
       status: quoteStatus,
