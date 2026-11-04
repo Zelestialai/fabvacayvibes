@@ -2,6 +2,7 @@ import { sendInquiryEmail } from '../../lib/email'
 import { NextRequest, NextResponse } from 'next/server'
 
 const LEGACY = 'https://app.ownerrez.com/api'
+const V2 = 'https://api.ownerrez.com/v2'
 
 const PROPERTY_NUMERIC_IDS: Record<string, number> = {
   'casa-grande':        398247,
@@ -32,9 +33,10 @@ export async function POST(request: NextRequest) {
       'User-Agent': 'FabVacayVibes/1.0',
     }
 
-    // Step 1: Create guest — OwnerRez legacy API uses snake_case and
-    // nested arrays for email/phone (not flat PascalCase fields)
-    const guestRes = await fetch(`${LEGACY}/guests`, {
+    // Step 1: Create guest via v2 API — the legacy /api/guests endpoint
+    // only returns { Id, Tags } and silently ignores all contact fields.
+    // The v2 API accepts first_name, last_name, email_addresses, phones.
+    const guestRes = await fetch(`${V2}/guests`, {
       method: 'POST', headers,
       body: JSON.stringify({
         first_name: firstName,
@@ -44,11 +46,13 @@ export async function POST(request: NextRequest) {
       }),
     })
     if (!guestRes.ok) {
-      const err = await guestRes.json().catch(() => ({}))
-      return NextResponse.json({ error: 'Failed to create guest', details: err }, { status: 400 })
+      const errText = await guestRes.text()
+      console.error('Guest creation failed:', guestRes.status, errText.substring(0, 300))
+      return NextResponse.json({ error: 'Failed to create guest', details: errText.substring(0, 200) }, { status: 400 })
     }
     const guestData = await guestRes.json()
-    const guestId = guestData.Id || guestData.id
+    const guestId = guestData.id || guestData.Id
+    console.log('Guest created via v2:', guestId, JSON.stringify(guestData).substring(0, 200))
 
     // Step 2: Create a record in OwnerRez with the guest fully linked.
     // If dates are provided → create a draft quote (SendQuoteEmail:false) so you

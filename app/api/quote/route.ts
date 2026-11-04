@@ -58,26 +58,15 @@ export async function GET(request: NextRequest) {
 
     console.log('Test quote for propertyId:', propertyId, arrival, '->', departure)
 
-    // Calculate nights upfront for pool heating amount
-    const nightsForCharge = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
-
-    // Pool heating surcharge (Owl & Hare ONLY) — ID 102655608, $250/night
-    // Guard by slug — this surcharge doesn't exist on other properties and
-    // OwnerRez will reject the quote if we pass an invalid SurchargeId
+    // Pool heating surcharge (Owl & Hare ONLY) — ID 102655608
+    // Pass as OptionalSurchargeIds — OwnerRez rejects inline Charges on quote creation
     const POOL_HEATING_SURCHARGE_ID = 102655608
-    const poolHeatingCharges = (poolHeating && slug === 'owl-and-hare') ? [{
-      SurchargeId: POOL_HEATING_SURCHARGE_ID,
-      Type: 2, // surcharge
-      Description: 'Pool Heating',
-      Rate: 250.00,
-      RateIsPercent: false,
-      Amount: 250.00 * nightsForCharge,
-    }] : []
+    const includePoolHeating = poolHeating && slug === 'owl-and-hare'
 
     const payload: Record<string, unknown> = {
       PropertyId: propertyId, Arrival: arrival, Departure: departure,
       Adults: adults, Children: children, Pets: pets,
-      ...(poolHeatingCharges.length > 0 ? { Charges: poolHeatingCharges } : {}),
+      ...(includePoolHeating ? { OptionalSurchargeIds: [POOL_HEATING_SURCHARGE_ID] } : {}),
     }
 
     // Use TEST HTTP verb on legacy quotes endpoint
@@ -159,18 +148,10 @@ export async function POST(request: NextRequest) {
     }
     const guestData = JSON.parse(guestText)
 
-    // Pool heating optional surcharge (Owl & Hare ONLY) — $250/night, ID 102655608
-    // Guard by slug to prevent OwnerRez rejecting quotes on other properties
+    // Pool heating surcharge (Owl & Hare ONLY) — ID 102655608
+    // Pass as OptionalSurchargeIds — OwnerRez rejects inline Charges array on POST
     const POOL_HEATING_SURCHARGE_ID = 102655608
-    const postNights = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
-    const poolHeatingCharges = (poolHeating && slug === 'owl-and-hare') ? [{
-      SurchargeId: POOL_HEATING_SURCHARGE_ID,
-      Type: 2,
-      Description: 'Pool Heating',
-      Rate: 250.00,
-      RateIsPercent: false,
-      Amount: 250.00 * postNights,
-    }] : []
+    const includePoolHeating = poolHeating && slug === 'owl-and-hare'
 
     // Create quote via legacy API
     const origin = request.headers.get('origin') || 'https://fabvacayvibes.com'
@@ -185,7 +166,7 @@ export async function POST(request: NextRequest) {
         SendQuoteEmail: false,
         RedirectAfterBookingUrl: `${origin}/booking-confirmed`,
         ...(couponCode ? { CouponCode: couponCode } : {}),
-        ...(poolHeatingCharges.length > 0 ? { Charges: poolHeatingCharges } : {}),
+        ...(includePoolHeating ? { OptionalSurchargeIds: [POOL_HEATING_SURCHARGE_ID] } : {}),
       }),
     })
     const quoteText = await quoteRes.text()

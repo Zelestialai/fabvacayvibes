@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const LEGACY = 'https://app.ownerrez.com/api'
+const V2 = 'https://api.ownerrez.com/v2'
 
 export async function POST(request: NextRequest) {
   // Only allow with admin secret
@@ -24,16 +25,15 @@ export async function POST(request: NextRequest) {
   const guestSchemaRes = await fetch(`${LEGACY}/guests?page_size=1`, { headers })
   const guestSchemaText = await guestSchemaRes.text()
 
-  // Step 1b: Create a test guest with the correct OwnerRez schema:
-  // snake_case fields, email/phone as nested arrays
+  // Step 1b: Create a test guest via V2 API (legacy /api/guests ignores all contact fields)
   const guestPayload = {
     first_name: 'Test',
     last_name: 'Guest',
-    email_addresses: [{ address: 'test-debug3@fabvacayvibes.com' }],
-    phones: [{ number: '5555550002' }],
+    email_addresses: [{ address: 'test-debug4@fabvacayvibes.com' }],
+    phones: [{ number: '5555550003' }],
   }
 
-  const guestRes = await fetch(`${LEGACY}/guests`, {
+  const guestRes = await fetch(`${V2}/guests`, {
     method: 'POST', headers,
     body: JSON.stringify(guestPayload),
   })
@@ -44,14 +44,14 @@ export async function POST(request: NextRequest) {
 
   const guestId = guestData.Id || guestData.id || null
 
-  // Step 2: Fetch the guest back — use ?fields=all to get everything
+  // Step 2: Fetch the guest back via v2 to confirm contact info is stored
   let fetchedGuest: Record<string, unknown> = {}
   let fetchedGuestExpanded: Record<string, unknown> = {}
   if (guestId) {
-    const fetchRes = await fetch(`${LEGACY}/guests/${guestId}`, { headers })
+    const fetchRes = await fetch(`${V2}/guests/${guestId}`, { headers })
     try { fetchedGuest = await fetchRes.json() } catch {}
-    // Try with explicit fields
-    const fetchRes2 = await fetch(`${LEGACY}/guests/${guestId}?fields=FirstName,LastName,Email,Phone,first_name,last_name,email,phone`, { headers })
+    // Also try legacy fetch for comparison
+    const fetchRes2 = await fetch(`${LEGACY}/guests/${guestId}`, { headers })
     try { fetchedGuestExpanded = await fetchRes2.json() } catch {}
   }
 
