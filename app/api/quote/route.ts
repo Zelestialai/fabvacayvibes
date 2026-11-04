@@ -61,9 +61,11 @@ export async function GET(request: NextRequest) {
     // Calculate nights upfront for pool heating amount
     const nightsForCharge = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
 
-    // Pool heating surcharge (Optional, Owl & Hare only) — ID 102655608, $250/night
+    // Pool heating surcharge (Owl & Hare ONLY) — ID 102655608, $250/night
+    // Guard by slug — this surcharge doesn't exist on other properties and
+    // OwnerRez will reject the quote if we pass an invalid SurchargeId
     const POOL_HEATING_SURCHARGE_ID = 102655608
-    const poolHeatingCharges = poolHeating ? [{
+    const poolHeatingCharges = (poolHeating && slug === 'owl-and-hare') ? [{
       SurchargeId: POOL_HEATING_SURCHARGE_ID,
       Type: 2, // surcharge
       Description: 'Pool Heating',
@@ -157,10 +159,11 @@ export async function POST(request: NextRequest) {
     }
     const guestData = JSON.parse(guestText)
 
-    // Pool heating optional surcharge (Owl & Hare only) — $250/night, ID 102655608
+    // Pool heating optional surcharge (Owl & Hare ONLY) — $250/night, ID 102655608
+    // Guard by slug to prevent OwnerRez rejecting quotes on other properties
     const POOL_HEATING_SURCHARGE_ID = 102655608
     const postNights = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
-    const poolHeatingCharges = poolHeating ? [{
+    const poolHeatingCharges = (poolHeating && slug === 'owl-and-hare') ? [{
       SurchargeId: POOL_HEATING_SURCHARGE_ID,
       Type: 2,
       Description: 'Pool Heating',
