@@ -56,30 +56,34 @@ export async function POST(request: NextRequest) {
   }
 
 
-  // Step 3: Create a test quote linked to that guest
-  let quoteStatus = 0
-  let quoteText = ''
-  let quoteData: Record<string, unknown> = {}
-  if (guestId) {
-    const quotePayload = {
-      GuestId: guestId,
-      PropertyId: 398247, // Casa Grande
-      Adults: 2,
-      Children: 0,
-      Pets: 0,
-      SendQuoteEmail: false,
-      Comments: 'DEBUG TEST — please delete',
-      Arrival: '2027-01-10',
-      Departure: '2027-01-15',
-    }
-    const qRes = await fetch(`${LEGACY}/quotes`, {
-      method: 'POST', headers,
-      body: JSON.stringify(quotePayload),
-    })
-    quoteStatus = qRes.status
-    quoteText = await qRes.text()
-    try { quoteData = JSON.parse(quoteText) } catch {}
-  }
+  // Step 3: Check surcharges configured for Owl & Hare
+  const surchargesRes = await fetch(`${LEGACY}/surcharges?property_id=452868`, { headers })
+  const surchargesText = await surchargesRes.text()
+
+  // Step 4: TEST quote for Owl & Hare WITH pool heating surcharge
+  const testQuoteWithPoolRes = await fetch(`${LEGACY}/quotes`, {
+    method: 'TEST',
+    headers,
+    body: JSON.stringify({
+      PropertyId: 452868, // Owl & Hare
+      Adults: 2, Children: 0, Pets: 0,
+      Arrival: '2027-02-10', Departure: '2027-02-13',
+      Charges: [{ SurchargeId: 102655608, Type: 2, Description: 'Pool Heating', Rate: 250, RateIsPercent: false, Amount: 750 }],
+    }),
+  })
+  const testQuoteWithPoolText = await testQuoteWithPoolRes.text()
+
+  // Step 5: TEST quote for Owl & Hare WITHOUT pool heating (baseline)
+  const testQuoteNoPoolRes = await fetch(`${LEGACY}/quotes`, {
+    method: 'TEST',
+    headers,
+    body: JSON.stringify({
+      PropertyId: 452868,
+      Adults: 2, Children: 0, Pets: 0,
+      Arrival: '2027-02-10', Departure: '2027-02-13',
+    }),
+  })
+  const testQuoteNoPoolText = await testQuoteNoPoolRes.text()
 
   return NextResponse.json({
     step0_guest_schema: { status: guestSchemaRes.status, preview: guestSchemaText.substring(0, 600) },
@@ -87,17 +91,24 @@ export async function POST(request: NextRequest) {
       status: guestStatus,
       payload: guestPayload,
       response: guestData,
-      rawPreview: guestText.substring(0, 500),
+      rawPreview: guestText.substring(0, 300),
     },
     step2_guest_fetch: {
       guestId,
       fetched: fetchedGuest,
       fetchedWithFields: fetchedGuestExpanded,
     },
-    step3_quote_create: {
-      status: quoteStatus,
-      response: quoteData,
-      rawPreview: quoteText.substring(0, 500),
+    step3_surcharges: {
+      status: surchargesRes.status,
+      preview: surchargesText.substring(0, 1000),
+    },
+    step4_test_quote_with_pool: {
+      status: testQuoteWithPoolRes.status,
+      preview: testQuoteWithPoolText.substring(0, 500),
+    },
+    step5_test_quote_no_pool: {
+      status: testQuoteNoPoolRes.status,
+      preview: testQuoteNoPoolText.substring(0, 300),
     },
   })
 }
