@@ -50,8 +50,14 @@ export async function POST(request: NextRequest) {
     const guestId = guestData.Id || guestData.id
 
     // Step 2: Create inquiry via legacy API
+    // Pass both GuestId and inline guest fields — OwnerRez requires GuestId to link
+    // the contact record, but some versions also need inline fields to display them
     const inquiryPayload: Record<string, unknown> = {
       GuestId: guestId,
+      FirstName: firstName,
+      LastName: lastName,
+      Email: email,
+      Phone: phone || '',
       PropertyId: propertyId,
       Adults: adults || 2,
       Children: 0,
