@@ -32,14 +32,15 @@ export async function POST(request: NextRequest) {
       'User-Agent': 'FabVacayVibes/1.0',
     }
 
-    // Step 1: Create or find guest
+    // Step 1: Create guest — OwnerRez legacy API uses snake_case and
+    // nested arrays for email/phone (not flat PascalCase fields)
     const guestRes = await fetch(`${LEGACY}/guests`, {
       method: 'POST', headers,
       body: JSON.stringify({
-        FirstName: firstName,
-        LastName: lastName,
-        Email: email,
-        Phone: phone || '',
+        first_name: firstName,
+        last_name: lastName,
+        email_addresses: [{ address: email }],
+        phones: phone ? [{ number: phone }] : [],
       }),
     })
     if (!guestRes.ok) {

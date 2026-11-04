@@ -24,17 +24,13 @@ export async function POST(request: NextRequest) {
   const guestSchemaRes = await fetch(`${LEGACY}/guests?page_size=1`, { headers })
   const guestSchemaText = await guestSchemaRes.text()
 
-  // Step 1b: Create a test guest — try both naming conventions
+  // Step 1b: Create a test guest with the correct OwnerRez schema:
+  // snake_case fields, email/phone as nested arrays
   const guestPayload = {
-    FirstName: 'Test',
-    LastName: 'Guest',
-    Email: 'test-debug2@fabvacayvibes.com',
-    Phone: '5555550001',
-    // Also try snake_case in case that's what the API wants
     first_name: 'Test',
     last_name: 'Guest',
-    email: 'test-debug2@fabvacayvibes.com',
-    phone: '5555550001',
+    email_addresses: [{ address: 'test-debug3@fabvacayvibes.com' }],
+    phones: [{ number: '5555550002' }],
   }
 
   const guestRes = await fetch(`${LEGACY}/guests`, {
