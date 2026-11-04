@@ -54,6 +54,9 @@ const labelStyle = {
   display: 'block',
 }
 
+const CAL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+const CAL_DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
+
 export default function BookingFlow({ propertySlug, propertyName, bookedDates, initialDates }: BookingFlowProps) {
   const [step, setStep] = useState<Step>('dates')
   const [arrival, setArrival] = useState(initialDates?.arrival || '')
@@ -68,6 +71,11 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
   const [guest, setGuest] = useState({ firstName: '', lastName: '', email: '', phone: '' })
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
+  const [calHovered, setCalHovered] = useState<string | null>(null)
+  const [calMonth, setCalMonth] = useState(() => {
+    const now = new Date()
+    return { year: now.getFullYear(), month: now.getMonth() }
+  })
 
   const today = new Date().toISOString().split('T')[0]
 
@@ -86,6 +94,111 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
   }, [])
 
   const isDateBooked = (dateStr: string) => bookedDates.has(dateStr)
+
+  // Calendar helpers
+  const calFmt = (year: number, month: number, day: number) =>
+    `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+
+  const calIsInRange = (dateStr: string) => {
+    const ref = calHovered || departure
+    if (!arrival || !ref) return false
+    const [a, b] = arrival < ref ? [arrival, ref] : [ref, arrival]
+    return dateStr > a && dateStr < b
+  }
+
+  const calRangeHasBooked = (start: string, end: string) => {
+    const cur = new Date(start + 'T12:00:00')
+    const endD = new Date(end + 'T12:00:00')
+    while (cur < endD) {
+      if (bookedDates.has(cur.toISOString().split('T')[0])) return true
+      cur.setDate(cur.getDate() + 1)
+    }
+    return false
+  }
+
+  const handleCalDayClick = (dateStr: string) => {
+    if (dateStr < today || isDateBooked(dateStr)) return
+    if (!arrival || (arrival && departure)) {
+      setArrival(dateStr); setDeparture(''); setCalHovered(null); return
+    }
+    if (dateStr <= arrival) { setArrival(dateStr); setDeparture(''); return }
+    if (calRangeHasBooked(arrival, dateStr)) { setArrival(dateStr); setDeparture(''); return }
+    setDeparture(dateStr); setCalHovered(null)
+  }
+
+  const calPrevMonth = () => setCalMonth(p => p.month === 0 ? { year: p.year - 1, month: 11 } : { year: p.year, month: p.month - 1 })
+  const calNextMonth = () => setCalMonth(p => p.month === 11 ? { year: p.year + 1, month: 0 } : { year: p.year, month: p.month + 1 })
+  const calNext = calMonth.month === 11 ? { year: calMonth.year + 1, month: 0 } : { year: calMonth.year, month: calMonth.month + 1 }
+
+  const renderCalMonth = (year: number, month: number) => {
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const firstDay = new Date(year, month, 1).getDay()
+    const cells: (number | null)[] = []
+    for (let i = 0; i < firstDay; i++) cells.push(null)
+    for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+
+    return (
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 15, fontWeight: 400, color: 'var(--orange-warm)', textAlign: 'center', marginBottom: 10 }}>
+          {CAL_MONTHS[month]} {year}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2, marginBottom: 4 }}>
+          {CAL_DAYS.map(d => (
+            <div key={d} style={{ textAlign: 'center', fontSize: 9, letterSpacing: 1, color: 'var(--text-muted)', padding: '2px 0' }}>{d}</div>
+          ))}
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 2 }}>
+          {cells.map((day, i) => {
+            if (!day) return <div key={`e-${i}`} />
+            const dateStr = calFmt(year, month, day)
+            const past = dateStr < today
+            const booked = isDateBooked(dateStr)
+            const isStart = dateStr === arrival
+            const isEnd = dateStr === (calHovered || departure)
+            const inRange = calIsInRange(dateStr)
+            const isToday = dateStr === today
+            const selectable = !past && !booked
+
+            let bg = 'transparent'
+            let color = past ? 'rgba(253,246,236,0.2)' : 'var(--cream)'
+            let border = '1px solid transparent'
+            let textDec = 'none'
+            let cursor = 'default'
+            let borderRadius = 2
+
+            if (booked) {
+              bg = 'rgba(244,162,58,0.1)'; color = 'rgba(244,162,58,0.3)'; textDec = 'line-through'
+            } else if (past) {
+              color = 'rgba(253,246,236,0.18)'
+            } else if (isStart || isEnd) {
+              bg = 'var(--orange)'; color = '#1E0F45'; cursor = 'pointer'; borderRadius = 2
+            } else if (inRange) {
+              bg = 'rgba(244,162,58,0.18)'; color = 'var(--cream)'; cursor = 'pointer'; borderRadius = 0
+            } else {
+              bg = 'rgba(253,246,236,0.03)'; border = isToday ? '1px solid rgba(244,162,58,0.45)' : '1px solid rgba(253,246,236,0.07)'; cursor = 'pointer'
+            }
+
+            return (
+              <div
+                key={day}
+                onClick={() => handleCalDayClick(dateStr)}
+                onMouseEnter={() => { if (arrival && !departure && selectable) setCalHovered(dateStr) }}
+                onMouseLeave={() => setCalHovered(null)}
+                title={booked ? 'Booked' : past ? 'Past' : 'Available'}
+                style={{
+                  aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 11, borderRadius, background: bg, color, border, textDecoration: textDec, cursor,
+                  transition: 'background 0.12s', fontWeight: (isStart || isEnd) ? 600 : 400,
+                }}
+              >
+                {day}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   const fetchQuote = async () => {
     if (!arrival || !departure) { setError('Please select check-in and check-out dates'); return }
@@ -167,26 +280,52 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
             Check Availability
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
-            <div>
-              <label style={labelStyle}>Check-in</label>
-              <input
-                type="date"
-                min={today}
-                value={arrival}
-                onChange={e => setArrival(e.target.value)}
-                style={{ ...inputStyle, colorScheme: 'dark' }}
-              />
+          {/* Inline date picker calendar */}
+          <div style={{ background: 'rgba(253,246,236,0.02)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 2, padding: '16px 12px' }}>
+            {/* Calendar nav */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <button onClick={calPrevMonth} style={{ background: 'transparent', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '4px 10px', cursor: 'pointer', borderRadius: 2, fontSize: 14, lineHeight: 1 }}>←</button>
+              <button onClick={calNextMonth} style={{ background: 'transparent', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '4px 10px', cursor: 'pointer', borderRadius: 2, fontSize: 14, lineHeight: 1 }}>→</button>
             </div>
-            <div>
-              <label style={labelStyle}>Check-out</label>
-              <input
-                type="date"
-                min={arrival || today}
-                value={departure}
-                onChange={e => setDeparture(e.target.value)}
-                style={{ ...inputStyle, colorScheme: 'dark' }}
-              />
+            {/* Two months side-by-side (stack on narrow) */}
+            <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+              {renderCalMonth(calMonth.year, calMonth.month)}
+              {renderCalMonth(calNext.year, calNext.month)}
+            </div>
+            {/* Selected dates summary */}
+            {(arrival || departure) && (
+              <div style={{ display: 'flex', gap: 12, marginTop: 14, padding: '10px 12px', background: 'rgba(244,162,58,0.07)', borderRadius: 2, border: '1px solid rgba(244,162,58,0.18)', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div>
+                  <div style={{ fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 2 }}>Check-in</div>
+                  <div style={{ fontSize: 13, color: 'var(--orange-warm)', fontFamily: "'Cormorant Garamond',serif" }}>{arrival || '—'}</div>
+                </div>
+                <div style={{ color: 'rgba(244,162,58,0.4)', fontSize: 16 }}>→</div>
+                <div>
+                  <div style={{ fontSize: 9, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 2 }}>Check-out</div>
+                  <div style={{ fontSize: 13, color: 'var(--orange-warm)', fontFamily: "'Cormorant Garamond',serif" }}>{departure || '—'}</div>
+                </div>
+                {arrival && departure && (
+                  <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--cream)' }}>
+                    {Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)} nights
+                  </div>
+                )}
+                <button onClick={() => { setArrival(''); setDeparture('') }} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: 0 }}>×</button>
+              </div>
+            )}
+            {/* Legend */}
+            <div style={{ display: 'flex', gap: 16, marginTop: 12, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(253,246,236,0.07)', borderRadius: 2 }} />
+                <span style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1 }}>Available</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, background: 'rgba(244,162,58,0.1)', borderRadius: 2 }} />
+                <span style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1 }}>Booked</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 10, height: 10, background: 'var(--orange)', borderRadius: 2 }} />
+                <span style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: 1 }}>Selected</span>
+              </div>
             </div>
           </div>
 
