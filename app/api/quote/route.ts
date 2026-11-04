@@ -69,6 +69,12 @@ export async function GET(request: NextRequest) {
     console.log('Test quote status:', quoteRes.status)
     const quoteText = await quoteRes.text()
     console.log('Test quote response:', quoteText.substring(0, 500))
+    // Debug: log all charges with SurchargeId to identify optional surcharge IDs
+    try {
+      const qDebug = JSON.parse(quoteText)
+      const chargesDebug = qDebug.charges || qDebug.Charges || []
+      console.log('Raw charges:', JSON.stringify(chargesDebug.map((c: Record<string,unknown>) => ({ type: c.type || c.Type, desc: c.Description || c.description || c.name || c.Name, id: c.SurchargeId || c.surcharge_id, amt: c.amount || c.Amount }))))
+    } catch { /* ignore */ }
 
     if (!quoteRes.ok) {
       let err
