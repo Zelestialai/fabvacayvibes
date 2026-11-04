@@ -61,6 +61,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
   const [adults, setAdults] = useState(initialDates?.adults || 2)
   const [children, setChildren] = useState(initialDates?.children || 0)
   const [pets, setPets] = useState(0)
+  const [poolHeating, setPoolHeating] = useState(false)
   const [quote, setQuote] = useState<Quote | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -94,8 +95,9 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
     setLoading(true)
     setError('')
     try {
+      const poolParam = poolHeating ? '&poolHeating=1' : ''
       const res = await fetch(
-        `/api/quote?property=${propertySlug}&arrival=${arrival}&departure=${departure}&adults=${adults}&children=${children}&pets=${pets}`
+        `/api/quote?property=${propertySlug}&arrival=${arrival}&departure=${departure}&adults=${adults}&children=${children}&pets=${pets}${poolParam}`
       )
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Could not calculate quote')
@@ -116,7 +118,7 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
       const res = await fetch('/api/quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: propertySlug, arrival, departure, adults, children, pets, guest, couponCode: couponCode.trim() || undefined }),
+        body: JSON.stringify({ slug: propertySlug, arrival, departure, adults, children, pets, guest, couponCode: couponCode.trim() || undefined, poolHeating: poolHeating || undefined }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Booking failed')
@@ -208,6 +210,37 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
               </select>
             </div>
           </div>
+
+          {/* Pool Heating — Owl & Hare only */}
+          {propertySlug === 'owl-and-hare' && (
+            <div
+              onClick={() => setPoolHeating(h => !h)}
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '14px 16px', borderRadius: 2, cursor: 'pointer',
+                background: poolHeating ? 'rgba(244,162,58,0.1)' : 'rgba(253,246,236,0.03)',
+                border: `1px solid ${poolHeating ? 'rgba(244,162,58,0.5)' : 'rgba(244,162,58,0.2)'}`,
+                transition: 'all 0.15s',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 20 }}>🔥</span>
+                <div>
+                  <div style={{ fontSize: 13, color: 'var(--cream)', fontWeight: 500 }}>Add Pool Heating</div>
+                  <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>$250 per night — keep the pool warm year-round</div>
+                </div>
+              </div>
+              <div style={{
+                width: 20, height: 20, borderRadius: '50%',
+                background: poolHeating ? 'var(--orange)' : 'rgba(253,246,236,0.1)',
+                border: '1px solid rgba(244,162,58,0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 11, color: 'var(--purple)', fontWeight: 700, flexShrink: 0,
+              }}>
+                {poolHeating ? '✓' : ''}
+              </div>
+            </div>
+          )}
 
           {error && <p style={{ fontSize: 13, color: '#ff6b6b', background: 'rgba(255,107,107,0.1)', padding: '10px 14px', borderRadius: 2 }}>{error}</p>}
 

@@ -45,6 +45,7 @@ export async function GET(request: NextRequest) {
   const adults = parseInt(searchParams.get('adults') || '2')
   const children = parseInt(searchParams.get('children') || '0')
   const pets = parseInt(searchParams.get('pets') || '0')
+  const poolHeating = searchParams.get('poolHeating') === '1'
 
   if (!slug || !arrival || !departure || !PROPERTY_EXTERNAL_IDS[slug]) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -57,7 +58,25 @@ export async function GET(request: NextRequest) {
 
     console.log('Test quote for propertyId:', propertyId, arrival, '->', departure)
 
-    const payload = { PropertyId: propertyId, Arrival: arrival, Departure: departure, Adults: adults, Children: children, Pets: pets }
+    // Calculate nights upfront for pool heating amount
+    const nightsForCharge = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
+
+    // Pool heating surcharge (Optional, Owl & Hare only) — ID 102655608, $250/night
+    const POOL_HEATING_SURCHARGE_ID = 102655608
+    const poolHeatingCharges = poolHeating ? [{
+      SurchargeId: POOL_HEATING_SURCHARGE_ID,
+      Type: 2, // surcharge
+      Description: 'Pool Heating',
+      Rate: 250.00,
+      RateIsPercent: false,
+      Amount: 250.00 * nightsForCharge,
+    }] : []
+
+    const payload: Record<string, unknown> = {
+      PropertyId: propertyId, Arrival: arrival, Departure: departure,
+      Adults: adults, Children: children, Pets: pets,
+      ...(poolHeatingCharges.length > 0 ? { Charges: poolHeatingCharges } : {}),
+    }
 
     // Use TEST HTTP verb on legacy quotes endpoint
     const quoteRes = await fetch(`${LEGACY}/quotes`, {
@@ -69,12 +88,6 @@ export async function GET(request: NextRequest) {
     console.log('Test quote status:', quoteRes.status)
     const quoteText = await quoteRes.text()
     console.log('Test quote response:', quoteText.substring(0, 500))
-    // Debug: log all charges with SurchargeId to identify optional surcharge IDs
-    try {
-      const qDebug = JSON.parse(quoteText)
-      const chargesDebug = qDebug.charges || qDebug.Charges || []
-      console.log('Raw charges:', JSON.stringify(chargesDebug.map((c: Record<string,unknown>) => ({ type: c.type || c.Type, desc: c.Description || c.description || c.name || c.Name, id: c.SurchargeId || c.surcharge_id, amt: c.amount || c.Amount }))))
-    } catch { /* ignore */ }
 
     if (!quoteRes.ok) {
       let err
@@ -120,7 +133,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { slug, arrival, departure, adults, children, pets, guest, couponCode } = body
+    const { slug, arrival, departure, adults, children, pets, guest, couponCode, poolHeating } = body
 
     if (!slug || !arrival || !departure || !guest?.email || !PROPERTY_EXTERNAL_IDS[slug]) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -144,6 +157,18 @@ export async function POST(request: NextRequest) {
     }
     const guestData = JSON.parse(guestText)
 
+    // Pool heating optional surcharge (Owl & Hare only) — $250/night, ID 102655608
+    const POOL_HEATING_SURCHARGE_ID = 102655608
+    const postNights = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
+    const poolHeatingCharges = poolHeating ? [{
+      SurchargeId: POOL_HEATING_SURCHARGE_ID,
+      Type: 2,
+      Description: 'Pool Heating',
+      Rate: 250.00,
+      RateIsPercent: false,
+      Amount: 250.00 * postNights,
+    }] : []
+
     // Create quote via legacy API
     const origin = request.headers.get('origin') || 'https://fabvacayvibes.com'
     const quoteRes = await fetch(`${LEGACY}/quotes`, {
@@ -157,6 +182,7 @@ export async function POST(request: NextRequest) {
         SendQuoteEmail: false,
         RedirectAfterBookingUrl: `${origin}/booking-confirmed`,
         ...(couponCode ? { CouponCode: couponCode } : {}),
+        ...(poolHeatingCharges.length > 0 ? { Charges: poolHeatingCharges } : {}),
       }),
     })
     const quoteText = await quoteRes.text()
