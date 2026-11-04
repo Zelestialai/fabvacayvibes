@@ -33,15 +33,38 @@ export async function GET(request: NextRequest) {
 
   for (const [slug, id] of Object.entries(PROPERTY_IDS)) {
     try {
-      // Fetch latest property data from OwnerRez
-      const propRes = await fetch(`https://api.ownerrez.com/v2/properties/${id}`, { headers })
+      // Fetch property data, amenities, and photos in parallel
+      const [propRes, amenRes, photosRes] = await Promise.all([
+        fetch(`https://api.ownerrez.com/v2/properties/${id}`, { headers }),
+        fetch(`https://api.ownerrez.com/v2/properties/${id}/amenities`, { headers }),
+        fetch(`https://api.ownerrez.com/v2/properties/${id}/photos`, { headers }),
+      ])
       const prop = await propRes.json()
+      const amenData = amenRes.ok ? await amenRes.json() : null
+      const photosData = photosRes.ok ? await photosRes.json() : null
+
+      // Extract amenity names — OwnerRez returns { items: [{ amenity: { name } }] }
+      // or { items: [{ name }] } depending on endpoint version
+      const amenityItems: Array<Record<string, unknown>> = amenData?.items || []
+      const amenityNames: string[] = amenityItems.map((a) => {
+        const amenObj = a.amenity as Record<string, unknown> | undefined
+        return String(amenObj?.name || a.name || '')
+      }).filter(Boolean)
+
+      // Extract photo URLs — OwnerRez returns { items: [{ large_url, medium_url, sort_order }] }
+      // sorted by sort_order ascending; fall back to medium_url if large_url absent
+      const photoItems: Array<Record<string, unknown>> = photosData?.items || []
+      const photoUrls: string[] = photoItems
+        .sort((a, b) => Number(a.sort_order ?? 0) - Number(b.sort_order ?? 0))
+        .map((p) => String(p.large_url || p.medium_url || p.url || ''))
+        .filter(Boolean)
 
       // Build synced data object with all available fields
       const syncedData = {
         syncedAt,
         id: prop.id,
         name: prop.name,
+        description: prop.description || null,
         bedrooms: prop.bedrooms,
         bathrooms: prop.bathrooms,
         bathrooms_full: prop.bathrooms_full,
@@ -58,6 +81,8 @@ export async function GET(request: NextRequest) {
         property_type: prop.property_type,
         listing_numbers: prop.listing_numbers,
         public_url: prop.public_url,
+        amenities: amenityNames.length > 0 ? amenityNames : null,
+        photos: photoUrls.length > 0 ? photoUrls : null,
       }
 
       // Save to Vercel Blob
@@ -67,7 +92,14 @@ export async function GET(request: NextRequest) {
         { access: 'public', addRandomSuffix: false, contentType: 'application/json', allowOverwrite: true }
       )
 
-      results[slug] = { success: true, name: prop.name, synced: syncedAt }
+      results[slug] = {
+        success: true,
+        name: prop.name,
+        synced: syncedAt,
+        amenities: amenityNames.length,
+        photos: photoUrls.length,
+        hasDescription: !!syncedData.description,
+      }
     } catch (e) {
       results[slug] = { success: false, error: String(e) }
     }

@@ -9,6 +9,9 @@ import PhotoGallery from '../../components/PhotoGallery'
 import ExpandableDescription from '../../components/ExpandableDescription'
 import PropertyAnalytics from '../../components/PropertyAnalytics'
 
+// Revalidate property pages every hour so OwnerRez content sync propagates automatically
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   return properties.map(p => ({ slug: p.slug }))
 }
@@ -108,6 +111,18 @@ export default async function PropertyPage({ params, searchParams }: { params: P
   ])
 
   // Merge synced OwnerRez data with local property data (synced takes priority)
+  // Photos: use OwnerRez CDN URLs if available (Option A), fall back to Vercel Blob (Option B)
+  const syncedPhotos: string[] | null = syncedData?.photos ?? null
+  const mergedPhotos = syncedPhotos && syncedPhotos.length > 0 ? syncedPhotos : property.photos
+  const mergedImageUrl = (syncedPhotos && syncedPhotos.length > 0) ? syncedPhotos[0] : property.imageUrl
+
+  // Description: use OwnerRez description if available; customDescription (Blob) overrides both
+  const mergedDescription = customDescription ?? syncedData?.description ?? property.description
+
+  // Amenities: use OwnerRez amenities if available, fall back to static list
+  const syncedAmenities: string[] | null = syncedData?.amenities ?? null
+  const mergedAmenities = syncedAmenities && syncedAmenities.length > 0 ? syncedAmenities : property.amenities
+
   const mergedProperty = {
     ...property,
     bedrooms: syncedData?.bedrooms ?? property.bedrooms,
@@ -116,6 +131,10 @@ export default async function PropertyPage({ params, searchParams }: { params: P
     squareFeet: syncedData?.living_area ?? property.squareFeet,
     checkIn: syncedData?.check_in ? syncedData.check_in.replace(':00', '').replace('16', '4:00 PM').replace('15', '3:00 PM') : property.checkIn,
     checkOut: syncedData?.check_out ? syncedData.check_out.replace(':00', '').replace('11', '11:00 AM').replace('10', '10:00 AM') : property.checkOut,
+    description: mergedDescription,
+    amenities: mergedAmenities,
+    photos: mergedPhotos,
+    imageUrl: mergedImageUrl,
   }
   const bookedSet = new Set(bookedDates)
 
@@ -163,9 +182,9 @@ export default async function PropertyPage({ params, searchParams }: { params: P
           '@type': 'VacationRental',
           '@id': `https://fabvacayvibes.com/properties/${property.slug}#vacationrental`,
           name: property.name,
-          description: property.description,
+          description: mergedProperty.description,
           url: `https://fabvacayvibes.com/properties/${property.slug}`,
-          image: property.photos?.slice(0, 5) || [property.imageUrl],
+          image: mergedProperty.photos?.slice(0, 5) || [mergedProperty.imageUrl],
           telephone: '+17273869642',
           priceRange: `From $${property.pricePerNight.toLocaleString()}/night`,
           petsAllowed: property.petsAllowed ?? false,
@@ -202,7 +221,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
                 unitCode: 'FTK',
               }
             } : {}),
-            amenityFeature: property.amenities.map(a => ({
+            amenityFeature: mergedProperty.amenities.map(a => ({
               '@type': 'LocationFeatureSpecification',
               name: a,
               value: true,
@@ -218,7 +237,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
 
       {/* HERO */}
       <section style={{ position: 'relative', height: '70vh', overflow: 'hidden', minHeight: 500 }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${property.photos?.[0] || property.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: `url(${mergedProperty.photos?.[0] || mergedProperty.imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(0.55)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(30,15,69,0.95) 0%, rgba(30,15,69,0.2) 60%, transparent 100%)' }} />
         <div className="hero-text-pad" style={{ position: 'absolute', left: 0, right: 0, maxWidth: 900 }}>
           <span style={{ display: 'inline-block', fontSize: 9, letterSpacing: 3, textTransform: 'uppercase', color: 'var(--orange)', border: '1px solid rgba(244,162,58,0.4)', padding: '5px 12px', borderRadius: 1, marginBottom: 16 }}>
@@ -256,7 +275,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             </div>
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>About This Property</p>
-            <ExpandableDescription description={customDescription || property.description} />
+            <ExpandableDescription description={mergedProperty.description} />
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 20 }}>Highlights</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 40 }}>
@@ -270,7 +289,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
 
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 20 }}>Amenities</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 48 }}>
-              {property.amenities.map(a => (
+              {mergedProperty.amenities.map(a => (
                 <span key={a} style={{ fontSize: 12, letterSpacing: 1, color: 'var(--cream)', border: '1px solid rgba(244,162,58,0.2)', padding: '8px 16px', borderRadius: 2, background: 'rgba(253,246,236,0.03)' }}>{a}</span>
               ))}
             </div>
@@ -285,7 +304,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
                 { label: 'Max Guests', value: String(mergedProperty.sleepsMax) },
                 ...(mergedProperty.squareFeet ? [{ label: 'Living Area', value: `${mergedProperty.squareFeet.toLocaleString()} sq ft` }] : []),
                 ...(property.address ? [{ label: 'Address', value: property.address }] : []),
-                { label: 'Pets', value: syncedData?.max_pets > 0 ? `Allowed (max ${syncedData.max_pets})` : property.amenities.includes('Pet Friendly') ? 'Allowed (max 2)' : 'Not Allowed' },
+                { label: 'Pets', value: syncedData?.max_pets > 0 ? `Allowed (max ${syncedData.max_pets})` : mergedProperty.amenities.includes('Pet Friendly') ? 'Allowed (max 2)' : 'Not Allowed' },
               ].map(({ label, value }) => (
                 <div key={label} style={{ padding: '20px 24px', borderBottom: '1px solid rgba(244,162,58,0.08)', borderRight: '1px solid rgba(244,162,58,0.08)' }}>
                   <p style={{ fontSize: 10, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 6 }}>{label}</p>
@@ -295,7 +314,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             </div>
 
             {/* Photo Gallery */}
-            <PhotoGallery photos={property.photos} propertyName={property.name} />
+            <PhotoGallery photos={mergedProperty.photos} propertyName={property.name} />
 
             {/* Availability Calendar (visual reference) */}
             <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} bookingUrl={property.ownerrezUrl} />
