@@ -89,6 +89,31 @@ export async function POST(request: NextRequest) {
         const quoteData = JSON.parse(quoteText)
         ownerrezId = quoteData.Id || quoteData.id
         ownerrezType = 'quote'
+
+        // If pool heating requested, add it as an explicit charge on the quote
+        if (includePoolHeating && ownerrezId) {
+          const nights = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
+          // Fetch current rate from v2 surcharges API
+          try {
+            const srRes = await fetch(`${V2}/surcharges?property_ids=${propertyId}`, { headers })
+            if (srRes.ok) {
+              const srData = await srRes.json()
+              const poolSurcharge = srData.items?.find((s: { id: number }) => s.id === 102655608)
+              if (poolSurcharge) {
+                const poolAmount = (poolSurcharge.amount as number) * nights
+                // Try POST to quotes/{id}/charges (legacy API)
+                const chargeRes = await fetch(`${LEGACY}/quotes/${ownerrezId}/charges`, {
+                  method: 'POST', headers,
+                  body: JSON.stringify({ Type: 2, Description: 'Pool Heating', Amount: poolAmount }),
+                })
+                const chargeText = await chargeRes.text()
+                console.log('Pool heating charge POST:', chargeRes.status, chargeText.substring(0, 200))
+              }
+            }
+          } catch (e) {
+            console.error('Pool heating charge error:', e)
+          }
+        }
       } else {
         console.error('Quote creation failed:', quoteRes.status, quoteText)
       }
