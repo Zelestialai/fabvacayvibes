@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const LEGACY = 'https://app.ownerrez.com/api'
+const V2 = 'https://api.ownerrez.com/v2'
 
 function getCredentials() {
   const email = process.env.OWNERREZ_EMAIL
@@ -19,7 +19,7 @@ const getHeaders = (creds: string) => ({
 export async function GET(_request: NextRequest) {
   try {
     const creds = getCredentials()
-    const r = await fetch(`${LEGACY}/surcharges`, {
+    const r = await fetch(`${V2}/surcharges?property_ids=452868`, {
       headers: getHeaders(creds),
     })
     const text = await r.text()
