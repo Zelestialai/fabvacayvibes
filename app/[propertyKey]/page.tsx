@@ -5,6 +5,7 @@ const KEY_TO_SLUG: Record<string, string> = {
   'orp5b613a7x': 'casa-grande',
   'orp5b6e904x': 'owl-and-hare',
   'orp5b74fbax': 'sierra-crest-haven',
+  'orp5b78bb1x': 'broadleaf',
 }
 
 export default async function PropertyKeyRedirect({

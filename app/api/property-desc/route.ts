@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const PROPERTY_KEYS: Record<string, string> = {
-  'casa-grande': 'orp5b613a7x',
-  'owl-and-hare': 'orp5b6e904x',
+  'casa-grande':        'orp5b613a7x',
+  'owl-and-hare':       'orp5b6e904x',
   'sierra-crest-haven': 'orp5b74fbax',
+  'broadleaf':          'orp5b78bb1x',
 }
 
 export async function GET(request: NextRequest) {

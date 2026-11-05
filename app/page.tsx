@@ -7,21 +7,21 @@ import { properties } from './lib/properties'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Fab Vacay Vibes — Luxury Vacation Rentals | Clearwater FL · Joshua Tree CA · Oakhurst CA',
-  description: 'Book direct with Fab Vacay Vibes and save up to 15%. Three luxury vacation rental properties: Casa Grandè in Clearwater FL (5BR, private pool, sleeps 16), Owl & Hare in Joshua Tree CA (4BR, desert wellness retreat with pool, sauna & cold plunge, sleeps 10), and Sierra Crest Haven near Yosemite CA (7BR, sleeps 16). Pet friendly options available.',
+  title: 'Fab Vacay Vibes — Luxury Vacation Rentals | Clearwater FL · Joshua Tree CA · Oakhurst CA · McGaheysville VA',
+  description: 'Book direct with Fab Vacay Vibes and save up to 15%. Four luxury vacation rental properties: Casa Grandè in Clearwater FL (5BR, private pool, sleeps 16), Owl & Hare in Joshua Tree CA (4BR, desert wellness retreat, sleeps 10), Sierra Crest Haven near Yosemite CA (7BR, sleeps 16), and Broadleaf in McGaheysville VA (7BR, mountain resort, sleeps 18). Pet friendly options available.',
   alternates: { canonical: 'https://fabvacayvibes.com' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com',
     siteName: 'Fab Vacay Vibes',
-    title: 'Fab Vacay Vibes — Luxury Vacation Rentals | Clearwater FL · Joshua Tree CA · Oakhurst CA',
-    description: 'Book direct with Fab Vacay Vibes and save up to 15%. Three luxury vacation rental properties across Florida and California. Pet friendly options available.',
+    title: 'Fab Vacay Vibes — Luxury Vacation Rentals | Clearwater FL · Joshua Tree CA · Oakhurst CA · McGaheysville VA',
+    description: 'Book direct with Fab Vacay Vibes and save up to 15%. Four luxury vacation rental properties across Florida, California, and Virginia. Pet friendly options available.',
     images: [{ url: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/owl-and-hare/8283ViaRecosaJoshuaTreeCa4_3_25--55.jpg', width: 1200, height: 800, alt: 'Fab Vacay Vibes luxury vacation rentals' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Fab Vacay Vibes — Luxury Vacation Rentals',
-    description: 'Book direct and save up to 15%. Three luxury properties in Clearwater FL, Joshua Tree CA, and near Yosemite CA.',
+    description: 'Book direct and save up to 15%. Four luxury properties in Clearwater FL, Joshua Tree CA, near Yosemite CA, and McGaheysville VA.',
     images: ['https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/owl-and-hare/8283ViaRecosaJoshuaTreeCa4_3_25--55.jpg'],
   },
 }
@@ -70,7 +70,7 @@ export default function Home() {
             Luxury Vacation Rentals
           </p>
           <p style={{ fontSize: 16, lineHeight: 1.7, color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto 48px', opacity: 0, animation: 'fadeUp 0.9s ease 0.65s forwards' }}>
-            Three handpicked estates across America&apos;s most breathtaking landscapes. Book direct for the best rates.
+            Four handpicked estates across America&apos;s most breathtaking landscapes. Book direct for the best rates.
           </p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', opacity: 0, animation: 'fadeUp 0.9s ease 0.8s forwards' }}>
             <a href="#properties" style={{ background: 'var(--orange)', color: 'var(--purple)', padding: '16px 36px', fontSize: 12, letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, borderRadius: 2, textDecoration: 'none' }}>Explore Properties</a>
@@ -83,7 +83,7 @@ export default function Home() {
 
       {/* ICON BAR */}
       <div style={{ display: 'flex', justifyContent: 'center', gap: 60, padding: 'clamp(20px,4vw,32px) clamp(20px,4vw,48px)', background: 'rgba(244,162,58,0.06)', borderTop: '1px solid rgba(244,162,58,0.12)', borderBottom: '1px solid rgba(244,162,58,0.12)', flexWrap: 'wrap' }}>
-        {[['🌊', 'Clearwater Beach, FL'], ['🏜️', 'Joshua Tree, CA'], ['🏔️', 'Oakhurst, CA']].map(([icon, label]) => (
+        {[['🌊', 'Clearwater Beach, FL'], ['🏜️', 'Joshua Tree, CA'], ['🏔️', 'Oakhurst, CA'], ['⛷️', 'McGaheysville, VA']].map(([icon, label]) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
             <span style={{ fontSize: 18 }}>{icon}</span><span>{label}</span>
           </div>
@@ -95,7 +95,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 56, flexWrap: 'wrap', gap: 24 }}>
           <div>
             <RevealOnScroll><p style={{ fontSize: 10, letterSpacing: 5, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Our Collection</p></RevealOnScroll>
-            <RevealOnScroll delay={100}><h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,58px)', fontWeight: 300, color: 'white', lineHeight: 1.1 }}>Three <em style={{ color: 'var(--orange-warm)', fontStyle: 'italic' }}>distinct</em><br />escapes.</h2></RevealOnScroll>
+            <RevealOnScroll delay={100}><h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(36px,5vw,58px)', fontWeight: 300, color: 'white', lineHeight: 1.1 }}>Four <em style={{ color: 'var(--orange-warm)', fontStyle: 'italic' }}>distinct</em><br />escapes.</h2></RevealOnScroll>
           </div>
           <RevealOnScroll delay={200}><p style={{ fontSize: 15, lineHeight: 1.75, color: 'var(--text-muted)', maxWidth: 400, textAlign: 'right' }}>Each property handpicked for its setting, character, and exceptional amenities. Book direct for the best rates.</p></RevealOnScroll>
         </div>
@@ -241,7 +241,7 @@ export default function Home() {
           </RevealOnScroll>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {[
-              { q: 'Why should I book directly instead of using Airbnb or VRBO?', a: 'Booking directly with Fab Vacay Vibes at fabvacayvibes.com saves you up to 15% by eliminating OTA platform fees. You get direct communication with the owner, our Best Price Guarantee (we\'ll beat any price you find on Airbnb or VRBO), and more flexible check-in/check-out policies. All three properties — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, and Sierra Crest Haven near Yosemite CA — are available for direct booking.' },
+              { q: 'Why should I book directly instead of using Airbnb or VRBO?', a: 'Booking directly with Fab Vacay Vibes at fabvacayvibes.com saves you up to 15% by eliminating OTA platform fees. You get direct communication with the owner, our Best Price Guarantee (we\'ll beat any price you find on Airbnb or VRBO), and more flexible check-in/check-out policies. All four properties — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, Sierra Crest Haven near Yosemite CA, and Broadleaf in McGaheysville VA — are available for direct booking.' },
               { q: 'What luxury vacation rentals do you offer in Florida?', a: 'Casa Grandè at 18 N Maywood Ave, Clearwater, FL 33765 is a 5-bedroom, 3-bathroom luxury vacation home spanning 2,100 sq ft. It features a private pool, pet-friendly policy (dogs only, max 2), modern open-plan kitchen, outdoor dining, and sleeps up to 16 guests. Located 4 miles from Clearwater Beach and 3 miles from BayCare Ballpark. Available from $500/night with direct booking.' },
               { q: 'Do you have vacation rentals near Joshua Tree National Park?', a: 'Yes — Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 is a 4-bedroom, 4-bathroom luxury desert wellness retreat that sleeps up to 10 guests. The property is two stand-alone homes on one private gated compound with a private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court, mini golf, bocce ball, ping pong, pool table, arcade machines, vintage Airstream, and BBQ & fire pit. It\'s 5 minutes from the Joshua Tree National Park west entrance and 5 minutes from Downtown Joshua Tree. Pet friendly (max 2 dogs). From $700/night.' },
               { q: 'What is the best large vacation rental near Yosemite?', a: 'Sierra Crest Haven at 42139 Old Yosemite Road, Oakhurst, CA 93644 is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft of living space. It features a hot tub, fireplace, game room, full bar, multiple living areas, and dual sunrise/sunset views over the High Sierra. Sleeps up to 16 guests. Located 14 miles from the Yosemite National Park south entrance (approximately 45 min to Yosemite Valley). From $945/night.' },

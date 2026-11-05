@@ -5,6 +5,7 @@ const PROPERTY_IDS: Record<string, number> = {
   'casa-grande':        398247,
   'owl-and-hare':       452868,
   'sierra-crest-haven': 479162,
+  'broadleaf':          494513,
 }
 
 // Get a quote for a specific date range

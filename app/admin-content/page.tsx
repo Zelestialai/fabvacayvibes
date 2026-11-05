@@ -1,11 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-const PROPERTIES = ['casa-grande', 'owl-and-hare', 'sierra-crest-haven']
+const PROPERTIES = ['casa-grande', 'owl-and-hare', 'sierra-crest-haven', 'broadleaf']
 const NAMES: Record<string, string> = {
-  'casa-grande': 'Casa Grandè',
-  'owl-and-hare': 'Owl & Hare',
+  'casa-grande':        'Casa Grandè',
+  'owl-and-hare':       'Owl & Hare',
   'sierra-crest-haven': 'Sierra Crest Haven',
+  'broadleaf':          'Broadleaf',
 }
 const SECRET = 'fabvacay-admin-2026'
 

@@ -20,6 +20,12 @@ const SLIDES = [
     location: 'Oakhurst, CA',
     type: 'Mountain',
   },
+  {
+    url: 'https://uc.orez.io/f/40070c9942b24a32a57d0c1475392298',
+    label: 'Broadleaf',
+    location: 'McGaheysville, VA',
+    type: 'Mountain Resort',
+  },
 ]
 
 export default function HeroSlideshow() {
@@ -70,7 +76,7 @@ export default function HeroSlideshow() {
       {SLIDES.map((slide, i) => {
         const isActive = i === current
         const isPrev = i === prev
-        const anim = ['kenBurns', 'kenBurns2', 'kenBurns3'][i]
+        const anim = ['kenBurns', 'kenBurns2', 'kenBurns3', 'kenBurns'][i % 4]
         return (
           <div
             key={slide.url}

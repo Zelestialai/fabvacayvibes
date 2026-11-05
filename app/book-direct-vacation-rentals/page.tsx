@@ -6,14 +6,14 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Book Direct Vacation Rentals — Save Up to 15%',
-  description: 'Book direct with Fab Vacay Vibes and save up to 15% vs Airbnb and VRBO. No platform fees. Best Price Guarantee. Three luxury vacation rentals: Clearwater FL, Joshua Tree CA, and near Yosemite CA. Direct owner communication and flexible check-in.',
+  description: 'Book direct with Fab Vacay Vibes and save up to 15% vs Airbnb and VRBO. No platform fees. Best Price Guarantee. Four luxury vacation rentals: Clearwater FL, Joshua Tree CA, near Yosemite CA, and Massanutten VA. Direct owner communication and flexible check-in.',
   alternates: { canonical: 'https://fabvacayvibes.com/book-direct-vacation-rentals' },
   openGraph: {
     type: 'website',
     url: 'https://fabvacayvibes.com/book-direct-vacation-rentals',
     siteName: 'Fab Vacay Vibes',
     title: 'Book Direct Vacation Rentals — Save Up to 15%',
-    description: 'Skip Airbnb and VRBO fees. Book direct and save up to 15%. Best Price Guarantee. Three luxury properties across FL and CA.',
+    description: 'Skip Airbnb and VRBO fees. Book direct and save up to 15%. Best Price Guarantee. Four luxury properties across FL, CA, and VA.',
   },
 }
 
@@ -43,20 +43,28 @@ const properties = [
     price: '$945',
     desc: '4,800 sq ft mountain estate. Hot tub, fireplace, game room, full bar. 14 miles to Yosemite.',
   },
+  {
+    name: 'Broadleaf',
+    location: 'McGaheysville, VA (Massanutten)',
+    slug: 'broadleaf',
+    bedrooms: 7, bathrooms: 4, sleeps: 18,
+    price: '$419',
+    desc: 'Designer mountain home. Hot tub, cold plunge, game room, pool table, arcades, 2 decks. Ski & golf nearby.',
+  },
 ]
 
 const faqItems = [
   {
     q: 'How much do I save booking directly vs Airbnb or VRBO?',
-    a: 'Booking directly with Fab Vacay Vibes saves you up to 15% by eliminating OTA platform fees. On a typical multi-night group stay, this can represent hundreds of dollars. All three properties — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, and Sierra Crest Haven near Yosemite CA — are available for direct booking at fabvacayvibes.com.',
+    a: 'Booking directly with Fab Vacay Vibes saves you up to 15% by eliminating OTA platform fees. On a typical multi-night group stay, this can represent hundreds of dollars. All four properties — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, Sierra Crest Haven near Yosemite CA, and Broadleaf in McGaheysville VA — are available for direct booking at fabvacayvibes.com.',
   },
   {
     q: 'Is it safe to book a vacation rental directly without Airbnb?',
-    a: 'Yes — Fab Vacay Vibes uses OwnerRez, a professional vacation rental management platform, to process all bookings. Our booking system handles payment processing, rental agreements, and guest communication through a secure channel. You\'re booking with a verified property owner, not an unknown host. We\'ve hosted hundreds of guests across our three properties.',
+    a: 'Yes — Fab Vacay Vibes uses OwnerRez, a professional vacation rental management platform, to process all bookings. Our booking system handles payment processing, rental agreements, and guest communication through a secure channel. You\'re booking with a verified property owner, not an unknown host. We\'ve hosted hundreds of guests across our four properties.',
   },
   {
     q: 'What is the Best Price Guarantee?',
-    a: 'We guarantee that the price you see at fabvacayvibes.com is the best price available for any of our three properties. If you find a lower price for the same property, same dates, and same guest count on Airbnb, VRBO, or any other platform, we\'ll match or beat it.',
+    a: 'We guarantee that the price you see at fabvacayvibes.com is the best price available for any of our four properties. If you find a lower price for the same property, same dates, and same guest count on Airbnb, VRBO, or any other platform, we\'ll match or beat it.',
   },
   {
     q: 'What are the benefits of booking direct vs through Airbnb?',
@@ -64,7 +72,7 @@ const faqItems = [
   },
   {
     q: 'Which Fab Vacay Vibes properties are available for direct booking?',
-    a: 'All three properties are available for direct booking: Casa Grandè in Clearwater FL (fabvacayvibes.com/properties/casa-grande), Owl & Hare in Joshua Tree CA (fabvacayvibes.com/properties/owl-and-hare), and Sierra Crest Haven near Yosemite CA (fabvacayvibes.com/properties/sierra-crest-haven).',
+    a: 'All four properties are available for direct booking: Casa Grandè in Clearwater FL (fabvacayvibes.com/properties/casa-grande), Owl & Hare in Joshua Tree CA (fabvacayvibes.com/properties/owl-and-hare), Sierra Crest Haven near Yosemite CA (fabvacayvibes.com/properties/sierra-crest-haven), and Broadleaf in McGaheysville VA (fabvacayvibes.com/properties/broadleaf).',
   },
   {
     q: 'How do I contact Fab Vacay Vibes to book directly?',
@@ -98,7 +106,7 @@ export default function BookDirectVacationRentalsPage() {
                 '@id': 'https://fabvacayvibes.com/book-direct-vacation-rentals',
                 url: 'https://fabvacayvibes.com/book-direct-vacation-rentals',
                 name: 'Book Direct Vacation Rentals — Save Up to 15%',
-                description: 'Book direct with Fab Vacay Vibes and save up to 15% vs Airbnb and VRBO. Three luxury vacation rentals in FL and CA.',
+                description: 'Book direct with Fab Vacay Vibes and save up to 15% vs Airbnb and VRBO. Four luxury vacation rentals in FL, CA, and VA.',
                 isPartOf: { '@type': 'WebSite', url: 'https://fabvacayvibes.com' },
               },
               {
@@ -167,7 +175,7 @@ export default function BookDirectVacationRentalsPage() {
           <RevealOnScroll>
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>Our Properties</p>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 300, color: 'white', marginBottom: 64 }}>
-              Three Luxury Properties. All Direct Booking.
+              Four Luxury Properties. All Direct Booking.
             </h2>
           </RevealOnScroll>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

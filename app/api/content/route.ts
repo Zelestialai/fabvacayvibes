@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { put, list } from '@vercel/blob'
 
 const SECRET = 'fabvacay-admin-2026'
-const SLUGS = ['casa-grande', 'owl-and-hare', 'sierra-crest-haven']
+const SLUGS = ['casa-grande', 'owl-and-hare', 'sierra-crest-haven', 'broadleaf']
 
 export async function GET(request: NextRequest) {
   if (request.headers.get('x-admin-secret') !== SECRET) {

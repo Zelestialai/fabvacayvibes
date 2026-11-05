@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: 'Fab Vacay Vibes — Luxury Vacation Rentals | Beach, Mountain & Desert',
     template: '%s | Fab Vacay Vibes',
   },
-  description: 'Three handpicked luxury vacation rentals — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, and Sierra Crest Haven in Oakhurst CA. Book direct and save up to 15% vs Airbnb.',
+  description: 'Four handpicked luxury vacation rentals — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, Sierra Crest Haven in Oakhurst CA, and Broadleaf in McGaheysville VA. Book direct and save up to 15% vs Airbnb.',
   keywords: [
     'luxury vacation rental',
     'Clearwater beach house rental',
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: 'Fab Vacay Vibes',
     title: 'Fab Vacay Vibes — Luxury Vacation Rentals',
-    description: 'Three extraordinary estates. Beach, Desert, Mountain. Book direct for the best rates and personal service.',
+    description: 'Four extraordinary estates. Beach, Desert, Mountain, Virginia. Book direct for the best rates and personal service.',
     images: [
       {
         url: '/og-image.jpg',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Fab Vacay Vibes — Luxury Vacation Rentals',
-    description: 'Three extraordinary estates. Beach, Desert, Mountain. Book direct for the best rates.',
+    description: 'Four extraordinary estates. Beach, Desert, Mountain, Virginia. Book direct for the best rates.',
     images: ['/og-image.jpg'],
     creator: '@fabvacayvibes',
   },
@@ -119,7 +119,7 @@ const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
   mainEntity: [
-    { '@type': 'Question', name: 'Why should I book directly instead of using Airbnb or VRBO?', acceptedAnswer: { '@type': 'Answer', text: 'Booking directly with Fab Vacay Vibes at fabvacayvibes.com saves you up to 15% by eliminating OTA platform fees. You get direct communication with the owner, our Best Price Guarantee, and more flexible check-in/check-out policies. All three properties — Casa Grandè (Clearwater FL), Owl & Hare (Joshua Tree CA), and Sierra Crest Haven (Oakhurst CA near Yosemite) — are available to book directly.' } },
+    { '@type': 'Question', name: 'Why should I book directly instead of using Airbnb or VRBO?', acceptedAnswer: { '@type': 'Answer', text: 'Booking directly with Fab Vacay Vibes at fabvacayvibes.com saves you up to 15% by eliminating OTA platform fees. You get direct communication with the owner, our Best Price Guarantee, and more flexible check-in/check-out policies. All four properties — Casa Grandè (Clearwater FL), Owl & Hare (Joshua Tree CA), Sierra Crest Haven (Oakhurst CA near Yosemite), and Broadleaf (McGaheysville VA near Massanutten) — are available to book directly.' } },
     { '@type': 'Question', name: 'What luxury vacation rentals do you offer in Florida?', acceptedAnswer: { '@type': 'Answer', text: 'Casa Grandè is a 5-bedroom, 3-bathroom luxury vacation home at 18 N Maywood Ave, Clearwater, FL 33765. Spanning 2,100 sq ft, it features a private pool, pet-friendly policy (dogs only, max 2), modern open-plan kitchen, outdoor dining, and sleeps up to 16 guests. Located 4 miles from Clearwater Beach and 3 miles from BayCare Ballpark. From $500/night with direct booking.' } },
     { '@type': 'Question', name: 'Do you have vacation rentals near Joshua Tree National Park?', acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 is a 4-bedroom, 4-bathroom luxury desert group retreat sleeping up to 10 guests across approximately 2,100 sq ft. Two stand-alone homes share one private gated compound. Amenities include a private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court, mini golf, bocce ball, ping pong, pool table, arcade machines, BBQ, fire pit, and a vintage Airstream. Situated 5 minutes from the Joshua Tree National Park west entrance and 5 minutes from Downtown Joshua Tree. Dog friendly (max 2 dogs). From $700/night.' } },
     { '@type': 'Question', name: 'What is the best large vacation rental near Yosemite?', acceptedAnswer: { '@type': 'Answer', text: 'Sierra Crest Haven at 42139 Old Yosemite Road, Oakhurst, CA 93644 is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft of living space, a hot tub, fireplace, game room, full bar, multiple living areas, and dual sunrise/sunset views over the High Sierra. It sleeps up to 16 guests and is located 14 miles from the Yosemite National Park south entrance (approximately 45 minutes to Yosemite Valley). From $945/night.' } },

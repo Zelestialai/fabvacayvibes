@@ -134,6 +134,11 @@ export default function Nav() {
             style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1 }}
           >→ Sierra Crest Haven</Link>
           <Link
+            href="/properties/broadleaf"
+            onClick={() => setMenuOpen(false)}
+            style={{ display: 'block', fontSize: 13, color: 'var(--text-muted)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1 }}
+          >→ Broadleaf</Link>
+          <Link
             href="/services"
             onClick={() => setMenuOpen(false)}
             style={{ display: 'block', fontSize: 13, color: 'var(--orange)', padding: '8px 0', textDecoration: 'none', letterSpacing: 1, borderTop: '1px solid rgba(244,162,58,0.1)', marginTop: 8, paddingTop: 16 }}
