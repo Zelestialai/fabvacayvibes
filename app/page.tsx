@@ -38,7 +38,7 @@ export default function Home() {
           '@type': 'WebSite',
           name: 'Fab Vacay Vibes',
           url: 'https://fabvacayvibes.com',
-          description: 'Luxury vacation rentals in Clearwater FL, Joshua Tree CA, and Oakhurst CA. Book direct and save up to 15%.',
+          description: 'Luxury vacation rentals in Clearwater FL, Joshua Tree CA, Oakhurst CA, and McGaheysville VA. Book direct and save up to 15%.',
           potentialAction: {
             '@type': 'SearchAction',
             target: { '@type': 'EntryPoint', urlTemplate: 'https://fabvacayvibes.com/properties/{search_term_string}' },
@@ -104,6 +104,7 @@ export default function Home() {
             <div><PropertyCard property={properties[0]} large /></div>
             <PropertyCard property={properties[1]} />
             <PropertyCard property={properties[2]} />
+            <div className="prop-wide"><PropertyCard property={properties[3]} wide /></div>
           </div>
         </RevealOnScroll>
       </section>
@@ -184,7 +185,7 @@ export default function Home() {
                 <p style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(253,246,236,0.5)' }}>Average Guest Rating</p>
               </div>
               <div style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.15)', padding: '32px 36px', borderRadius: 3 }}>
-                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 64, color: '#F4A23A', fontWeight: 300, lineHeight: 1, marginBottom: 8 }}>3</p>
+                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 64, color: '#F4A23A', fontWeight: 300, lineHeight: 1, marginBottom: 8 }}>4</p>
                 <p style={{ fontSize: 11, letterSpacing: 3, textTransform: 'uppercase', color: 'rgba(253,246,236,0.5)' }}>Luxury Properties</p>
               </div>
             </div>

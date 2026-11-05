@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Property } from '../lib/properties'
 
-export default function PropertyCard({ property, large = false }: { property: Property; large?: boolean }) {
+export default function PropertyCard({ property, large = false, wide = false }: { property: Property; large?: boolean; wide?: boolean }) {
   return (
     <Link
       href={`/properties/${property.slug}`}
@@ -10,8 +10,8 @@ export default function PropertyCard({ property, large = false }: { property: Pr
         overflow: 'hidden',
         cursor: 'pointer',
         background: 'var(--purple-mid)',
-        aspectRatio: large ? 'auto' : '3/4',
-        minHeight: large ? 600 : undefined,
+        aspectRatio: large || wide ? 'auto' : '3/4',
+        minHeight: large ? 600 : wide ? 440 : undefined,
         display: 'block',
         textDecoration: 'none',
       }}
