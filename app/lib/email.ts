@@ -8,7 +8,7 @@ const FROM = 'Fab Vacay Vibes <noreply@fabvacayvibes.com>'
 const TO = 'FabVacayVibes@gmail.com'
 
 export async function sendInquiryEmail({
-  propertyName, firstName, lastName, email, phone, arrival, departure, adults, message
+  propertyName, firstName, lastName, email, phone, arrival, departure, adults, poolHeating, message
 }: {
   propertyName: string
   firstName: string
@@ -18,6 +18,7 @@ export async function sendInquiryEmail({
   arrival?: string
   departure?: string
   adults?: number
+  poolHeating?: boolean
   message: string
 }) {
   return getResend().emails.send({
@@ -39,6 +40,7 @@ export async function sendInquiryEmail({
             ${arrival ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666"><strong>Check-in</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #eee">${arrival}</td></tr>` : ''}
             ${departure ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666"><strong>Check-out</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #eee">${departure}</td></tr>` : ''}
             ${adults ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666"><strong>Guests</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #eee">${adults}</td></tr>` : ''}
+            ${poolHeating ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #666"><strong>Pool Heating</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #eee; color: #F4A23A; font-weight: bold;">Requested ($250/night)</td></tr>` : ''}
           </table>
           <div style="margin-top: 24px;">
             <strong style="color: #666;">Message:</strong>

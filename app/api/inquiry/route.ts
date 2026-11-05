@@ -13,7 +13,8 @@ const PROPERTY_NUMERIC_IDS: Record<string, number> = {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { slug, firstName, lastName, email, phone, arrival, departure, adults, message } = body
+    const { slug, firstName, lastName, email, phone, arrival, departure, adults, poolHeating, message } = body
+    const includePoolHeating = poolHeating === true && slug === 'owl-and-hare'
 
     if (!slug || !firstName || !lastName || !email || !message) {
       return NextResponse.json({ error: 'Please fill in all required fields.' }, { status: 400 })
@@ -64,16 +65,19 @@ export async function POST(request: NextRequest) {
     let ownerrezType: 'quote' | 'inquiry' | null = null
 
     if (arrival && departure) {
-      const quotePayload = {
+      const POOL_HEATING_SURCHARGE_ID = 102655608
+      const poolNote = includePoolHeating ? '\n\n[Pool heating requested]' : ''
+      const quotePayload: Record<string, unknown> = {
         GuestId: guestId,
         PropertyId: propertyId,
         Adults: adults || 2,
         Children: 0,
         Pets: 0,
         SendQuoteEmail: false,
-        Comments: message,
+        Comments: message + poolNote,
         Arrival: arrival,
         Departure: departure,
+        ...(includePoolHeating ? { OptionalSurchargeIds: [POOL_HEATING_SURCHARGE_ID] } : {}),
       }
       const quoteRes = await fetch(`${LEGACY}/quotes`, {
         method: 'POST', headers,
@@ -92,13 +96,14 @@ export async function POST(request: NextRequest) {
 
     // Fall back to inquiry if no dates or quote failed
     if (!ownerrezId) {
+      const poolNote = includePoolHeating ? '\n\n[Pool heating requested]' : ''
       const inquiryPayload: Record<string, unknown> = {
         GuestId: guestId,
         PropertyId: propertyId,
         Adults: adults || 2,
         Children: 0,
         Pets: 0,
-        Comments: message,
+        Comments: message + poolNote,
         Source: 'FabVacayVibes Website',
       }
       if (arrival) inquiryPayload.Arrival = arrival
@@ -120,7 +125,7 @@ export async function POST(request: NextRequest) {
     // Send our notification email regardless
     try {
       const propertyName = Object.keys(PROPERTY_NUMERIC_IDS).find(k => PROPERTY_NUMERIC_IDS[k] === propertyId) || slug
-      await sendInquiryEmail({ propertyName: propertyName.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, message })
+      await sendInquiryEmail({ propertyName: propertyName.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()), firstName, lastName, email, phone, arrival, departure, adults, poolHeating: includePoolHeating, message })
     } catch (e) { console.error('Email error:', e) }
 
     return NextResponse.json({
