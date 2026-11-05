@@ -5,6 +5,11 @@ import { trackGenerateLead } from '../lib/analytics'
 interface InquiryFormProps {
   propertySlug: string
   propertyName: string
+  initialArrival?: string
+  initialDeparture?: string
+  initialAdults?: number
+  initialPoolHeating?: boolean
+  id?: string
 }
 
 const inputStyle = {
@@ -30,14 +35,15 @@ const labelStyle = {
   display: 'block',
 }
 
-export default function InquiryForm({ propertySlug, propertyName }: InquiryFormProps) {
+export default function InquiryForm({ propertySlug, propertyName, initialArrival, initialDeparture, initialAdults, initialPoolHeating, id }: InquiryFormProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [poolHeating, setPoolHeating] = useState(initialPoolHeating ?? false)
   const [form, setForm] = useState({
     firstName: '', lastName: '', email: '', phone: '',
-    arrival: '', departure: '', adults: '2', message: '',
+    arrival: initialArrival ?? '', departure: initialDeparture ?? '', adults: String(initialAdults ?? 2), message: '',
   })
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -63,6 +69,7 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
           arrival: form.arrival || undefined,
           departure: form.departure || undefined,
           adults: parseInt(form.adults) || 2,
+          poolHeating: propertySlug === 'owl-and-hare' ? poolHeating : undefined,
           message: form.message,
         }),
       })
@@ -89,7 +96,7 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
   }
 
   return (
-    <div style={{ marginTop: 16, border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, overflow: 'hidden' }}>
+    <div id={id} style={{ marginTop: 16, border: '1px solid rgba(244,162,58,0.15)', borderRadius: 4, overflow: 'hidden' }}>
       {/* Toggle header */}
       <button
         onClick={() => setOpen(o => !o)}
@@ -122,7 +129,7 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
                 Thanks for your interest in {propertyName}. We'll be in touch within 24 hours.
               </p>
               <button
-                onClick={() => { setSuccess(false); setForm({ firstName: '', lastName: '', email: '', phone: '', arrival: '', departure: '', adults: '2', message: '' }) }}
+                onClick={() => { setSuccess(false); setPoolHeating(false); setForm({ firstName: '', lastName: '', email: '', phone: '', arrival: initialArrival ?? '', departure: initialDeparture ?? '', adults: String(initialAdults ?? 2), message: '' }) }}
                 style={{ marginTop: 16, background: 'none', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '8px 20px', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2, fontFamily: 'inherit' }}
               >
                 Send Another
@@ -173,6 +180,22 @@ export default function InquiryForm({ propertySlug, propertyName }: InquiryFormP
                   ))}
                 </select>
               </div>
+
+              {/* Pool Heating — Owl & Hare only */}
+              {propertySlug === 'owl-and-hare' && (
+                <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', padding: '10px 14px', background: 'rgba(244,162,58,0.04)', border: '1px solid rgba(244,162,58,0.15)', borderRadius: 2 }}>
+                  <input
+                    type="checkbox"
+                    checked={poolHeating}
+                    onChange={e => setPoolHeating(e.target.checked)}
+                    style={{ width: 16, height: 16, accentColor: 'var(--orange)', cursor: 'pointer' }}
+                  />
+                  <div>
+                    <span style={{ fontSize: 13, color: 'var(--cream)', fontWeight: 500 }}>Add Pool Heating</span>
+                    <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 8 }}>$250/night</span>
+                  </div>
+                </label>
+              )}
 
               {/* Message */}
               <div>

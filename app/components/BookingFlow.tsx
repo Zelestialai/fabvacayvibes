@@ -71,6 +71,11 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates: b
   const [guest, setGuest] = useState({ firstName: '', lastName: '', email: '', phone: '' })
   const [couponCode, setCouponCode] = useState('')
   const [couponApplied, setCouponApplied] = useState(false)
+  const [inquiryOpen, setInquiryOpen] = useState(false)
+  const [inquiryForm, setInquiryForm] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' })
+  const [inquiryLoading, setInquiryLoading] = useState(false)
+  const [inquirySuccess, setInquirySuccess] = useState(false)
+  const [inquiryError, setInquiryError] = useState('')
   const [calHovered, setCalHovered] = useState<string | null>(null)
   const [calMonth, setCalMonth] = useState(() => {
     const now = new Date()
@@ -408,6 +413,19 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates: b
           <p style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center' }}>
             No charges yet — see full pricing first
           </p>
+
+          <p style={{ fontSize: 12, color: 'var(--text-muted)', textAlign: 'center', marginTop: 4 }}>
+            Just have a question?{' '}
+            <button
+              onClick={() => {
+                const el = document.getElementById('inquiry-form')
+                if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); el.querySelector('button')?.click() }
+              }}
+              style={{ background: 'none', border: 'none', color: 'var(--orange)', fontSize: 12, cursor: 'pointer', textDecoration: 'underline', padding: 0, fontFamily: 'inherit' }}
+            >
+              Send us a message →
+            </button>
+          </p>
         </div>
       )}
 
@@ -488,6 +506,82 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates: b
           <p style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center' }}>
             Best rate — no OTA fees
           </p>
+
+          {/* Inline inquiry from quote step */}
+          <div style={{ border: '1px solid rgba(244,162,58,0.15)', borderRadius: 2, overflow: 'hidden' }}>
+            <button
+              onClick={() => setInquiryOpen(o => !o)}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', background: 'rgba(253,246,236,0.03)', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ fontSize: 16, color: 'var(--orange)' }}>✉</span>
+                <div style={{ textAlign: 'left' }}>
+                  <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--cream)', margin: 0 }}>Have a question before booking?</p>
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0 }}>We'll respond within 24 hours</p>
+                </div>
+              </div>
+              <span style={{ color: 'var(--orange)', fontSize: 18, transform: inquiryOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }}>⌄</span>
+            </button>
+
+            {inquiryOpen && (
+              <div style={{ padding: '16px', borderTop: '1px solid rgba(244,162,58,0.1)', background: 'rgba(253,246,236,0.02)' }}>
+                {inquirySuccess ? (
+                  <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                    <div style={{ fontSize: 28, marginBottom: 8 }}>✓</div>
+                    <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 18, color: 'var(--orange-warm)', marginBottom: 6 }}>Question Sent!</p>
+                    <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>We'll be in touch within 24 hours.</p>
+                    <button onClick={() => { setInquirySuccess(false); setInquiryForm({ firstName: '', lastName: '', email: '', phone: '', message: '' }) }} style={{ marginTop: 12, background: 'none', border: '1px solid rgba(244,162,58,0.3)', color: 'var(--orange)', padding: '6px 16px', fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', cursor: 'pointer', borderRadius: 2, fontFamily: 'inherit' }}>Send Another</button>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 10 }}>
+                      <div>
+                        <label style={{ ...labelStyle, marginBottom: 4 }}>First Name *</label>
+                        <input value={inquiryForm.firstName} onChange={e => setInquiryForm(f => ({ ...f, firstName: e.target.value }))} style={inputStyle} placeholder="Jane" />
+                      </div>
+                      <div>
+                        <label style={{ ...labelStyle, marginBottom: 4 }}>Last Name *</label>
+                        <input value={inquiryForm.lastName} onChange={e => setInquiryForm(f => ({ ...f, lastName: e.target.value }))} style={inputStyle} placeholder="Smith" />
+                      </div>
+                    </div>
+                    <div>
+                      <label style={{ ...labelStyle, marginBottom: 4 }}>Email *</label>
+                      <input type="email" value={inquiryForm.email} onChange={e => setInquiryForm(f => ({ ...f, email: e.target.value }))} style={inputStyle} placeholder="jane@example.com" />
+                    </div>
+                    <div>
+                      <label style={{ ...labelStyle, marginBottom: 4 }}>Phone</label>
+                      <input type="tel" value={inquiryForm.phone} onChange={e => setInquiryForm(f => ({ ...f, phone: e.target.value }))} style={inputStyle} placeholder="+1 (555) 000-0000" />
+                    </div>
+                    <div>
+                      <label style={{ ...labelStyle, marginBottom: 4 }}>Message *</label>
+                      <textarea value={inquiryForm.message} onChange={e => setInquiryForm(f => ({ ...f, message: e.target.value }))} rows={3} style={{ ...inputStyle, resize: 'vertical', minHeight: 80 }} placeholder="What would you like to know?" />
+                    </div>
+                    {inquiryError && <p style={{ fontSize: 12, color: '#ff6b6b', background: 'rgba(255,107,107,0.1)', padding: '8px 12px', borderRadius: 2, margin: 0 }}>{inquiryError}</p>}
+                    <button
+                      disabled={inquiryLoading}
+                      onClick={async () => {
+                        if (!inquiryForm.firstName || !inquiryForm.lastName || !inquiryForm.email || !inquiryForm.message) { setInquiryError('Please fill in your name, email, and message.'); return }
+                        setInquiryLoading(true); setInquiryError('')
+                        try {
+                          const res = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: propertySlug, firstName: inquiryForm.firstName, lastName: inquiryForm.lastName, email: inquiryForm.email, phone: inquiryForm.phone, arrival, departure, adults, children, pets, poolHeating: propertySlug === 'owl-and-hare' ? poolHeating : undefined, message: inquiryForm.message }) })
+                          const data = await res.json()
+                          if (!res.ok) throw new Error(data.error || 'Failed to send')
+                          setInquirySuccess(true)
+                        } catch (e: unknown) { setInquiryError(e instanceof Error ? e.message : 'Failed to send. Please try again.') }
+                        finally { setInquiryLoading(false) }
+                      }}
+                      style={{ background: inquiryLoading ? 'rgba(244,162,58,0.4)' : 'var(--orange)', color: 'var(--purple)', padding: '12px', fontSize: 11, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500, border: 'none', cursor: inquiryLoading ? 'default' : 'pointer', borderRadius: 2, fontFamily: 'inherit', width: '100%' }}
+                    >
+                      {inquiryLoading ? 'Sending...' : 'Send Question →'}
+                    </button>
+                    <p style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', margin: 0 }}>
+                      Your dates & guest count will be included automatically
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 

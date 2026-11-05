@@ -332,7 +332,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
               <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12 }}>Questions? Contact us directly</p>
               <a href="tel:7273869642" style={{ fontSize: 16, color: 'var(--orange)', textDecoration: 'none', fontFamily: "'Cormorant Garamond',serif" }}>(727) 386-9642</a>
             </div>
-            <InquiryForm propertySlug={property.slug} propertyName={property.name} />
+            <InquiryForm propertySlug={property.slug} propertyName={property.name} id="inquiry-form" />
           </div>
         </div>
       </section>
