@@ -57,7 +57,7 @@ const labelStyle = {
 const CAL_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const CAL_DAYS = ['Su','Mo','Tu','We','Th','Fr','Sa']
 
-export default function BookingFlow({ propertySlug, propertyName, bookedDates, initialDates }: BookingFlowProps) {
+export default function BookingFlow({ propertySlug, propertyName, bookedDates: bookedDatesProp, initialDates }: BookingFlowProps) {
   const [step, setStep] = useState<Step>('dates')
   const [arrival, setArrival] = useState(initialDates?.arrival || '')
   const [departure, setDeparture] = useState(initialDates?.departure || '')
@@ -76,6 +76,14 @@ export default function BookingFlow({ propertySlug, propertyName, bookedDates, i
     const now = new Date()
     return { year: now.getFullYear(), month: now.getMonth() }
   })
+  // Fetch booked dates client-side so the calendar always has fresh data
+  const [bookedDates, setBookedDates] = useState<Set<string>>(bookedDatesProp || new Set())
+  useEffect(() => {
+    fetch(`/api/availability?property=${propertySlug}`)
+      .then(r => r.json())
+      .then(data => { if (data.bookedDates) setBookedDates(new Set(data.bookedDates)) })
+      .catch(() => {/* keep prop fallback */})
+  }, [propertySlug])
 
   const today = new Date().toISOString().split('T')[0]
 
