@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const V2 = 'https://api.ownerrez.com/v2'
-const LEGACY = 'https://app.ownerrez.com/api'
 
 function getCredentials() {
   const email = process.env.OWNERREZ_EMAIL
@@ -26,23 +25,21 @@ export async function GET(request: NextRequest) {
     const creds = getCredentials()
     const h = getHeaders(creds)
 
-    const [propRes, amenRes, photoRes, surchargeRes, rateRes] = await Promise.all([
+    const [propRes, amenRes, photoRes, surchargeRes] = await Promise.all([
       fetch(`${V2}/properties/${propertyId}`, { headers: h }),
       fetch(`${V2}/properties/${propertyId}/amenities`, { headers: h }),
       fetch(`${V2}/properties/${propertyId}/photos`, { headers: h }),
       fetch(`${V2}/surcharges?property_ids=${propertyId}`, { headers: h }),
-      fetch(`${LEGACY}/propertysettings/${propertyId}`, { headers: h }),
     ])
 
-    const [prop, amen, photos, surcharges, rates] = await Promise.all([
+    const [prop, amen, photos, surcharges] = await Promise.all([
       propRes.ok ? propRes.json() : propRes.text(),
       amenRes.ok ? amenRes.json() : amenRes.text(),
       photoRes.ok ? photoRes.json() : photoRes.text(),
       surchargeRes.ok ? surchargeRes.json() : surchargeRes.text(),
-      rateRes.ok ? rateRes.json() : rateRes.text(),
     ])
 
-    return NextResponse.json({ prop, amen, photos, surcharges, rates }, { headers: { 'Cache-Control': 'no-store' } })
+    return NextResponse.json({ prop, amen, photos, surcharges }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (error) {
     return NextResponse.json({ error: String(error) }, { status: 500 })
   }
