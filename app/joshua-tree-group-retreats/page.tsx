@@ -24,7 +24,7 @@ const faqItems = [
   },
   {
     q: 'How many people can stay at the Joshua Tree group retreat?',
-    a: 'Owl & Hare sleeps up to 10 guests across 4 bedrooms and 4 bathrooms. The property is located at 8283 Via Rocosa, Joshua Tree, CA 92252.',
+    a: 'Owl & Hare sleeps up to 10 guests across 4 bedrooms and 4 bathrooms. The property is located in Joshua Tree, CA.',
   },
   {
     q: 'Does the Joshua Tree retreat have a pool?',
@@ -71,10 +71,8 @@ export default function JoshuaTreeGroupRetreatsPage() {
                 description: 'Two stand-alone homes on one gated desert compound. Private pool, hot tub, sauna, cold plunge, LED therapy room, gym, pickleball court & more. Sleeps up to 10. 5 minutes to Joshua Tree National Park.',
                 address: {
                   '@type': 'PostalAddress',
-                  streetAddress: '8283 Via Rocosa',
                   addressLocality: 'Joshua Tree',
                   addressRegion: 'CA',
-                  postalCode: '92252',
                   addressCountry: 'US',
                 },
                 numberOfRooms: 4,
@@ -153,7 +151,7 @@ export default function JoshuaTreeGroupRetreatsPage() {
                   Two Homes.<br />One Private Sanctuary.
                 </h2>
                 <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 20 }}>
-                  Owl &amp; Hare is two stand-alone homes on a single gated desert compound at 8283 Via Rocosa, Joshua Tree, CA. The dual-structure layout gives groups both shared communal spaces and private retreat space — everyone together, but no one on top of each other.
+                  Owl &amp; Hare is two stand-alone homes on a single gated desert compound in Joshua Tree, CA. The dual-structure layout gives groups both shared communal spaces and private retreat space — everyone together, but no one on top of each other.
                 </p>
                 <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 32 }}>
                   Five minutes from the West entrance of Joshua Tree National Park. Five minutes from Downtown Joshua Tree. The desert starts at your doorstep.

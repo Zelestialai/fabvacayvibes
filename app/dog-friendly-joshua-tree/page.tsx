@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     q: 'Is the Joshua Tree vacation rental dog friendly?',
-    a: 'Yes — Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 welcomes dogs. Maximum 2 dogs per stay. The property is a private gated compound, giving dogs space to move around safely. There is no additional pet fee listed, but confirm at time of booking.',
+    a: 'Yes — Owl & Hare in Joshua Tree, CA welcomes dogs. Maximum 2 dogs per stay. The property is a private gated compound, giving dogs space to move around safely. There is no additional pet fee listed, but confirm at time of booking.',
   },
   {
     q: 'Is Joshua Tree National Park dog friendly?',
@@ -28,7 +28,7 @@ const faqItems = [
   },
   {
     q: 'What is the best dog-friendly vacation rental in Joshua Tree?',
-    a: 'Owl & Hare at 8283 Via Rocosa is a 4-bedroom, 4-bathroom luxury compound that sleeps up to 10 guests and welcomes dogs (max 2). The gated compound gives dogs space to roam safely. It\'s 5 minutes from the West entrance of Joshua Tree National Park. From $700/night with direct booking.',
+    a: 'Owl & Hare is a 4-bedroom, 4-bathroom luxury compound that sleeps up to 10 guests and welcomes dogs (max 2). The gated compound gives dogs space to roam safely. It\'s 5 minutes from the West entrance of Joshua Tree National Park. From $700/night with direct booking.',
   },
   {
     q: 'How many dogs can I bring to the Joshua Tree rental?',
@@ -70,10 +70,8 @@ export default function DogFriendlyJoshuaTreePage() {
                 description: 'Dog-friendly luxury desert compound in Joshua Tree, CA. Private gated property with pool, hot tub, sauna, and open space. Max 2 dogs. Sleeps up to 10.',
                 address: {
                   '@type': 'PostalAddress',
-                  streetAddress: '8283 Via Rocosa',
                   addressLocality: 'Joshua Tree',
                   addressRegion: 'CA',
-                  postalCode: '92252',
                   addressCountry: 'US',
                 },
                 numberOfRooms: 4,
@@ -145,7 +143,7 @@ export default function DogFriendlyJoshuaTreePage() {
           <RevealOnScroll>
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>The Property</p>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 300, color: 'white', lineHeight: 1.2, marginBottom: 24 }}>
-              Owl &amp; Hare — 8283 Via Rocosa<br />Joshua Tree, CA 92252
+              Owl &amp; Hare<br />Joshua Tree, CA
             </h2>
             <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.9, maxWidth: 680, marginBottom: 48 }}>
               Two stand-alone homes on one private gated compound. 4 bedrooms, 4 bathrooms, sleeps up to 10. The gated property gives your dogs safe outdoor space while you use the pool, hot tub, sauna, cold plunge, gym, pickleball court, and more. 5 minutes to Joshua Tree National Park (note: dogs have limited trail access inside the park — they are allowed in developed areas on leash). Pet friendly (max 2 dogs).

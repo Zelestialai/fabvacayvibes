@@ -76,9 +76,9 @@ export async function GET(request: NextRequest) {
         living_area_type: prop.living_area_type,
         check_in: prop.check_in,
         check_out: prop.check_out,
-        address: prop.address,
-        latitude: prop.latitude,
-        longitude: prop.longitude,
+        // Privacy: exact street address is never stored; coordinates rounded to ~1 km
+        latitude: typeof prop.latitude === 'number' ? Math.round(prop.latitude * 100) / 100 : null,
+        longitude: typeof prop.longitude === 'number' ? Math.round(prop.longitude * 100) / 100 : null,
         property_type: prop.property_type,
         listing_numbers: prop.listing_numbers,
         public_url: prop.public_url,

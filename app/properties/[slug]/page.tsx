@@ -192,10 +192,8 @@ export default async function PropertyPage({ params, searchParams }: { params: P
           checkoutTime: property.checkOut?.includes('10') ? '10:00:00' : '11:00:00',
           address: {
             '@type': 'PostalAddress',
-            streetAddress: property.address?.split(',')[0] || '',
             addressLocality: property.location,
             addressRegion: property.state,
-            postalCode: property.address?.match(/\d{5}/)?.[0] || '',
             addressCountry: 'US',
           },
           ...(property.latitude && property.longitude ? {
@@ -303,7 +301,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
                 { label: 'Bathrooms', value: String(mergedProperty.bathrooms) },
                 { label: 'Max Guests', value: String(mergedProperty.sleepsMax) },
                 ...(mergedProperty.squareFeet ? [{ label: 'Living Area', value: `${mergedProperty.squareFeet.toLocaleString()} sq ft` }] : []),
-                ...(property.address ? [{ label: 'Address', value: property.address }] : []),
+                ...(property.address ? [{ label: 'Location', value: property.address }] : []),
                 { label: 'Pets', value: syncedData?.max_pets > 0 ? `Allowed (max ${syncedData.max_pets})` : mergedProperty.amenities.includes('Pet Friendly') ? 'Allowed (max 2)' : 'Not Allowed' },
               ].map(({ label, value }) => (
                 <div key={label} style={{ padding: '20px 24px', borderBottom: '1px solid rgba(244,162,58,0.08)', borderRight: '1px solid rgba(244,162,58,0.08)' }}>
@@ -405,7 +403,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
                 {
                   '@type': 'Question',
                   name: 'What is the two-home compound setup at Owl & Hare?',
-                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare consists of two separate stand-alone homes on one gated desert compound at 8283 Via Rocosa, Joshua Tree, CA 92252. The homes share the compound\'s amenities — pool, hot tub, sauna, cold plunge, pickleball court, and all recreation facilities — while each home functions independently. Total capacity is 10 guests across 4 bedrooms and 4 bathrooms. The compound is fully private and gated.' },
+                  acceptedAnswer: { '@type': 'Answer', text: 'Owl & Hare consists of two separate stand-alone homes on one gated desert compound in Joshua Tree, CA. The homes share the compound\'s amenities — pool, hot tub, sauna, cold plunge, pickleball court, and all recreation facilities — while each home functions independently. Total capacity is 10 guests across 4 bedrooms and 4 bathrooms. The compound is fully private and gated.' },
                 },
               ],
             }) }}
@@ -426,7 +424,7 @@ export default async function PropertyPage({ params, searchParams }: { params: P
                 { q: 'How far is Owl & Hare from Joshua Tree National Park?', a: "Owl & Hare is approximately a 5-minute drive from the Joshua Tree National Park west entrance. Downtown Joshua Tree is also about 5 minutes away. Pappy & Harriet's Pioneertown Palace is approximately 25 minutes away." },
                 { q: 'Does Owl & Hare have a private pool?', a: 'Yes, Owl & Hare has a private pool on the compound, along with a hot tub.' },
                 { q: 'Can you host a private group retreat at Owl & Hare?', a: 'Yes. Owl & Hare is a gated private compound that sleeps up to 10 guests. The two-home layout gives groups both shared gathering space and private retreat space. On-site wellness facilities (sauna, cold plunge, LED therapy room, gym, pool, hot tub) and recreation (pickleball, mini golf, bocce ball, arcade) support multi-day group programming. Book directly at fabvacayvibes.com/properties/owl-and-hare.' },
-                { q: 'What is the two-home compound setup at Owl & Hare?', a: "Owl & Hare consists of two separate stand-alone homes on one gated desert compound at 8283 Via Rocosa, Joshua Tree, CA 92252. The homes share the compound's amenities — pool, hot tub, sauna, cold plunge, pickleball court, and all recreation facilities — while each home functions independently. Total capacity is 10 guests across 4 bedrooms and 4 bathrooms. The compound is fully private and gated." },
+                { q: 'What is the two-home compound setup at Owl & Hare?', a: "Owl & Hare consists of two separate stand-alone homes on one gated desert compound in Joshua Tree, CA. The homes share the compound's amenities — pool, hot tub, sauna, cold plunge, pickleball court, and all recreation facilities — while each home functions independently. Total capacity is 10 guests across 4 bedrooms and 4 bathrooms. The compound is fully private and gated." },
               ].map(({ q, a }, i) => (
                 <details key={i} style={{ borderBottom: '1px solid rgba(244,162,58,0.1)', padding: '0' }}>
                   <summary style={{ padding: '20px 0', fontSize: 15, color: 'var(--cream)', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16 }}>

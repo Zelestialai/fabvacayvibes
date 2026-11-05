@@ -24,7 +24,7 @@ const faqItems = [
   },
   {
     q: 'Is Joshua Tree a good destination for a wellness retreat?',
-    a: 'Yes — Joshua Tree is consistently ranked among the top wellness travel destinations in the US. The high desert environment, clean air, natural silence, and dramatic landscape are conducive to rest, reflection, and reset. Owl & Hare at 8283 Via Rocosa was designed as a private wellness compound that complements the destination.',
+    a: 'Yes — Joshua Tree is consistently ranked among the top wellness travel destinations in the US. The high desert environment, clean air, natural silence, and dramatic landscape are conducive to rest, reflection, and reset. Owl & Hare was designed as a private wellness compound that complements the destination.',
   },
   {
     q: 'Does the Joshua Tree wellness rental have a sauna and cold plunge?',
@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     q: 'How many guests can the Joshua Tree wellness rental accommodate?',
-    a: 'Owl & Hare sleeps up to 10 guests across 4 bedrooms and 4 bathrooms. The property consists of two stand-alone homes on one private gated compound at 8283 Via Rocosa, Joshua Tree, CA 92252.',
+    a: 'Owl & Hare sleeps up to 10 guests across 4 bedrooms and 4 bathrooms. The property consists of two stand-alone homes on one private gated compound in Joshua Tree, CA.',
   },
   {
     q: 'How close is the Joshua Tree wellness rental to the national park?',
@@ -71,10 +71,8 @@ export default function JoshuaTreeWellnessPage() {
                 description: 'Two stand-alone homes on one gated desert compound in Joshua Tree, CA. Private pool, hot tub, sauna, cold plunge, LED therapy room, gym, and more. Sleeps up to 10.',
                 address: {
                   '@type': 'PostalAddress',
-                  streetAddress: '8283 Via Rocosa',
                   addressLocality: 'Joshua Tree',
                   addressRegion: 'CA',
-                  postalCode: '92252',
                   addressCountry: 'US',
                 },
                 numberOfRooms: 4,
@@ -161,7 +159,7 @@ export default function JoshuaTreeWellnessPage() {
           <RevealOnScroll>
             <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>The Property</p>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4vw,52px)', fontWeight: 300, color: 'white', lineHeight: 1.2, marginBottom: 24 }}>
-              Owl &amp; Hare — 8283 Via Rocosa, Joshua Tree, CA
+              Owl &amp; Hare — Joshua Tree, CA
             </h2>
             <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 48 }}>
               Two stand-alone homes on one private gated compound. 4 bedrooms, 4 bathrooms, sleeps up to 10 guests. Pet friendly (max 2 dogs). 5 minutes to Joshua Tree National Park West entrance. 5 minutes to Downtown Joshua Tree. From $700/night — book direct and save up to 15%.

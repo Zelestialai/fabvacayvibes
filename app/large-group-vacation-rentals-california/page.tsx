@@ -21,7 +21,7 @@ const properties = [
   {
     name: 'Owl & Hare',
     location: 'Joshua Tree, CA',
-    address: '8283 Via Rocosa, Joshua Tree, CA 92252',
+    address: 'Joshua Tree, CA',
     slug: 'owl-and-hare',
     bedrooms: 4,
     bathrooms: 4,
@@ -35,7 +35,7 @@ const properties = [
   {
     name: 'Sierra Crest Haven',
     location: 'Oakhurst, CA (Near Yosemite)',
-    address: '42139 Old Yosemite Road, Oakhurst, CA 93644',
+    address: 'Oakhurst, CA',
     slug: 'sierra-crest-haven',
     bedrooms: 7,
     bathrooms: 3,
@@ -52,11 +52,11 @@ const properties = [
 const faqItems = [
   {
     q: 'What is the largest vacation rental in California that sleeps 16?',
-    a: 'Sierra Crest Haven at 42139 Old Yosemite Road, Oakhurst, CA 93644 is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft that sleeps up to 16 guests. It features a hot tub, fireplace, game room, full bar, and dual views over the High Sierra. Located 14 miles from the Yosemite National Park south entrance. From $945/night direct booking.',
+    a: 'Sierra Crest Haven in Oakhurst, CA is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft that sleeps up to 16 guests. It features a hot tub, fireplace, game room, full bar, and dual views over the High Sierra. Located 14 miles from the Yosemite National Park south entrance. From $945/night direct booking.',
   },
   {
     q: 'What California vacation rentals accommodate large groups in Joshua Tree?',
-    a: 'Owl & Hare at 8283 Via Rocosa, Joshua Tree, CA 92252 is a 4-bedroom, 4-bathroom luxury desert compound that sleeps up to 10 guests. It features two stand-alone homes on a private gated compound, a private pool, hot tub, sauna, cold plunge, gym, and pickleball court. 5 minutes from Joshua Tree National Park. From $700/night direct booking.',
+    a: 'Owl & Hare in Joshua Tree, CA is a 4-bedroom, 4-bathroom luxury desert compound that sleeps up to 10 guests. It features two stand-alone homes on a private gated compound, a private pool, hot tub, sauna, cold plunge, gym, and pickleball court. 5 minutes from Joshua Tree National Park. From $700/night direct booking.',
   },
   {
     q: 'Which is better for a large group — Joshua Tree or near Yosemite?',

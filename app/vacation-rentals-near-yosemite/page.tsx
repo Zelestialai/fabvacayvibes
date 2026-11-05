@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     q: 'What is the best luxury vacation rental near Yosemite National Park?',
-    a: 'Sierra Crest Haven at 42139 Old Yosemite Road, Oakhurst, CA 93644 is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft of living space that sleeps up to 16 guests. Features include a hot tub, fireplace, game room, full bar, multiple living areas, and dual sunrise/sunset views over the High Sierra. Located 14 miles from the Yosemite National Park south entrance — approximately 45 minutes to Yosemite Valley floor. From $945/night direct booking.',
+    a: 'Sierra Crest Haven in Oakhurst, CA is a 7-bedroom, 3-bathroom luxury mountain estate with 4,800 sq ft of living space that sleeps up to 16 guests. Features include a hot tub, fireplace, game room, full bar, multiple living areas, and dual sunrise/sunset views over the High Sierra. Located 14 miles from the Yosemite National Park south entrance — approximately 45 minutes to Yosemite Valley floor. From $945/night direct booking.',
   },
   {
     q: 'How far is Sierra Crest Haven from Yosemite National Park?',
-    a: 'Sierra Crest Haven is 14 miles from the Yosemite National Park south entrance (Highway 41 / Wawona Road) and approximately 45 minutes from Yosemite Valley floor, depending on traffic and road conditions. It is located in Oakhurst, CA 93644, which is the gateway town to Yosemite from the south.',
+    a: 'Sierra Crest Haven is 14 miles from the Yosemite National Park south entrance (Highway 41 / Wawona Road) and approximately 45 minutes from Yosemite Valley floor, depending on traffic and road conditions. It is located in Oakhurst, CA, which is the gateway town to Yosemite from the south.',
   },
   {
     q: 'How many people can stay at the Yosemite area vacation rental?',
@@ -74,10 +74,8 @@ export default function VacationRentalsNearYosemitePage() {
                 description: '7-bedroom, 3-bathroom luxury mountain estate in Oakhurst, CA. 4,800 sq ft. Hot tub, fireplace, game room, full bar, mountain views. Sleeps up to 16. 14 miles from Yosemite south entrance.',
                 address: {
                   '@type': 'PostalAddress',
-                  streetAddress: '42139 Old Yosemite Road',
                   addressLocality: 'Oakhurst',
                   addressRegion: 'CA',
-                  postalCode: '93644',
                   addressCountry: 'US',
                 },
                 numberOfRooms: 7,
@@ -153,7 +151,7 @@ export default function VacationRentalsNearYosemitePage() {
               <div>
                 <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>The Property</p>
                 <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(28px,3.5vw,44px)', fontWeight: 300, color: 'white', lineHeight: 1.2, marginBottom: 20 }}>
-                  Sierra Crest Haven<br />42139 Old Yosemite Road, Oakhurst, CA
+                  Sierra Crest Haven<br />Oakhurst, CA
                 </h2>
                 <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 20 }}>
                   A 4,800 sq ft luxury mountain estate with sweeping High Sierra views — dual exposures for both sunrise and sunset. The full-size layout with multiple living areas, a dedicated game room, and a full bar makes this the right home base for large family trips and extended group stays.

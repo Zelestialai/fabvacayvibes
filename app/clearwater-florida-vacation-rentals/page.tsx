@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     q: 'What is the best luxury vacation rental in Clearwater, Florida?',
-    a: 'Casa Grandè at 18 N Maywood Ave, Clearwater, FL 33765 is a 5-bedroom, 3-bathroom luxury vacation home spanning 2,100 sq ft. It features a private pool, pet-friendly policy (dogs only, max 2), a modern open-plan kitchen, and outdoor dining. Sleeps up to 16 guests. Located 4 miles from Clearwater Beach and 6 miles from Pier 60. From $500/night with direct booking.',
+    a: 'Casa Grandè in Clearwater, FL is a 5-bedroom, 3-bathroom luxury vacation home spanning 2,100 sq ft. It features a private pool, pet-friendly policy (dogs only, max 2), a modern open-plan kitchen, and outdoor dining. Sleeps up to 16 guests. Located 4 miles from Clearwater Beach and 6 miles from Pier 60. From $500/night with direct booking.',
   },
   {
     q: 'How far is the Clearwater vacation rental from Clearwater Beach?',
-    a: 'Casa Grandè at 18 N Maywood Ave, Clearwater, FL 33765 is approximately 4 miles from Clearwater Beach. The property is not within walking distance of the beach — guests typically drive approximately 10 minutes. Pier 60 is approximately 6 miles from the property.',
+    a: 'Casa Grandè in Clearwater, FL is approximately 4 miles from Clearwater Beach. The property is not within walking distance of the beach — guests typically drive approximately 10 minutes. Pier 60 is approximately 6 miles from the property.',
   },
   {
     q: 'Does the Clearwater vacation rental have a private pool?',
@@ -32,7 +32,7 @@ const faqItems = [
   },
   {
     q: 'How many people can stay at the Clearwater vacation rental?',
-    a: 'Casa Grandè sleeps up to 16 guests across 5 bedrooms and 3 bathrooms, in 2,100 sq ft of living space at 18 N Maywood Ave, Clearwater, FL 33765.',
+    a: 'Casa Grandè sleeps up to 16 guests across 5 bedrooms and 3 bathrooms, in 2,100 sq ft of living space in Clearwater, FL.',
   },
   {
     q: 'Is the Clearwater, FL vacation rental pet friendly?',
@@ -74,10 +74,8 @@ export default function ClearwaterFloridaVacationRentalsPage() {
                 description: '5-bedroom, 3-bathroom luxury vacation home in Clearwater, FL with a private pool. Sleeps up to 16. Pet friendly (max 2 dogs). 4 miles to Clearwater Beach.',
                 address: {
                   '@type': 'PostalAddress',
-                  streetAddress: '18 N Maywood Ave',
                   addressLocality: 'Clearwater',
                   addressRegion: 'FL',
-                  postalCode: '33765',
                   addressCountry: 'US',
                 },
                 numberOfRooms: 5,
@@ -154,7 +152,7 @@ export default function ClearwaterFloridaVacationRentalsPage() {
               <div>
                 <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 16 }}>The Property</p>
                 <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(28px,3.5vw,44px)', fontWeight: 300, color: 'white', lineHeight: 1.2, marginBottom: 20 }}>
-                  Casa Grandè<br />18 N Maywood Ave, Clearwater, FL
+                  Casa Grandè<br />Clearwater, FL
                 </h2>
                 <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.9, marginBottom: 20 }}>
                   A 2,100 sq ft luxury vacation home with a private pool and a layout built for groups. The modern open-plan kitchen and outdoor dining area make it easy to cook and gather, while the 5 bedrooms and 3 bathrooms give everyone their own space.
