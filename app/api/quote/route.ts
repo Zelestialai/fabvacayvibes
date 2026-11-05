@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
 
     console.log('Test quote status:', quoteRes.status)
     const quoteText = await quoteRes.text()
-    console.log('Test quote response:', quoteText.substring(0, 500))
+    console.log('Test quote response (pool=' + poolHeating + '):', quoteText.substring(0, 1000))
 
     if (!quoteRes.ok) {
       let err
