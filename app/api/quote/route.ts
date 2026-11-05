@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
 
     console.log('Test quote status:', quoteRes.status)
     const quoteText = await quoteRes.text()
-    console.log('Test quote response (pool=' + poolHeating + '):', quoteText.substring(0, 1000))
+    console.log('Test quote response:', quoteText.substring(0, 500))
 
     if (!quoteRes.ok) {
       let err
@@ -99,8 +99,34 @@ export async function GET(request: NextRequest) {
     const allFees = charges.filter(c => gt(c) === 'surcharge')
     const fees = allFees.filter(c => { const raw = c as Record<string,unknown>; return !INTERNAL_SURCHARGE_IDS.includes(Number(raw.SurchargeId || 0)) })
     const taxes = charges.filter(c => gt(c) === 'tax')
-    const total = charges.reduce((s, c) => s + ga(c), 0)
     const nights = Math.round((new Date(departure).getTime() - new Date(arrival).getTime()) / 86400000)
+    let baseTotal = charges.reduce((s, c) => s + ga(c), 0)
+
+    // Pool heating: TEST quote endpoint ignores OptionalSurchargeIds — fetch rate from v2 API and add manually
+    let poolHeatingFee: { name: string; amount: number } | null = null
+    if (includePoolHeating) {
+      try {
+        const surchargeRes = await fetch(`${V2}/surcharges?property_ids=${propertyId}`, { headers: getHeaders(creds) })
+        if (surchargeRes.ok) {
+          const surchargeData = await surchargeRes.json()
+          const POOL_SURCHARGE_ID = 102655608
+          const poolSurcharge = surchargeData.items?.find((s: { id: number }) => s.id === POOL_SURCHARGE_ID)
+          if (poolSurcharge) {
+            const ratePerNight = poolSurcharge.amount as number
+            const poolAmount = Math.round(ratePerNight * nights * 100) / 100
+            poolHeatingFee = { name: poolSurcharge.description || 'Pool Heating', amount: poolAmount }
+            baseTotal += poolAmount
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch pool heating surcharge rate:', e)
+        // Silently omit — don't block the quote
+      }
+    }
+
+    const displayFees = poolHeatingFee
+      ? [...fees.map(f => ({ name: gn(f), amount: ga(f) })), poolHeatingFee]
+      : fees.map(f => ({ name: gn(f), amount: ga(f) }))
 
     return NextResponse.json({
       propertyId, propertySlug: slug, arrival, departure, nights, adults, children, pets,
@@ -108,9 +134,9 @@ export async function GET(request: NextRequest) {
         rentTotal: rent ? ga(rent) : 0,
         rentPerNight: rent ? Math.round((ga(rent) / nights) * 100) / 100 : 0,
         rentLabel: 'Nightly Rate',
-        fees: fees.map(f => ({ name: gn(f), amount: ga(f) })),
+        fees: displayFees,
         taxes: taxes.map(t => ({ name: gn(t), amount: ga(t) })),
-        total, currency: 'USD',
+        total: baseTotal, currency: 'USD',
       },
     }, { headers: { 'Cache-Control': 'no-store' } })
 
