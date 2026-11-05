@@ -46,9 +46,7 @@ select { background-color: rgba(253,246,236,0.05); color: var(--cream); }
 .section-pad   { padding: 100px 48px; }
 .section-pad-sm { padding: 80px 64px; }
 .hero-text-pad { padding: 0 64px; bottom: 60px; }
-.prop-grid     { display: grid; grid-template-columns: repeat(3,1fr); grid-template-rows: auto auto; gap: 2px; }
-.prop-grid > div:first-child { grid-row: span 2; }
-.prop-grid > .prop-wide { grid-column: span 2; }
+.prop-grid     { display: grid; grid-template-columns: repeat(2,1fr); gap: 2px; }
 .why-grid      { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1100px; margin: 0 auto; }
 .why-features  { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 .property-layout { display: grid; grid-template-columns: 1fr 420px; gap: 64px; align-items: start; }
@@ -61,8 +59,6 @@ select { background-color: rgba(253,246,236,0.05); color: var(--cream); }
   .hero-text-pad { padding: 0 20px; bottom: 24px; }
 
   .prop-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
-  .prop-grid > div:first-child { grid-row: auto; }
-  .prop-grid > .prop-wide { grid-column: auto; }
 
   .why-grid  { grid-template-columns: 1fr; gap: 40px; }
   .why-features { grid-template-columns: 1fr 1fr; gap: 20px; }

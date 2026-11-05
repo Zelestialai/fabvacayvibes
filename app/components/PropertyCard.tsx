@@ -11,7 +11,7 @@ export default function PropertyCard({ property, large = false, wide = false }: 
         cursor: 'pointer',
         background: 'var(--purple-mid)',
         aspectRatio: large || wide ? 'auto' : '3/4',
-        minHeight: large ? 600 : wide ? 440 : undefined,
+        minHeight: large ? 600 : wide ? 520 : undefined,
         display: 'block',
         textDecoration: 'none',
       }}

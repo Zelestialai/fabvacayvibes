@@ -23,7 +23,7 @@ const SLIDES = [
   {
     url: 'https://uc.orez.io/f/40070c9942b24a32a57d0c1475392298',
     label: 'Broadleaf',
-    location: 'McGaheysville, VA',
+    location: 'Massanutten, VA',
     type: 'Mountain Resort',
   },
 ]

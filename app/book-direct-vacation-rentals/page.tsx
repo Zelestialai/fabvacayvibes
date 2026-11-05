@@ -45,7 +45,7 @@ const properties = [
   },
   {
     name: 'Broadleaf',
-    location: 'McGaheysville, VA (Massanutten)',
+    location: 'Massanutten, VA',
     slug: 'broadleaf',
     bedrooms: 7, bathrooms: 4, sleeps: 18,
     price: '$419',
@@ -56,7 +56,7 @@ const properties = [
 const faqItems = [
   {
     q: 'How much do I save booking directly vs Airbnb or VRBO?',
-    a: 'Booking directly with Fab Vacay Vibes saves you up to 15% by eliminating OTA platform fees. On a typical multi-night group stay, this can represent hundreds of dollars. All four properties — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, Sierra Crest Haven near Yosemite CA, and Broadleaf in McGaheysville VA — are available for direct booking at fabvacayvibes.com.',
+    a: 'Booking directly with Fab Vacay Vibes saves you up to 15% by eliminating OTA platform fees. On a typical multi-night group stay, this can represent hundreds of dollars. All four properties — Casa Grandè in Clearwater FL, Owl & Hare in Joshua Tree CA, Sierra Crest Haven near Yosemite CA, and Broadleaf in Massanutten VA — are available for direct booking at fabvacayvibes.com.',
   },
   {
     q: 'Is it safe to book a vacation rental directly without Airbnb?',
@@ -72,7 +72,7 @@ const faqItems = [
   },
   {
     q: 'Which Fab Vacay Vibes properties are available for direct booking?',
-    a: 'All four properties are available for direct booking: Casa Grandè in Clearwater FL (fabvacayvibes.com/properties/casa-grande), Owl & Hare in Joshua Tree CA (fabvacayvibes.com/properties/owl-and-hare), Sierra Crest Haven near Yosemite CA (fabvacayvibes.com/properties/sierra-crest-haven), and Broadleaf in McGaheysville VA (fabvacayvibes.com/properties/broadleaf).',
+    a: 'All four properties are available for direct booking: Casa Grandè in Clearwater FL (fabvacayvibes.com/properties/casa-grande), Owl & Hare in Joshua Tree CA (fabvacayvibes.com/properties/owl-and-hare), Sierra Crest Haven near Yosemite CA (fabvacayvibes.com/properties/sierra-crest-haven), and Broadleaf in Massanutten VA (fabvacayvibes.com/properties/broadleaf).',
   },
   {
     q: 'How do I contact Fab Vacay Vibes to book directly?',
