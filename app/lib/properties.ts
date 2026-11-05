@@ -4,7 +4,7 @@ export interface Property {
   name: string
   location: string
   state: string
-  type: 'Beach' | 'Desert' | 'Mountain' | 'Desert Wellness Retreat'
+  type: 'Beach' | 'Desert' | 'Mountain' | 'Desert Wellness Retreat' | 'Mountain Resort'
   emoji: string
   bedrooms: number
   bathrooms: number
@@ -653,5 +653,45 @@ export const properties: Property[] = [
     'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/sierra-crest-haven/LIFESTYLE/Lifestyle_057.jpg',
     'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/sierra-crest-haven/LIFESTYLE/Lifestyle_058.jpg',
   ],
+  },
+  {
+    id: 'broadleaf',
+    slug: 'broadleaf',
+    name: 'Broadleaf',
+    location: 'McGaheysville',
+    state: 'VA',
+    type: 'Mountain Resort',
+    emoji: '🏔️',
+    bedrooms: 7,
+    bathrooms: 4,
+    checkIn: '4:00 PM',
+    checkOut: '11:00 AM',
+    latitude: 38.4035,
+    longitude: -79.0106,
+    petsAllowed: true,
+    sleepsMin: 1,
+    sleepsMax: 18,
+    pricePerNight: 419,
+    description: "Broadleaf is a 7-bedroom, 4-bathroom designer home in McGaheysville, Virginia — set in the heart of the Massanutten mountain resort area and built for large groups who want luxury, space, and nonstop entertainment. Sleeping up to 18 guests across two fully furnished levels, the home features an upper level with an open-plan living room (electric fireplace), a dining area that seats 10+, a full chef's kitchen, and a deck with propane fire pit, outdoor dining for 8, and a gas grill. The lower level is an entertainment hub: a second living room with a sectional and smart TV, a dedicated game room with a pool table, foosball table, and 2 arcade machines, and a private lower deck with a 7-person hot tub, cold plunge, and cornhole. All 7 bedrooms sleep groups of every configuration — kings, queens, and bunk beds — across 4 ensuite and shared baths. WiFi is a verified 584 Mbps. Pet friendly (up to 4 pets, $100/pet). Communal pool access available in summer (fee). Ski, hike, golf, and waterpark adventures all within reach. Smart lock entry. Minimum renter age 25.",
+    shortDesc: '7-bedroom designer home in Massanutten, VA. Hot tub, cold plunge, game room, pool table, arcades, 2 decks. Sleeps 18. Ski, golf, hiking nearby.',
+    amenities: [
+      'Hot Tub', 'Cold Plunge', 'Game Room', 'Pool Table', 'Foosball Table', 'Arcade Machines',
+      'Electric Fireplace', 'Gas Grill', 'Fire Pit', 'Outdoor Dining', 'Communal Pool (summer)',
+      'High-Speed WiFi', 'Full Kitchen', 'Washer & Dryer', 'Smart Lock', 'Pet Friendly',
+      'Mountain Views', 'Multiple Decks', 'Smart TVs', 'Laptop Workspace',
+      'Carbon Monoxide Detector', 'Smoke Detector', 'First Aid Kit',
+    ],
+    // imageUrl and photos will be populated by the OwnerRez sync job (blob: /content/sync/broadleaf.json)
+    // Set a placeholder until the first sync runs
+    imageUrl: 'https://ffxdvjgwnh5dbwtv.public.blob.vercel-storage.com/images/broadleaf/hero.jpg',
+    ownerrezUrl: 'https://www.fabvacayvibes.com/7br-designer-home-w-hot-tub-game-room-orp5b78bb1x',
+    highlights: [
+      '7-Person Hot Tub & Cold Plunge',
+      'Game Room · Pool Table · 2 Arcades',
+      'Two Decks — Fire Pit & Gas Grill',
+      'Ski · Golf · Hiking · Waterpark Nearby',
+      'Pet Friendly (up to 4 pets)',
+    ],
+    photos: [],
   },
 ]

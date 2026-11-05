@@ -4,6 +4,7 @@ const PROPERTY_NUMERIC_IDS: Record<string, number> = {
   'casa-grande':        398247,
   'owl-and-hare':       452868,
   'sierra-crest-haven': 479162,
+  'broadleaf':          494513,
 }
 
 export async function GET(request: NextRequest) {

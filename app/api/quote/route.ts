@@ -4,6 +4,7 @@ const PROPERTY_EXTERNAL_IDS: Record<string, string> = {
   'casa-grande':        'orp5b613a7x',
   'owl-and-hare':       'orp5b6e904x',
   'sierra-crest-haven': 'orp5b74fbax',
+  'broadleaf':          'orp5b78bb1x',
 }
 
 // Hardcoded numeric IDs from OwnerRez API (verified 2026-05)
@@ -11,6 +12,7 @@ const PROPERTY_NUMERIC_IDS: Record<string, number> = {
   'casa-grande':        398247,
   'owl-and-hare':       452868,
   'sierra-crest-haven': 479162,
+  'broadleaf':          494513,
 }
 
 // v2 API for properties/bookings/guests
