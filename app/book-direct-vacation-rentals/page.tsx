@@ -48,7 +48,7 @@ const properties = [
     location: 'Massanutten, VA',
     slug: 'broadleaf',
     bedrooms: 7, bathrooms: 4, sleeps: 18,
-    price: '$419',
+    price: '$650',
     desc: 'Designer mountain home. Hot tub, cold plunge, game room, pool table, arcades, 2 decks. Ski & golf nearby.',
   },
 ]
