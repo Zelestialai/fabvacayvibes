@@ -19,7 +19,7 @@ function publicReviewerName(raw: unknown): string {
 
 // Fetch every review for a property from OwnerRez (paginated). Returns null on failure
 // so a bad response never wipes previously synced data with an empty list.
-async function fetchReviews(propertyId: number, headers: Record<string, string>) {
+async function fetchReviews(propertyId: number, headers: Record<string, string>): Promise<{ reviews: ReturnType<typeof mapReviews> | null; error?: string }> {
   const items: Array<Record<string, unknown>> = []
   const limit = 100
   for (let page = 0; page < 20; page++) {
@@ -27,13 +27,17 @@ async function fetchReviews(propertyId: number, headers: Record<string, string>)
       `https://api.ownerrez.com/v2/reviews?property_ids=${propertyId}&limit=${limit}&offset=${page * limit}`,
       { headers }
     )
-    if (!res.ok) return page === 0 ? null : items.length ? mapReviews(items) : null
+    if (!res.ok) {
+      const detail = (await res.text().catch(() => '')).slice(0, 200)
+      const error = `HTTP ${res.status} ${detail}`
+      return page === 0 || items.length === 0 ? { reviews: null, error } : { reviews: mapReviews(items), error }
+    }
     const data = await res.json()
     const batch: Array<Record<string, unknown>> = data?.items || []
     items.push(...batch)
     if (batch.length < limit) break
   }
-  return mapReviews(items)
+  return { reviews: mapReviews(items) }
 }
 
 function mapReviews(items: Array<Record<string, unknown>>) {
@@ -82,7 +86,8 @@ export async function GET(request: NextRequest) {
         fetch(`https://api.ownerrez.com/v2/properties/${id}/amenities`, { headers }),
         fetch(`https://api.ownerrez.com/v2/properties/${id}/photos`, { headers }),
       ])
-      const reviews = await fetchReviews(id, headers).catch(() => null)
+      const reviewResult = await fetchReviews(id, headers).catch((e) => ({ reviews: null, error: String(e) }))
+      const reviews = reviewResult.reviews
       const prop = await propRes.json()
       const amenData = amenRes.ok ? await amenRes.json() : null
       const photosData = photosRes.ok ? await photosRes.json() : null
@@ -144,6 +149,7 @@ export async function GET(request: NextRequest) {
         amenities: amenityNames.length,
         photos: photoUrls.length,
         reviews: reviews ? reviews.length : 'fetch failed',
+        reviewsError: reviewResult.error ?? null,
         hasDescription: !!syncedData.description,
       }
     } catch (e) {
