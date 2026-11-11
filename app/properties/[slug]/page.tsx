@@ -8,6 +8,7 @@ import AvailabilityCalendar from '../../components/AvailabilityCalendar'
 import PhotoGallery from '../../components/PhotoGallery'
 import ExpandableDescription from '../../components/ExpandableDescription'
 import PropertyAnalytics from '../../components/PropertyAnalytics'
+import { getStaticReviews } from '../../lib/reviews'
 
 // Revalidate property pages every hour so OwnerRez content sync propagates automatically
 export const revalidate = 3600
@@ -314,9 +315,12 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             {/* Photo Gallery */}
             <PhotoGallery photos={mergedProperty.photos} propertyName={property.name} />
 
-            {/* Guest Reviews (synced from OwnerRez; only real reviews are shown) */}
-            {Array.isArray(syncedData?.reviews) && syncedData.reviews.length > 0 && (() => {
-              const reviews = syncedData.reviews as Array<{ id: number; rating: number | null; title: string | null; body: string; reviewer: string; date: string | null }>
+            {/* Synced reviews win when the OwnerRez API add-on is enabled; otherwise the snapshot copied from the listing */}
+            {(() => {
+              const reviews = (Array.isArray(syncedData?.reviews) && syncedData.reviews.length > 0
+                ? syncedData.reviews
+                : getStaticReviews(property.slug)) as Array<{ id: string | number; rating: number | null; title: string | null; body: string; reviewer: string; date: string | null }>
+              if (reviews.length === 0) return null
               const card = (r: typeof reviews[number]) => (
                 <div key={r.id} style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.12)', padding: '28px 28px', borderRadius: 3, marginBottom: 12 }}>
                   {r.rating !== null && r.rating >= 1 && r.rating <= 5 && (
