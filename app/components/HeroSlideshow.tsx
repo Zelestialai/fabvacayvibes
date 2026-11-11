@@ -66,6 +66,14 @@ export default function HeroSlideshow() {
           0%   { transform: scale(1.1) translateY(0px); }
           100% { transform: scale(1.2) translateY(-15px); }
         }
+        @media (max-width: 768px) {
+          .hero-strip { padding: 0 12px 16px !important; flex-direction: column !important; align-items: stretch !important; }
+          .hero-cards { display: grid !important; grid-template-columns: repeat(4, 1fr); gap: 6px !important; }
+          .hero-cards button { min-width: 0 !important; padding: 8px 6px !important; }
+          .hero-cards button p { font-size: 11px !important; letter-spacing: 0 !important; line-height: 1.2; margin: 0 !important; }
+          .hero-cards button p:first-child, .hero-cards button p:last-child { display: none; }
+          .hero-progress { display: none !important; }
+        }
         @keyframes slideUp {
           from { opacity: 0; transform: translateY(12px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -115,7 +123,7 @@ export default function HeroSlideshow() {
       }} />
 
       {/* Bottom property strip */}
-      <div style={{
+      <div className="hero-strip" style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 4,
         padding: '0 48px 32px',
         display: 'flex',
@@ -123,7 +131,7 @@ export default function HeroSlideshow() {
         alignItems: 'flex-end',
       }}>
         {/* Property cards */}
-        <div style={{ display: 'flex', gap: 16 }}>
+        <div className="hero-cards" style={{ display: 'flex', gap: 16 }}>
           {SLIDES.map((slide, i) => (
             <button
               key={i}
@@ -159,7 +167,7 @@ export default function HeroSlideshow() {
         </div>
 
         {/* Progress bar */}
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+        <div className="hero-progress" style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           {SLIDES.map((_, i) => (
             <div key={i} style={{
               height: 2, borderRadius: 1,

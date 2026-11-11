@@ -8,6 +8,48 @@ const PROPERTY_IDS: Record<string, number> = {
   'broadleaf': 494513,
 }
 
+// Guest privacy: publish only first name + last initial (e.g. "Sarah T.")
+function publicReviewerName(raw: unknown): string {
+  const parts = String(raw ?? '').trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return 'Guest'
+  const first = parts[0]
+  const last = parts.length > 1 ? parts[parts.length - 1] : ''
+  return last ? `${first} ${last.charAt(0).toUpperCase()}.` : first
+}
+
+// Fetch every review for a property from OwnerRez (paginated). Returns null on failure
+// so a bad response never wipes previously synced data with an empty list.
+async function fetchReviews(propertyId: number, headers: Record<string, string>) {
+  const items: Array<Record<string, unknown>> = []
+  const limit = 100
+  for (let page = 0; page < 20; page++) {
+    const res = await fetch(
+      `https://api.ownerrez.com/v2/reviews?property_ids=${propertyId}&limit=${limit}&offset=${page * limit}`,
+      { headers }
+    )
+    if (!res.ok) return page === 0 ? null : items.length ? mapReviews(items) : null
+    const data = await res.json()
+    const batch: Array<Record<string, unknown>> = data?.items || []
+    items.push(...batch)
+    if (batch.length < limit) break
+  }
+  return mapReviews(items)
+}
+
+function mapReviews(items: Array<Record<string, unknown>>) {
+  return items
+    .filter((r) => String(r.body ?? '').trim().length > 0)
+    .map((r) => ({
+      id: r.id,
+      rating: typeof r.rating === 'number' ? r.rating : null,
+      title: r.title ? String(r.title) : null,
+      body: String(r.body).trim(),
+      reviewer: publicReviewerName(r.reviewer_name),
+      date: r.created_utc ? String(r.created_utc) : null,
+    }))
+    .sort((a, b) => String(b.date ?? '').localeCompare(String(a.date ?? '')))
+}
+
 function isAuthorized(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   const url = new URL(request.url)
@@ -40,6 +82,7 @@ export async function GET(request: NextRequest) {
         fetch(`https://api.ownerrez.com/v2/properties/${id}/amenities`, { headers }),
         fetch(`https://api.ownerrez.com/v2/properties/${id}/photos`, { headers }),
       ])
+      const reviews = await fetchReviews(id, headers).catch(() => null)
       const prop = await propRes.json()
       const amenData = amenRes.ok ? await amenRes.json() : null
       const photosData = photosRes.ok ? await photosRes.json() : null
@@ -82,6 +125,7 @@ export async function GET(request: NextRequest) {
         property_type: prop.property_type,
         listing_numbers: prop.listing_numbers,
         public_url: prop.public_url,
+        reviews,
         amenities: amenityNames.length > 0 ? amenityNames : null,
         photos: photoUrls.length > 0 ? photoUrls : null,
       }
@@ -99,6 +143,7 @@ export async function GET(request: NextRequest) {
         synced: syncedAt,
         amenities: amenityNames.length,
         photos: photoUrls.length,
+        reviews: reviews ? reviews.length : 'fetch failed',
         hasDescription: !!syncedData.description,
       }
     } catch (e) {

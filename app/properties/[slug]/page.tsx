@@ -314,6 +314,36 @@ export default async function PropertyPage({ params, searchParams }: { params: P
             {/* Photo Gallery */}
             <PhotoGallery photos={mergedProperty.photos} propertyName={property.name} />
 
+            {/* Guest Reviews (synced from OwnerRez; only real reviews are shown) */}
+            {Array.isArray(syncedData?.reviews) && syncedData.reviews.length > 0 && (() => {
+              const reviews = syncedData.reviews as Array<{ id: number; rating: number | null; title: string | null; body: string; reviewer: string; date: string | null }>
+              const card = (r: typeof reviews[number]) => (
+                <div key={r.id} style={{ background: 'rgba(253,246,236,0.03)', border: '1px solid rgba(244,162,58,0.12)', padding: '28px 28px', borderRadius: 3, marginBottom: 12 }}>
+                  {r.rating !== null && r.rating >= 1 && r.rating <= 5 && (
+                    <div style={{ color: 'var(--orange)', fontSize: 13, letterSpacing: 3, marginBottom: 12 }}>{'★'.repeat(Math.round(r.rating))}</div>
+                  )}
+                  {r.title && <p style={{ fontSize: 15, color: 'var(--cream)', marginBottom: 8 }}>{r.title}</p>}
+                  <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 16, whiteSpace: 'pre-line' }}>{r.body}</p>
+                  <p style={{ fontSize: 11, letterSpacing: 2, textTransform: 'uppercase', color: 'var(--orange)' }}>
+                    {r.reviewer}{r.date ? ` · ${new Date(r.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}` : ''}
+                  </p>
+                </div>
+              )
+              return (
+                <div style={{ marginTop: 48 }}>
+                  <p style={{ fontSize: 10, letterSpacing: 4, textTransform: 'uppercase', color: 'var(--orange)', marginBottom: 12 }}>Guest Reviews</p>
+                  <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 32, fontWeight: 300, color: 'white', marginBottom: 24 }}>{reviews.length} {reviews.length === 1 ? 'review' : 'reviews'} from past guests</h2>
+                  {reviews.slice(0, 6).map(card)}
+                  {reviews.length > 6 && (
+                    <details>
+                      <summary style={{ cursor: 'pointer', color: 'var(--orange)', fontSize: 12, letterSpacing: 2, textTransform: 'uppercase', padding: '12px 0', marginBottom: 12 }}>Show all {reviews.length} reviews</summary>
+                      {reviews.slice(6).map(card)}
+                    </details>
+                  )}
+                </div>
+              )
+            })()}
+
             {/* Availability Calendar (visual reference) */}
             <AvailabilityCalendar propertySlug={property.slug} propertyName={property.name} bookingUrl={property.ownerrezUrl} />
           </div>
